@@ -9,16 +9,17 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 class DBQuick {
 
-    private static final String DB_NAME = "data";
+    private static final String DB_NAME = "Quick";
     private static final int DB_VERSION = 1;
 
-    private static final String TABLE_NAME = "data";
+    private static final String TABLE_NAME = "Notes";
     private static final String KEY_ID = "_id";
-    private static final String KEY_DATE = "DATE";
-    private static final String KEY_DAYNAME = "DAYNAME";
+    private static final String KEY_TITLE = "TITLE";
     private static final String KEY_TEXT = "TEXT";
-    private static final String KEY_IMG = "IMG_PATH";
-    private static final String KEY_THUMB = "THUMB";
+    private static final String KEY_ICON = "ICON";
+    private static final String KEY_DATE = "DATE";
+    private static final String KEY_NUMID = "NUMID";
+
 
     private final Context mContext;
 
@@ -38,26 +39,26 @@ class DBQuick {
         return mDB.query(TABLE_NAME, null, null, null, null, null, null);
     }
 
-    public Cursor getTodayEvent(String today) {
-        return mDB.query(TABLE_NAME, new String[]{KEY_DATE, KEY_DAYNAME, KEY_TEXT, KEY_IMG, KEY_THUMB}, KEY_DATE + "= ?", new String[]{today}, null, null, null);
-    }
+//    public Cursor getTodayEvent(String today) {
+//        return mDB.query(TABLE_NAME, new String[]{KEY_DATE, KEY_DAYNAME, KEY_TEXT, KEY_IMG, KEY_THUMB}, KEY_DATE + "= ?", new String[]{today}, null, null, null);
+//    }
 
-    public void addRec(String date, String dayname, String text, String img, String thumb) {
+    public void addNote(String title, String text, long date, int numid) {
         ContentValues cv = new ContentValues();
-        cv.put(KEY_DATE, date);
-        cv.put(KEY_DAYNAME, dayname);
+        cv.put(KEY_TITLE, title);
         cv.put(KEY_TEXT, text);
-        cv.put(KEY_IMG, img);
-        cv.put(KEY_THUMB, thumb);
+        cv.put(KEY_DATE, date);
+        cv.put(KEY_NUMID, numid);
         mDB.insert(TABLE_NAME, null, cv);
     }
 
-    public void updateRec(String text, String img, String thumb, String whereDate) {
+    public void updateRec(String title, String text, String date, String numid, String id) {
         ContentValues cv = new ContentValues();
+        cv.put(KEY_TITLE, title);
         cv.put(KEY_TEXT, text);
-        cv.put(KEY_IMG, img);
-        cv.put(KEY_THUMB, thumb);
-        mDB.update(TABLE_NAME, cv, KEY_DATE + " = ?", new String[]{whereDate});
+        cv.put(KEY_DATE, date);
+        cv.put(KEY_NUMID, numid);
+        mDB.update(TABLE_NAME, cv, KEY_ID + " = ?", new String[]{id});
     }
 
     public void close() {
@@ -76,11 +77,11 @@ class DBQuick {
         public void onCreate(SQLiteDatabase db) {
             db.execSQL("create table " + TABLE_NAME + " ("
                     + KEY_ID + " integer primary key autoincrement,"
-                    + KEY_DATE + " text,"
-                    + KEY_DAYNAME + " text,"
+                    + KEY_TITLE + " text,"
                     + KEY_TEXT + " text,"
-                    + KEY_IMG + " text,"
-                    + KEY_THUMB + " text" + ");");
+                    + KEY_ICON + " integer,"
+                    + KEY_DATE + " integer,"
+                    + KEY_NUMID + " integer" + ");");
         }
 
         @Override

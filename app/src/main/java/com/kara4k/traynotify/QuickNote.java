@@ -17,6 +17,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import java.util.Calendar;
+
 public class QuickNote extends AppCompatActivity {
 
     private EditText title;
@@ -135,6 +137,8 @@ public class QuickNote extends AppCompatActivity {
         mBuilder.setSmallIcon(R.drawable.notify);
 //        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.test));
         nm.notify(seekbar.getProgress(), mBuilder.build());
+        writeToDB();
+        QuickAdapter.getInstance().notifyDataSetChanged();
     }
 
     private Intent[] makeIntent() {
@@ -148,5 +152,13 @@ public class QuickNote extends AppCompatActivity {
         quick.putExtra("ongoing", ongoing.isChecked());
         quick.putExtra("id", seekbar.getProgress());
         return new Intent[]{main, quick};
+    }
+
+    private void writeToDB() {
+        DBQuick dbQuick = new DBQuick(getApplicationContext());
+        dbQuick.open();
+        Calendar calendar = Calendar.getInstance();
+        dbQuick.addNote(title.getText().toString(), text.getText().toString(), calendar.getTimeInMillis(), seekbar.getProgress());
+        dbQuick.close();
     }
 }

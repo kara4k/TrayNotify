@@ -37,9 +37,9 @@ public class MainActivity extends AppCompatActivity {
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
 
-        Fragment addNotify = new NotifyList();
+        Fragment quickNotes = new QuickNotesFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.container, addNotify);
+        ft.replace(R.id.container, quickNotes);
         ft.commit();
 
 
@@ -54,13 +54,13 @@ public class MainActivity extends AppCompatActivity {
                         Fragment fragment;
                         switch (menuItem.getItemId()) {
                             case R.id.add_note:
-                                fragment = new AddNotify();
+                                fragment = new NotifyList();
                                 break;
                             case R.id.new_delayed:
                                 fragment = new NotifyList();
                                 break;
                             default:
-                                fragment = new AddNotify();
+                                fragment = new NotifyList();
                         }
                         menuItem.setChecked(true);
                         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
