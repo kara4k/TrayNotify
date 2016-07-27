@@ -1,6 +1,8 @@
 package com.kara4k.traynotify;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +13,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.EventsViewHolder> {
+public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.EventsViewHolder>{
 
     private static QuickAdapter quickAdapter;
+
+    public List<Note> getNotes() {
+        return notes;
+    }
+
     private List<Note> notes;
+    private Context context;
 
     QuickAdapter() {
     }
@@ -27,6 +35,8 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.EventsViewHo
     }
 
 
+
+
     public void setList(List<Note> notes) {
         this.notes = notes;
     }
@@ -34,6 +44,7 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.EventsViewHo
     @Override
     public EventsViewHolder onCreateViewHolder(ViewGroup viewGroup, final int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.quick_item, viewGroup, false);
+        context = viewGroup.getContext();
         return new EventsViewHolder(v);
     }
 
@@ -55,6 +66,17 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.EventsViewHo
         return notes.size();
     }
 
+    public void remove(int position) {
+        DBQuick db = new DBQuick(context);
+        db.open();
+        int id = notes.get(position).getId();
+        db.removeNote(id);
+        db.close();
+        notes.remove(position);
+        notifyItemRemoved(position);
+
+    }
+
     public static class EventsViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView title;
@@ -68,6 +90,18 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.EventsViewHo
             text = (TextView) itemView.findViewById(R.id.text);
             date = (TextView) itemView.findViewById(R.id.date);
             time = (TextView) itemView.findViewById(R.id.time);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Context context = view.getContext();
+                    Note note = QuickAdapter.getInstance().getNotes().get(getAdapterPosition());
+                    Intent intent = new Intent(context, QuickNote.class);
+                    intent.putExtra(Intent.EXTRA_SUBJECT, note.getTitle());
+                    intent.putExtra(Intent.EXTRA_TEXT, note.getText());
+                    intent.putExtra("id", note.getNumid());
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 

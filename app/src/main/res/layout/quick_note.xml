@@ -115,7 +115,7 @@
                 android:layout_marginLeft="@dimen/dimen_default"
                 android:layout_marginRight="@dimen/dimen_default"
                 android:textColor="@android:color/black"
-                android:text="ID: 0"
+                android:text="# 0"
                 />
 
         </LinearLayout>

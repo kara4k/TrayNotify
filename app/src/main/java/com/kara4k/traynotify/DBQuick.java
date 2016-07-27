@@ -39,6 +39,10 @@ class DBQuick {
         return mDB.query(TABLE_NAME, null, null, null, null, null, KEY_ID + " DESC");
     }
 
+    public void removeNote(int id) {
+        mDB.delete(TABLE_NAME,KEY_ID + "=?",new String[]{String.valueOf(id)});
+    }
+
 //    public Cursor getTodayEvent(String today) {
 //        return mDB.query(TABLE_NAME, new String[]{KEY_DATE, KEY_DAYNAME, KEY_TEXT, KEY_IMG, KEY_THUMB}, KEY_DATE + "= ?", new String[]{today}, null, null, null);
 //    }
