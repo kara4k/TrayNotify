@@ -36,7 +36,7 @@ class DBQuick {
     }
 
     public Cursor getAllData() {
-        return mDB.query(TABLE_NAME, null, null, null, null, null, null);
+        return mDB.query(TABLE_NAME, null, null, null, null, null, KEY_ID + " DESC");
     }
 
 //    public Cursor getTodayEvent(String today) {

@@ -47,19 +47,19 @@ public class QuickNote extends AppCompatActivity {
 
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-        if (getIntent().getExtras()!=null) {
+        if (getIntent().getExtras() != null) {
             title.setText(getIntent().getStringExtra(Intent.EXTRA_SUBJECT));
             text.setText(getIntent().getStringExtra(Intent.EXTRA_TEXT));
-            ongoing.setChecked(getIntent().getBooleanExtra("ongoing", false));
+            ongoing.setChecked(getIntent().getBooleanExtra("ongoing", true));
             seekbar.setProgress(getIntent().getIntExtra("id", 0));
             textId.setText("ID: " + getIntent().getIntExtra("id", 0));
         }
-            create.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    test();
-                }
-            });
+        create.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                test();
+            }
+        });
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,7 +84,6 @@ public class QuickNote extends AppCompatActivity {
         });
 
     }
-
 
 
     @Override
@@ -133,12 +132,11 @@ public class QuickNote extends AppCompatActivity {
             mBuilder.setOngoing(true);
         }
         mBuilder.setDefaults(Notification.DEFAULT_ALL);
-        mBuilder.setContentIntent(PendingIntent.getActivities(getApplicationContext(), seekbar.getProgress(),  makeIntent(), PendingIntent.FLAG_UPDATE_CURRENT));
+        mBuilder.setContentIntent(PendingIntent.getActivities(getApplicationContext(), seekbar.getProgress(), makeIntent(), PendingIntent.FLAG_UPDATE_CURRENT));
         mBuilder.setSmallIcon(R.drawable.notify);
 //        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.test));
         nm.notify(seekbar.getProgress(), mBuilder.build());
         writeToDB();
-        QuickAdapter.getInstance().notifyDataSetChanged();
     }
 
     private Intent[] makeIntent() {

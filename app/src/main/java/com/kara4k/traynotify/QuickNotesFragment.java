@@ -19,32 +19,42 @@ public class QuickNotesFragment extends Fragment {
     List<Note> notes;
     private QuickAdapter adapter;
 
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         inflater.inflate(R.layout.quick_notes_fragment, container);
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
         adapter = QuickAdapter.getInstance();
-        adapter.setList(getAllNotesFromDB());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        getAllNotesFromDB();
+        adapter.setList(notes);
         recyclerView.setAdapter(adapter);
-
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         return recyclerView;
     }
 
-    private List<Note> getAllNotesFromDB() {
+    @Override
+    public void onResume() {
+        super.onResume();
+        getAllNotesFromDB();
+        adapter.notifyDataSetChanged();
+    }
+
+
+
+    public void getAllNotesFromDB() {
         DBQuick db = new DBQuick(getActivity());
         db.open();
-        List<Note> notes = new ArrayList<>();
+        List<Note> allnotes = new ArrayList<>();
         Cursor allData = db.getAllData();
         if (allData.moveToFirst()) {
             do {
-                notes.add(new Note(allData.getInt(0), allData.getString(1), allData.getString(2), allData.getInt(3), allData.getLong(4), allData.getInt(5)));
+                allnotes.add(new Note(allData.getInt(0), allData.getString(1), allData.getString(2), allData.getInt(3), allData.getLong(4), allData.getInt(5)));
             } while (allData.moveToNext());
         }
         db.close();
-        adapter.notifyDataSetChanged();
-        return notes;
+        notes = allnotes;
     }
 
 }

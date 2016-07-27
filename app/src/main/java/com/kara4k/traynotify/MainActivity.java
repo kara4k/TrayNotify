@@ -37,11 +37,6 @@ public class MainActivity extends AppCompatActivity {
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
 
-        Fragment quickNotes = new QuickNotesFragment();
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.container, quickNotes);
-        ft.commit();
-
 
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
@@ -57,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                                 fragment = new NotifyList();
                                 break;
                             case R.id.new_delayed:
-                                fragment = new NotifyList();
+                                fragment = new QuickNotesFragment();
                                 break;
                             default:
                                 fragment = new NotifyList();
@@ -81,6 +76,14 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onStart() { // TODO: 27.07.2016
+        super.onStart();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.container, new QuickNotesFragment());
+        ft.commit();
     }
 
     @Override
