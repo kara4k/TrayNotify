@@ -1,7 +1,6 @@
 package com.kara4k.traynotify;
 
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -144,7 +143,7 @@ public class QuickNote extends AppCompatActivity {
         if (ongoing.isChecked()) {
             mBuilder.setOngoing(true);
         }
-        mBuilder.setDefaults(Notification.DEFAULT_ALL);
+//        mBuilder.setDefaults(Notification.DEFAULT_ALL);
         mBuilder.setContentIntent(PendingIntent.getActivities(getApplicationContext(), seekbar.getProgress(), makeIntent(), PendingIntent.FLAG_UPDATE_CURRENT));
         mBuilder.setSmallIcon(R.drawable.notify);
 //        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.test));

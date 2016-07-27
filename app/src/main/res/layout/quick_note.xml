@@ -134,9 +134,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dimen_default"
+                android:background="@color/colorAccent"
                 android:layout_weight="1"
-                android:backgroundTint="@color/colorAccent"
+                android:padding="@dimen/button_padding"
                 android:text="Create"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
                 android:textColor="@android:color/white" />
 
             <Button
@@ -146,7 +149,10 @@
                 android:layout_marginRight="@dimen/dimen_default"
                 android:layout_marginLeft="@dimen/dimen_default"
                 android:layout_weight="1"
-                android:backgroundTint="@color/colorAccent"
+                android:background="@color/colorAccent"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:padding="@dimen/button_padding"
                 android:text="Delete"
                 android:textColor="@android:color/white" />
 
