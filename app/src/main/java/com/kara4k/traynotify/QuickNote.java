@@ -254,22 +254,24 @@ public class QuickNote extends AppCompatActivity {
 
     public void test() {
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
-        if (title.getText().toString().equals("")) {
-            mBuilder.setContentTitle(title.getHint());
-        } else {
-            mBuilder.setContentTitle(title.getText().toString());
+        if (isCreateTray) {
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
+            if (title.getText().toString().equals("")) {
+                mBuilder.setContentTitle(title.getHint());
+            } else {
+                mBuilder.setContentTitle(title.getText().toString());
+            }
+            mBuilder.setContentText(text.getText().toString());
+            mBuilder.setContentInfo("#" + seekbar.getProgress());
+            mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(text.getText().toString()));
+            mBuilder.setOngoing(isOngoing);
+            if (isNotify) {
+                mBuilder.setDefaults(Notification.DEFAULT_ALL);
+            }
+            mBuilder.setContentIntent(PendingIntent.getActivities(getApplicationContext(), seekbar.getProgress(), makeIntent(), PendingIntent.FLAG_UPDATE_CURRENT));
+            mBuilder.setSmallIcon(R.drawable.notify);
+            nm.notify(seekbar.getProgress(), mBuilder.build());
         }
-        mBuilder.setContentText(text.getText().toString());
-        mBuilder.setContentInfo("#" + seekbar.getProgress());
-        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(text.getText().toString()));
-        mBuilder.setOngoing(isOngoing);
-        if (isNotify) {
-            mBuilder.setDefaults(Notification.DEFAULT_ALL);
-        }
-        mBuilder.setContentIntent(PendingIntent.getActivities(getApplicationContext(), seekbar.getProgress(), makeIntent(), PendingIntent.FLAG_UPDATE_CURRENT));
-        mBuilder.setSmallIcon(R.drawable.notify);
-        nm.notify(seekbar.getProgress(), mBuilder.build());
         writeToDB();
     }
 
