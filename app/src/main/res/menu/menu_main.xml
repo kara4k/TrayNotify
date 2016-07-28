@@ -6,13 +6,13 @@
         android:id="@+id/quick_note"
         android:orderInCategory="1"
         android:title="Quick Note"
-        android:icon="@drawable/ic_add_white_24dp"
+        android:icon="@drawable/ic_note_add_white_24dp"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_clear_all"
         android:orderInCategory="2"
         android:title="Clear All"
-        android:icon="@drawable/ic_clear_all_white_24dp"
+        android:icon="@drawable/ic_delete_sweep_white_24dp"
         app:showAsAction="ifRoom" />
 
 </menu>

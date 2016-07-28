@@ -38,18 +38,38 @@ public class QuickNote extends AppCompatActivity {
 
         title = (EditText) findViewById(R.id.editTitle);
         text = (EditText) findViewById(R.id.textedit);
-        ongoing = (ToggleButton) findViewById(R.id.toggle_ongoing);
+//        ongoing = (ToggleButton) findViewById(R.id.toggle_ongoing);
         create = (Button) findViewById(R.id.create);
         seekbar = (SeekBar) findViewById(R.id.seekBar);
         delete = (Button) findViewById(R.id.delete);
         textId = (TextView) findViewById(R.id.text_id);
+
+
+        final Button hide = (Button) findViewById(R.id.advanced);
+        hide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (seekbar.getVisibility() == view.GONE) {
+                    seekbar.setVisibility(View.VISIBLE);
+                    textId.setVisibility(View.VISIBLE);
+//                    ongoing.setVisibility(View.VISIBLE);
+                    hide.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_up_white_24dp, 0);
+                } else {
+                    seekbar.setVisibility(View.GONE);
+                    textId.setVisibility(View.GONE);
+//                    ongoing.setVisibility(View.GONE);
+                    hide.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down_white_24dp, 0);
+                }
+            }
+        });
+
 
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         if (getIntent().getExtras() != null) {
             title.setText(getIntent().getStringExtra(Intent.EXTRA_SUBJECT));
             text.setText(getIntent().getStringExtra(Intent.EXTRA_TEXT));
-            ongoing.setChecked(getIntent().getBooleanExtra("ongoing", true));
+//            ongoing.setChecked(getIntent().getBooleanExtra("ongoing", true));
             seekbar.setProgress(getIntent().getIntExtra("id", 0));
             textId.setText("#" + getIntent().getIntExtra("id", 0));
         }
@@ -119,7 +139,7 @@ public class QuickNote extends AppCompatActivity {
     private void clearForms() {
         title.setText("");
         text.setText("");
-        ongoing.setChecked(true);
+//        ongoing.setChecked(true);
         seekbar.setProgress(0);
         textId.setText("#0");
     }
@@ -140,13 +160,12 @@ public class QuickNote extends AppCompatActivity {
         mBuilder.setContentInfo("#" + seekbar.getProgress());
         mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(text.getText().toString()));
 
-        if (ongoing.isChecked()) {
-            mBuilder.setOngoing(true);
-        }
+//        if (ongoing.isChecked()) {
+//            mBuilder.setOngoing(true);
+//        }
 //        mBuilder.setDefaults(Notification.DEFAULT_ALL);
         mBuilder.setContentIntent(PendingIntent.getActivities(getApplicationContext(), seekbar.getProgress(), makeIntent(), PendingIntent.FLAG_UPDATE_CURRENT));
         mBuilder.setSmallIcon(R.drawable.notify);
-//        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.test));
         nm.notify(seekbar.getProgress(), mBuilder.build());
         writeToDB();
     }
@@ -159,7 +178,7 @@ public class QuickNote extends AppCompatActivity {
 
         quick.putExtra(Intent.EXTRA_SUBJECT, title.getText().toString());
         quick.putExtra(Intent.EXTRA_TEXT, text.getText().toString());
-        quick.putExtra("ongoing", ongoing.isChecked());
+//        quick.putExtra("ongoing", ongoing.isChecked());
         quick.putExtra("id", seekbar.getProgress());
         return new Intent[]{main, quick};
     }

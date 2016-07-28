@@ -20,6 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".QuickNote"
+            android:label="Quick Note"
             android:launchMode="singleTask">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

@@ -66,7 +66,7 @@
                 android:layout_marginTop="@dimen/dimen_default"
                 android:background="@android:color/transparent"
                 android:hint="TrayNotify"
-                android:maxLength="28" />
+                />
         </LinearLayout>
 
         <View style="@style/Divider" />
@@ -79,20 +79,69 @@
             android:orientation="horizontal">
 
 
-            <ToggleButton
-                android:id="@+id/toggle_ongoing"
+
+
+            <Button
+                android:id="@+id/advanced"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
                 android:layout_marginLeft="@dimen/dimen_default"
                 android:layout_marginRight="@dimen/dimen_default"
-                android:checked="true"
-                android:text="New ToggleButton"
-                android:textOff="DRAG TO CLEAR"
-                android:textOn="CLEAR PROTECTED" />
+                android:checked="false"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:background="@color/colorPrimary"
+                android:textColor="@android:color/white"
+                android:padding="4dp"
+                android:text="advanced"
+                android:textOff="HIDE"
+                android:textOn="SHOW"
+                android:drawableRight="@drawable/ic_arrow_drop_down_white_24dp" />
 
         </LinearLayout>
 
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/advanced_layout"
+            android:layout_marginTop="@dimen/dimen_default"
+            android:layout_marginLeft="@dimen/dimen_default"
+            android:layout_marginRight="@dimen/dimen_default"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/create_tray"
+                android:padding="7dp"
+                android:src="@drawable/ic_speaker_notes_white_24dp"
+                android:background="@color/colorPrimary"
+                android:layout_weight="1"
+                />
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ongoing"
+                android:layout_marginLeft="@dimen/dimen_default"
+                android:padding="7dp"
+                android:src="@drawable/ic_delete_forever_white_24dp"
+                android:background="@color/colorPrimary"
+                android:layout_weight="1"
+                />
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/notify"
+                android:layout_marginLeft="@dimen/dimen_default"
+                android:padding="7dp"
+                android:src="@drawable/ic_notifications_active_white_24dp"
+                android:background="@color/colorPrimary"
+                android:layout_weight="1"
+                />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
