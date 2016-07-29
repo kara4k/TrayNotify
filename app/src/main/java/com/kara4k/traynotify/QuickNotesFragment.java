@@ -39,11 +39,18 @@ public class QuickNotesFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
         getAllNotesFromDB();
         adapter.notifyDataSetChanged();
+        super.onStart();
     }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        getAllNotesFromDB();
+//        adapter.notifyDataSetChanged();
+//    }
 
 
 

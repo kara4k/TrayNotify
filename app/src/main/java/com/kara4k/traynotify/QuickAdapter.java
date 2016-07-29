@@ -62,6 +62,8 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
 
     }
 
+
+
     @Override
     public int getItemCount() {
         return notes.size();
@@ -96,16 +98,32 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Context context = view.getContext();
-                    Note note = QuickAdapter.getInstance().getNotes().get(getAdapterPosition());
-                    Intent intent = new Intent(context, QuickNote.class);
-                    intent.putExtra(Intent.EXTRA_SUBJECT, note.getTitle());
-                    intent.putExtra(Intent.EXTRA_TEXT, note.getText());
-                    intent.putExtra("id", note.getNumid());
-                    context.startActivity(intent);
+                    try {
+                        Context context = view.getContext();
+                        Note note = QuickAdapter.getInstance().getNotes().get(getAdapterPosition());
+                        Intent intent = new Intent(context, QuickNote.class);
+                        intent.putExtra(Intent.EXTRA_SUBJECT, note.getTitle());
+                        intent.putExtra(Intent.EXTRA_TEXT, note.getText());
+                        intent.putExtra("id", note.getNumid());
+                        context.startActivity(intent);
+                    } catch (Exception e) {
+                        e.printStackTrace(); // TODO: 29.07.2016  
+                    }
+                }
+            });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    try {
+                        QuickAdapter.getInstance().remove(getAdapterPosition());
+                    } catch (Exception e) {
+                        e.printStackTrace(); // TODO: 29.07.2016  
+                    }
+                    return false;
                 }
             });
         }
+
     }
 
 }

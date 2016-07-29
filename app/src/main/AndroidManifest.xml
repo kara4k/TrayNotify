@@ -21,7 +21,8 @@
         </activity>
         <activity android:name=".QuickNote"
             android:label="Quick Note"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />

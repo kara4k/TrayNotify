@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
 
-
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -49,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                         Fragment fragment;
                         switch (menuItem.getItemId()) {
                             case R.id.add_note:
-                                fragment = new NotifyList();
+                                fragment = new ViewPagerFragment();
                                 break;
                             case R.id.new_delayed:
                                 fragment = new QuickNotesFragment();
@@ -68,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.container, new ViewPagerFragment());
+        ft.commitAllowingStateLoss();
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -80,11 +83,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() { // TODO: 27.07.2016
-        super.onStart();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.container, new QuickNotesFragment());
-        ft.commit();
+        ft.replace(R.id.container, new ViewPagerFragment());
+        ft.commitAllowingStateLoss();
+        super.onStart();
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -104,16 +109,14 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_clear_all) {
             clear();
             return true;
-        } else if (id == R.id.quick_note){
+        } else if (id == R.id.quick_note) {
             Intent quick = new Intent(this, QuickNote.class);
             startActivity(quick);
-        }
-        else if (id == android.R.id.home) {
+        } else if (id == android.R.id.home) {
             mDrawerLayout.openDrawer(GravityCompat.START);
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 
     public void clear() {

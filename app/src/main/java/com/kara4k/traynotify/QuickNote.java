@@ -70,7 +70,7 @@ public class QuickNote extends AppCompatActivity {
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                test();
+                create();
             }
         });
         delete.setOnClickListener(new View.OnClickListener() {
@@ -102,9 +102,9 @@ public class QuickNote extends AppCompatActivity {
                     createTrayButtonDisabled();
                     isCreateTray = false;
                     ongoingButtonDisabled();
-                    notifyButtonDisabled();
+//                    notifyButtonDisabled();
                     isOngoing = false;
-                    isNotify = false;
+//                    isNotify = false;
                 } else {
                     createTrayButtonEnabled();
                     isCreateTray = true;
@@ -131,7 +131,7 @@ public class QuickNote extends AppCompatActivity {
         notifyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isCreateTray) {
+//                if (isCreateTray) {
                     if (isNotify) {
                         notifyButtonDisabled();
                         isNotify = false;
@@ -139,7 +139,7 @@ public class QuickNote extends AppCompatActivity {
                         notifyButtonEnabled();
                         isNotify = true;
                     }
-                }
+//                }
             }
         });
 
@@ -252,27 +252,35 @@ public class QuickNote extends AppCompatActivity {
         nm.cancel(seekbar.getProgress());
     }
 
-    public void test() {
+    public void create() {
 
         if (isCreateTray) {
-            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
-            if (title.getText().toString().equals("")) {
-                mBuilder.setContentTitle(title.getHint());
-            } else {
-                mBuilder.setContentTitle(title.getText().toString());
-            }
-            mBuilder.setContentText(text.getText().toString());
-            mBuilder.setContentInfo("#" + seekbar.getProgress());
-            mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(text.getText().toString()));
-            mBuilder.setOngoing(isOngoing);
-            if (isNotify) {
-                mBuilder.setDefaults(Notification.DEFAULT_ALL);
-            }
-            mBuilder.setContentIntent(PendingIntent.getActivities(getApplicationContext(), seekbar.getProgress(), makeIntent(), PendingIntent.FLAG_UPDATE_CURRENT));
-            mBuilder.setSmallIcon(R.drawable.notify);
-            nm.notify(seekbar.getProgress(), mBuilder.build());
+            createNote(true);
+        } else {
+            createNote(false);
         }
         writeToDB();
+    }
+
+    private void createNote(boolean showInTray) {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
+        if (title.getText().toString().equals("")) {
+            mBuilder.setContentTitle(title.getHint());
+        } else {
+            mBuilder.setContentTitle(title.getText().toString());
+        }
+        mBuilder.setContentText(text.getText().toString());
+        mBuilder.setContentInfo("#" + seekbar.getProgress());
+        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(text.getText().toString()));
+        mBuilder.setOngoing(isOngoing);
+        if (isNotify) {
+            mBuilder.setDefaults(Notification.DEFAULT_ALL);
+        }
+        mBuilder.setContentIntent(PendingIntent.getActivities(getApplicationContext(), seekbar.getProgress(), makeIntent(), PendingIntent.FLAG_UPDATE_CURRENT));
+        if (showInTray) {
+            mBuilder.setSmallIcon(R.drawable.notify);
+        }
+        nm.notify(seekbar.getProgress(), mBuilder.build());
     }
 
     private Intent[] makeIntent() {
