@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CheckButton">
+        <attr name="isChecked" format="boolean" />
+        <attr name="TextOn" format="string" />
+        <attr name="TextOff" format="string" />
+        <attr name="BackgroundOn" format="reference|color" />
+        <attr name="BackgroundOff" format="reference|color" />
+        <attr name="ImageOn" format="reference|integer" />
+        <attr name="ImageOff" format="reference|integer" />
+    </declare-styleable>
+</resources>

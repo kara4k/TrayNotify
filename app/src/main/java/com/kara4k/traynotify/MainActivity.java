@@ -76,7 +76,8 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent notification = new Intent(getApplicationContext(), CreateDelayedNote.class);
+                startActivity(notification);
             }
         });
     }

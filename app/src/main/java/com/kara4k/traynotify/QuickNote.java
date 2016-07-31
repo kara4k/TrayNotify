@@ -179,12 +179,12 @@ public class QuickNote extends AppCompatActivity {
     }
 
     private void notifyButtonDisabled() {
-        notifyButton.setBackgroundColor(Color.WHITE);
+        notifyButton.setBackgroundColor(0);
         notifyButton.setImageResource(R.drawable.ic_notifications_off_black_24dp);
     }
 
     private void createTrayButtonDisabled() {
-        createTrayButton.setBackgroundColor(Color.WHITE);
+        createTrayButton.setBackgroundColor(0);
         createTrayButton.setImageResource(R.drawable.ic_speaker_notes_off_black_24dp);
     }
 
@@ -199,7 +199,7 @@ public class QuickNote extends AppCompatActivity {
     }
 
     private void ongoingButtonDisabled() {
-        ongoingButton.setBackgroundColor(Color.WHITE);
+        ongoingButton.setBackgroundColor(0);
         ongoingButton.setImageResource(R.drawable.ic_delete_sweep_black_24dp);
     }
 
