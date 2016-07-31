@@ -5,7 +5,6 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
@@ -14,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -23,10 +21,6 @@ import java.util.Calendar;
 
 public class QuickNote extends AppCompatActivity {
 
-    private boolean isCreateTray = true;
-    private boolean isOngoing = true;
-    private boolean isNotify = true;
-
     private EditText title;
     private EditText text;
     private Button create;
@@ -34,11 +28,12 @@ public class QuickNote extends AppCompatActivity {
     private Button delete;
     private NotificationManager nm;
     private TextView textId;
-    private ImageButton createTrayButton;
-    private ImageButton ongoingButton;
-    private ImageButton notifyButton;
+
     private LinearLayout advancedLayout;
     private LinearLayout seekLayout;
+    private CheckButton tray;
+    private CheckButton ongoing;
+    private CheckButton notify;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,9 +44,12 @@ public class QuickNote extends AppCompatActivity {
 
         title = (EditText) findViewById(R.id.editTitle);
         text = (EditText) findViewById(R.id.textedit);
-        createTrayButton = (ImageButton) findViewById(R.id.create_tray);
-        ongoingButton = (ImageButton) findViewById(R.id.ongoing);
-        notifyButton = (ImageButton) findViewById(R.id.notify);
+
+
+        tray = (CheckButton) findViewById(R.id.create_tray);
+        ongoing = (CheckButton) findViewById(R.id.ongoing);
+        notify = (CheckButton) findViewById(R.id.notify);
+
         advancedLayout = (LinearLayout) findViewById(R.id.advanced_layout);
         seekLayout = (LinearLayout) findViewById(R.id.seek_layout);
         create = (Button) findViewById(R.id.create);
@@ -95,51 +93,16 @@ public class QuickNote extends AppCompatActivity {
 
             }
         });
-        createTrayButton.setOnClickListener(new View.OnClickListener() {
+
+        tray.setCustomOnClickListener(new CheckButton.CustomOnClickListener() {
             @Override
-            public void onClick(View view) {
-                if (isCreateTray) {
-                    createTrayButtonDisabled();
-                    isCreateTray = false;
-                    ongoingButtonDisabled();
-//                    notifyButtonDisabled();
-                    isOngoing = false;
-//                    isNotify = false;
+            public void onClick(View v) {
+                if(!tray.isChecked()) {
+                    ongoing.setChecked(false);
+                    ongoing.setEnableStateChange(false);
                 } else {
-                    createTrayButtonEnabled();
-                    isCreateTray = true;
-
+                    ongoing.setEnableStateChange(true);
                 }
-            }
-        });
-
-        ongoingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isCreateTray) {
-                    if (isOngoing) {
-                        ongoingButtonDisabled();
-                        isOngoing = false;
-                    } else {
-                        ongoingButtonEnabled();
-                        isOngoing = true;
-                    }
-                }
-            }
-        });
-
-        notifyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                if (isCreateTray) {
-                    if (isNotify) {
-                        notifyButtonDisabled();
-                        isNotify = false;
-                    } else {
-                        notifyButtonEnabled();
-                        isNotify = true;
-                    }
-//                }
             }
         });
 
@@ -164,43 +127,10 @@ public class QuickNote extends AppCompatActivity {
         if (getIntent().getExtras() != null) {
             title.setText(getIntent().getStringExtra(Intent.EXTRA_SUBJECT));
             text.setText(getIntent().getStringExtra(Intent.EXTRA_TEXT));
-            isOngoing = (getIntent().getBooleanExtra("ongoing", true));
-            if (!isOngoing) {
-                ongoingButtonDisabled();
-            }
+            ongoing.setChecked((getIntent().getBooleanExtra("ongoing", true)));
             seekbar.setProgress(getIntent().getIntExtra("id", 0));
             textId.setText("#" + getIntent().getIntExtra("id", 0));
         }
-    }
-
-    private void notifyButtonEnabled() {
-        notifyButton.setBackgroundColor(Color.parseColor("#676d83"));
-        notifyButton.setImageResource(R.drawable.ic_notifications_active_white_24dp);
-    }
-
-    private void notifyButtonDisabled() {
-        notifyButton.setBackgroundColor(0);
-        notifyButton.setImageResource(R.drawable.ic_notifications_off_black_24dp);
-    }
-
-    private void createTrayButtonDisabled() {
-        createTrayButton.setBackgroundColor(0);
-        createTrayButton.setImageResource(R.drawable.ic_speaker_notes_off_black_24dp);
-    }
-
-    private void createTrayButtonEnabled() {
-        createTrayButton.setBackgroundColor(Color.parseColor("#676d83"));
-        createTrayButton.setImageResource(R.drawable.ic_speaker_notes_white_24dp);
-    }
-
-    private void ongoingButtonEnabled() {
-        ongoingButton.setBackgroundColor(Color.parseColor("#676d83"));
-        ongoingButton.setImageResource(R.drawable.ic_delete_forever_white_24dp);
-    }
-
-    private void ongoingButtonDisabled() {
-        ongoingButton.setBackgroundColor(0);
-        ongoingButton.setImageResource(R.drawable.ic_delete_sweep_black_24dp);
     }
 
 
@@ -240,12 +170,10 @@ public class QuickNote extends AppCompatActivity {
         text.setText("");
         seekbar.setProgress(0);
         textId.setText("#0");
-        isCreateTray = true;
-        isOngoing = true;
-        isNotify = true;
-        createTrayButtonEnabled();
-        ongoingButtonEnabled();
-        notifyButtonEnabled();
+        tray.setChecked(true);
+        ongoing.setChecked(true);
+        notify.setChecked(true);
+
     }
 
     private void delete() {
@@ -254,7 +182,7 @@ public class QuickNote extends AppCompatActivity {
 
     public void create() {
 
-        if (isCreateTray) {
+        if (tray.isChecked()) {
             createNote(true);
         } else {
             createNote(false);
@@ -272,12 +200,12 @@ public class QuickNote extends AppCompatActivity {
         mBuilder.setContentText(text.getText().toString());
         mBuilder.setContentInfo("#" + seekbar.getProgress());
         mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(text.getText().toString()));
-        mBuilder.setOngoing(isOngoing);
-        if (isNotify) {
+        mBuilder.setOngoing(ongoing.isChecked());
+        if (notify.isChecked()) {
             mBuilder.setDefaults(Notification.DEFAULT_ALL);
         }
         mBuilder.setContentIntent(PendingIntent.getActivities(getApplicationContext(), seekbar.getProgress(), makeIntent(), PendingIntent.FLAG_UPDATE_CURRENT));
-        if (showInTray) {
+        if (tray.isChecked()) {
             mBuilder.setSmallIcon(R.drawable.notify);
         }
         nm.notify(seekbar.getProgress(), mBuilder.build());
@@ -291,7 +219,7 @@ public class QuickNote extends AppCompatActivity {
 
         quick.putExtra(Intent.EXTRA_SUBJECT, title.getText().toString());
         quick.putExtra(Intent.EXTRA_TEXT, text.getText().toString());
-        quick.putExtra("ongoing", isOngoing);
+        quick.putExtra("ongoing", ongoing.isChecked());
         quick.putExtra("id", seekbar.getProgress());
         return new Intent[]{main, quick};
     }

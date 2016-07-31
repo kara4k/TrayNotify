@@ -17,6 +17,8 @@ public class CheckButton extends ImageButton {
     private Drawable imageOn;
     private Drawable imageOff;
 
+    boolean enableStateChange = true;
+
     public interface CustomOnClickListener {
         void onClick(View v);
     }
@@ -49,21 +51,23 @@ public class CheckButton extends ImageButton {
             @Override
             public void onClick(View v) {
 
-                if (isChecked) {
-                    isChecked = false;
-                    if (backgroundOff!=0) {
-                        setBackgroundColor(backgroundOff);
+                if (enableStateChange) {
+                    if (isChecked) {
+                        isChecked = false;
+                        if (backgroundOff!=0) {
+                            setBackgroundColor(backgroundOff);
+                        }
+                        setImageDrawable(imageOff);
+                    } else {
+                        isChecked = true;
+                        if (backgroundOn!=0) {
+                            setBackgroundColor(backgroundOn);
+                        }
+                        setImageDrawable(imageOn);
                     }
-                    setImageDrawable(imageOff);
-                } else {
-                    isChecked = true;
-                    if (backgroundOn!=0) {
-                        setBackgroundColor(backgroundOn);
+                    if(mCustomOnClickListener != null) {
+                        mCustomOnClickListener.onClick(v);
                     }
-                    setImageDrawable(imageOn);
-                }
-                if(mCustomOnClickListener != null) {
-                    mCustomOnClickListener.onClick(v);
                 }
             }
         };
@@ -82,7 +86,22 @@ public class CheckButton extends ImageButton {
     }
 
     public void setChecked(boolean checked) {
-        isChecked = checked;
+        if (checked == true) {
+            isChecked = true;
+            if (backgroundOn!=0) {
+                setBackgroundColor(backgroundOn);
+            }
+            setImageDrawable(imageOn);
+        } else {
+            if (backgroundOff!=0) {
+                setBackgroundColor(backgroundOff);
+            }
+            setImageDrawable(imageOff);
+        }
+    }
+
+    public void setEnableStateChange(boolean enable) {
+        enableStateChange = enable;
     }
 
 }

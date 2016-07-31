@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -83,7 +84,7 @@
 
             <Button
                 android:id="@+id/advanced"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginLeft="@dimen/dimen_default"
@@ -110,38 +111,76 @@
             android:layout_marginTop="@dimen/dimen_default"
             android:layout_marginLeft="@dimen/dimen_default"
             android:layout_marginRight="@dimen/dimen_default"
-            android:visibility="gone"
+            android:visibility="visible"
             android:orientation="horizontal">
 
-            <ImageButton
+            <com.kara4k.traynotify.CheckButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/create_tray"
-                android:padding="7dp"
-                android:src="@drawable/ic_speaker_notes_white_24dp"
-                android:background="@color/colorPrimary"
-                android:layout_weight="1"
-                />
-            <ImageButton
+                android:padding="5dp"
+                app:isChecked="true"
+                app:ImageOn="@drawable/ic_speaker_notes_white_24dp"
+                app:ImageOff="@drawable/ic_speaker_notes_off_black_24dp"
+                app:BackgroundOn="@color/colorPrimary"
+                app:BackgroundOff="?android:attr/colorBackground"
+                android:layout_weight="1"/>
+
+            <com.kara4k.traynotify.CheckButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/ongoing"
+                android:padding="5dp"
+                app:isChecked="true"
                 android:layout_marginLeft="@dimen/dimen_default"
-                android:padding="7dp"
-                android:src="@drawable/ic_delete_forever_white_24dp"
-                android:background="@color/colorPrimary"
-                android:layout_weight="1"
-                />
-            <ImageButton
+                app:ImageOn="@drawable/ic_delete_forever_white_24dp"
+                app:BackgroundOn="@color/colorPrimary"
+                app:ImageOff="@drawable/ic_delete_sweep_black_24dp"
+                app:BackgroundOff="?android:attr/colorBackground"
+                android:layout_weight="1"/>
+
+            <com.kara4k.traynotify.CheckButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/notify"
+                android:padding="5dp"
+                app:isChecked="true"
                 android:layout_marginLeft="@dimen/dimen_default"
-                android:padding="7dp"
-                android:src="@drawable/ic_notifications_active_white_24dp"
-                android:background="@color/colorPrimary"
-                android:layout_weight="1"
-                />
+                app:ImageOn="@drawable/ic_notifications_active_white_24dp"
+                app:BackgroundOn="@color/colorPrimary"
+                app:ImageOff="@drawable/ic_notifications_off_black_24dp"
+                app:BackgroundOff="?android:attr/colorBackground"
+                android:layout_weight="1"/>
+
+            <!--<ImageButton-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/create_tray"-->
+                <!--android:padding="7dp"-->
+                <!--android:src="@drawable/ic_speaker_notes_white_24dp"-->
+                <!--android:background="@color/colorPrimary"-->
+                <!--android:layout_weight="1"-->
+                <!--/>-->
+            <!--<ImageButton-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/ongoing"-->
+                <!--android:layout_marginLeft="@dimen/dimen_default"-->
+                <!--android:padding="7dp"-->
+                <!--android:src="@drawable/ic_delete_forever_white_24dp"-->
+                <!--android:background="@color/colorPrimary"-->
+                <!--android:layout_weight="1"-->
+                <!--/>-->
+            <!--<ImageButton-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/notify"-->
+                <!--android:layout_marginLeft="@dimen/dimen_default"-->
+                <!--android:padding="7dp"-->
+                <!--android:src="@drawable/ic_notifications_active_white_24dp"-->
+                <!--android:background="@color/colorPrimary"-->
+                <!--android:layout_weight="1"-->
+                <!--/>-->
         </LinearLayout>
 
         <LinearLayout
