@@ -3,19 +3,22 @@ package com.kara4k.traynotify;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.Button;
 
-public class CheckButton extends ImageButton {
+public class CheckButton extends Button {
 
-    private CustomOnClickListener mCustomOnClickListener;
+    CustomOnClickListener customOnClickListener;
+
+
     private boolean isChecked;
+    private String textOn;
+    private String textOff;
     private int backgroundOn;
     private int backgroundOff;
-    private Drawable imageOn;
-    private Drawable imageOff;
+    private int textColorOn;
+    private int textColorOff;
 
     boolean enableStateChange = true;
 
@@ -23,62 +26,58 @@ public class CheckButton extends ImageButton {
         void onClick(View v);
     }
 
-
     public CheckButton(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CheckButton);
 
-        isChecked = a.getBoolean(R.styleable.CheckButton_isChecked, false);
-        backgroundOn = a.getInteger(R.styleable.CheckButton_BackgroundOn, 0);
-        backgroundOff = a.getInteger(R.styleable.CheckButton_BackgroundOff, 0);
-        imageOn = a.getDrawable(R.styleable.CheckButton_ImageOn);
-        imageOff = a.getDrawable(R.styleable.CheckButton_ImageOff);
+        isChecked = a.getBoolean(R.styleable.CheckButton_isCheck, false);
+        textOn = a.getString(R.styleable.CheckButton_TextOn);
+        textOff = a.getString(R.styleable.CheckButton_TextOff);
+        backgroundOn = a.getInteger(R.styleable.CheckButton_BackgroundColorOn, 0);
+        backgroundOff = a.getInteger(R.styleable.CheckButton_BackgroundColorOff, 0);
+        textColorOn = a.getInteger(R.styleable.CheckButton_TextColorOn, getTextColors().getDefaultColor());
+        textColorOff = a.getInteger(R.styleable.CheckButton_TextColorOff, getTextColors().getDefaultColor());
 
-        if (isChecked) {
-            if (backgroundOn!=0) {
-                setBackgroundColor(backgroundOn);
-            }
-            setImageDrawable(imageOn);
-        } else {
-            if (backgroundOff!=0) {
-                setBackgroundColor(backgroundOff);
-            }
-            setImageDrawable(imageOff);
-        }
 
-        View.OnClickListener ocl = new View.OnClickListener() {
+        setChecked(isChecked);
+
+
+        setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {
-
+            public void onClick(View view) {
                 if (enableStateChange) {
                     if (isChecked) {
                         isChecked = false;
-                        if (backgroundOff!=0) {
+                        if (textOff != null) {
+                            setText(textOff);
+                        }
+                        if (textColorOff != 0) {
+                            setTextColor(textColorOff);
+                        }
+                        if (backgroundOff != 0) {
                             setBackgroundColor(backgroundOff);
                         }
-                        setImageDrawable(imageOff);
                     } else {
                         isChecked = true;
-                        if (backgroundOn!=0) {
+                        if (textOn != null) {
+                            setText(textOn);
+                        }
+                        if (textColorOn != 0) {
+                            setTextColor(textColorOn);
+                        }
+                        if (backgroundOn != 0) {
                             setBackgroundColor(backgroundOn);
                         }
-                        setImageDrawable(imageOn);
-                    }
-                    if(mCustomOnClickListener != null) {
-                        mCustomOnClickListener.onClick(v);
                     }
                 }
+                if (customOnClickListener != null) {
+                    customOnClickListener.onClick(view);
+                }
+
             }
-        };
-        setOnClickListener(ocl);
-
-
+        });
         a.recycle();
-    }
-
-    public void setCustomOnClickListener(CustomOnClickListener cl) {
-        mCustomOnClickListener = cl;
     }
 
     public boolean isChecked() {
@@ -86,22 +85,39 @@ public class CheckButton extends ImageButton {
     }
 
     public void setChecked(boolean checked) {
-        if (checked == true) {
-            isChecked = true;
-            if (backgroundOn!=0) {
-                setBackgroundColor(backgroundOn);
+        if (enableStateChange) {
+            if (checked) {
+                isChecked = true;
+                if (textOn != null) {
+                    setText(textOn);
+                }
+                if (textColorOn != 0) {
+                    setTextColor(textColorOn);
+                }
+                if (backgroundOn != 0) {
+                    setBackgroundColor(backgroundOn);
+                }
+            } else {
+                isChecked = false;
+                if (textOff != null) {
+                    setText(textOff);
+                }
+                if (textColorOff != 0) {
+                    setTextColor(textColorOff);
+                }
+                if (backgroundOff != 0) {
+                    setBackgroundColor(backgroundOff);
+                }
             }
-            setImageDrawable(imageOn);
-        } else {
-            if (backgroundOff!=0) {
-                setBackgroundColor(backgroundOff);
-            }
-            setImageDrawable(imageOff);
         }
     }
 
-    public void setEnableStateChange(boolean enable) {
-        enableStateChange = enable;
+
+    public void setEnableStateChange(boolean enableStateChange) {
+        this.enableStateChange = enableStateChange;
     }
 
+    public void setCustomOnClickListener(CustomOnClickListener customOnClickListener) {
+        this.customOnClickListener = customOnClickListener;
+    }
 }

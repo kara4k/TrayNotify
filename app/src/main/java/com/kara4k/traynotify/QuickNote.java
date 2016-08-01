@@ -31,9 +31,9 @@ public class QuickNote extends AppCompatActivity {
 
     private LinearLayout advancedLayout;
     private LinearLayout seekLayout;
-    private CheckButton tray;
-    private CheckButton ongoing;
-    private CheckButton notify;
+    private CheckImageButton tray;
+    private CheckImageButton ongoing;
+    private CheckImageButton notify;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,9 +46,9 @@ public class QuickNote extends AppCompatActivity {
         text = (EditText) findViewById(R.id.textedit);
 
 
-        tray = (CheckButton) findViewById(R.id.create_tray);
-        ongoing = (CheckButton) findViewById(R.id.ongoing);
-        notify = (CheckButton) findViewById(R.id.notify);
+        tray = (CheckImageButton) findViewById(R.id.create_tray);
+        ongoing = (CheckImageButton) findViewById(R.id.ongoing);
+        notify = (CheckImageButton) findViewById(R.id.notify);
 
         advancedLayout = (LinearLayout) findViewById(R.id.advanced_layout);
         seekLayout = (LinearLayout) findViewById(R.id.seek_layout);
@@ -94,10 +94,10 @@ public class QuickNote extends AppCompatActivity {
             }
         });
 
-        tray.setCustomOnClickListener(new CheckButton.CustomOnClickListener() {
+        tray.setCustomOnClickListener(new CheckImageButton.CustomOnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!tray.isChecked()) {
+                if (!tray.isChecked()) {
                     ongoing.setChecked(false);
                     ongoing.setEnableStateChange(false);
                 } else {

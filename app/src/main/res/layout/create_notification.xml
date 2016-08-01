@@ -1,19 +1,328 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/dimen_default"
+        android:orientation="vertical">
 
 
-    <com.kara4k.traynotify.CheckButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/test"
-        android:padding="10dp"
-        app:isChecked="true"
-        app:ImageOn="@drawable/ic_notifications_active_white_24dp"
-        app:ImageOff="@drawable/ic_notifications_off_black_24dp"
-        android:background="@color/colorPrimary"
-        />
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="fill"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_default"
+                android:layout_marginTop="@dimen/dimen_default"
+                android:background="@drawable/tv_bck"
+                android:text="Text:"
+                android:textColor="@android:color/white" />
+
+            <EditText
+                android:id="@+id/textedit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_default"
+                android:layout_marginRight="@dimen/dimen_default"
+                android:layout_marginTop="@dimen/dimen_default"
+                android:background="@android:color/transparent" />
+
+        </LinearLayout>
+
+        <View style="@style/Divider" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_default"
+                android:layout_marginTop="@dimen/dimen_default"
+                android:background="@drawable/tv_bck"
+                android:text="Title:"
+                android:textColor="@android:color/white" />
+
+            <EditText
+                android:id="@+id/editTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_default"
+                android:layout_marginRight="@dimen/dimen_default"
+                android:layout_marginTop="@dimen/dimen_default"
+                android:background="@android:color/transparent"
+                android:hint="TrayNotify" />
+        </LinearLayout>
+
+        <View style="@style/Divider" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_default"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/setDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_default"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:drawableLeft="@drawable/ic_date_range_white_24dp"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:padding="4dp"
+                android:text="Set Date"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/setTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_default"
+                android:layout_marginRight="@dimen/dimen_default"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:drawableLeft="@drawable/ic_access_time_white_24dp"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:padding="4dp"
+                android:text="Set Time"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/repeat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_default"
+            android:layout_marginRight="@dimen/dimen_default"
+            android:layout_marginTop="@dimen/dimen_default"
+            android:background="@color/colorPrimary"
+            android:checked="false"
+            android:drawableRight="@drawable/ic_arrow_drop_down_white_24dp"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:padding="4dp"
+            android:text="Repeat"
+            android:textColor="@android:color/white"
+            android:textOff="HIDE"
+            android:textOn="SHOW" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/days"
+            android:layout_marginLeft="@dimen/dimen_default"
+            android:layout_marginRight="@dimen/dimen_default"
+            android:layout_marginTop="@dimen/dimen_default"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <com.kara4k.traynotify.CheckButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:isCheck="true"
+                android:id="@+id/monday"
+                android:text="Mon"
+                app:BackgroundColorOn="@color/colorPrimary"
+                app:BackgroundColorOff="?android:attr/colorBackground"
+                app:TextColorOn="@android:color/white"
+                app:TextColorOff="@android:color/black"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="5dp"
+                android:layout_weight="1"
+                />
+            <com.kara4k.traynotify.CheckButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:isCheck="true"
+                android:id="@+id/tuesday"
+                android:text="Tue"
+                app:BackgroundColorOn="@color/colorPrimary"
+                app:BackgroundColorOff="?android:attr/colorBackground"
+                app:TextColorOn="@android:color/white"
+                app:TextColorOff="@android:color/black"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="5dp"
+                android:layout_marginLeft="3dp"
+                android:layout_weight="1"
+                />
+            <com.kara4k.traynotify.CheckButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:isCheck="true"
+                android:id="@+id/wednesday"
+                android:text="Wed"
+                app:BackgroundColorOn="@color/colorPrimary"
+                app:BackgroundColorOff="?android:attr/colorBackground"
+                app:TextColorOn="@android:color/white"
+                app:TextColorOff="@android:color/black"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="5dp"
+                android:layout_marginLeft="3dp"
+                android:layout_weight="1"
+                />
+            <com.kara4k.traynotify.CheckButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:isCheck="true"
+                android:id="@+id/thursday"
+                android:text="Thu"
+                app:BackgroundColorOn="@color/colorPrimary"
+                app:BackgroundColorOff="?android:attr/colorBackground"
+                app:TextColorOn="@android:color/white"
+                app:TextColorOff="@android:color/black"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="5dp"
+                android:layout_marginLeft="3dp"
+                android:layout_weight="1"
+                />
+            <com.kara4k.traynotify.CheckButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:isCheck="true"
+                android:id="@+id/friday"
+                android:text="Fri"
+                app:BackgroundColorOn="@color/colorPrimary"
+                app:BackgroundColorOff="?android:attr/colorBackground"
+                app:TextColorOn="@android:color/white"
+                app:TextColorOff="@android:color/black"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="5dp"
+                android:layout_marginLeft="3dp"
+                android:layout_weight="1"
+                />
+            <com.kara4k.traynotify.CheckButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:isCheck="true"
+                android:id="@+id/saturday"
+                android:text="Sat"
+                app:BackgroundColorOn="@color/colorAccent"
+                app:BackgroundColorOff="?android:attr/colorBackground"
+                app:TextColorOn="@android:color/white"
+                app:TextColorOff="@android:color/black"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="5dp"
+                android:layout_marginLeft="3dp"
+                android:layout_weight="1"
+                />
+            <com.kara4k.traynotify.CheckButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:isCheck="true"
+                android:id="@+id/sunday"
+                android:text="Sun"
+                app:BackgroundColorOn="@color/colorAccent"
+                app:BackgroundColorOff="?android:attr/colorBackground"
+                app:TextColorOn="@android:color/white"
+                app:TextColorOff="@android:color/black"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="5dp"
+                android:layout_marginLeft="3dp"
+                android:layout_weight="1"
+                />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/sound"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_default"
+            android:layout_marginRight="@dimen/dimen_default"
+            android:layout_marginTop="@dimen/dimen_default"
+            android:background="@color/colorPrimary"
+            android:checked="false"
+            android:drawableLeft="@drawable/ic_audiotrack_white_24dp"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:padding="4dp"
+            android:text="Default"
+            android:textColor="@android:color/white"
+            android:textOff="HIDE"
+            android:textOn="SHOW" />
+
+        <Button
+            android:id="@+id/vibrate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_default"
+            android:layout_marginRight="@dimen/dimen_default"
+            android:layout_marginTop="@dimen/dimen_default"
+            android:background="@color/colorPrimary"
+            android:checked="false"
+            android:drawableLeft="@drawable/ic_arrow_drop_down_white_24dp"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:padding="4dp"
+            android:text="Default"
+            android:textColor="@android:color/white"
+            android:textOff="HIDE"
+            android:textOn="SHOW" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:layout_marginTop="@dimen/dimen_default"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/create"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_default"
+                android:layout_weight="1"
+                android:background="@color/colorAccent"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:padding="@dimen/button_padding"
+                android:text="TEST"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_default"
+                android:layout_marginRight="@dimen/dimen_default"
+                android:layout_weight="1"
+                android:background="@color/colorAccent"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:padding="@dimen/button_padding"
+                android:text="Create"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+</ScrollView>

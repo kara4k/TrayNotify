@@ -111,10 +111,10 @@
             android:layout_marginTop="@dimen/dimen_default"
             android:layout_marginLeft="@dimen/dimen_default"
             android:layout_marginRight="@dimen/dimen_default"
-            android:visibility="visible"
+            android:visibility="gone"
             android:orientation="horizontal">
 
-            <com.kara4k.traynotify.CheckButton
+            <com.kara4k.traynotify.CheckImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/create_tray"
@@ -126,7 +126,7 @@
                 app:BackgroundOff="?android:attr/colorBackground"
                 android:layout_weight="1"/>
 
-            <com.kara4k.traynotify.CheckButton
+            <com.kara4k.traynotify.CheckImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/ongoing"
@@ -139,7 +139,7 @@
                 app:BackgroundOff="?android:attr/colorBackground"
                 android:layout_weight="1"/>
 
-            <com.kara4k.traynotify.CheckButton
+            <com.kara4k.traynotify.CheckImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/notify"
@@ -152,35 +152,7 @@
                 app:BackgroundOff="?android:attr/colorBackground"
                 android:layout_weight="1"/>
 
-            <!--<ImageButton-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:id="@+id/create_tray"-->
-                <!--android:padding="7dp"-->
-                <!--android:src="@drawable/ic_speaker_notes_white_24dp"-->
-                <!--android:background="@color/colorPrimary"-->
-                <!--android:layout_weight="1"-->
-                <!--/>-->
-            <!--<ImageButton-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:id="@+id/ongoing"-->
-                <!--android:layout_marginLeft="@dimen/dimen_default"-->
-                <!--android:padding="7dp"-->
-                <!--android:src="@drawable/ic_delete_forever_white_24dp"-->
-                <!--android:background="@color/colorPrimary"-->
-                <!--android:layout_weight="1"-->
-                <!--/>-->
-            <!--<ImageButton-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:id="@+id/notify"-->
-                <!--android:layout_marginLeft="@dimen/dimen_default"-->
-                <!--android:padding="7dp"-->
-                <!--android:src="@drawable/ic_notifications_active_white_24dp"-->
-                <!--android:background="@color/colorPrimary"-->
-                <!--android:layout_weight="1"-->
-                <!--/>-->
+
         </LinearLayout>
 
         <LinearLayout
