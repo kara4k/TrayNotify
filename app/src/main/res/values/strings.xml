@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TrayNotify</string>
+    <string name="sd_permission_denied">Permission denied</string>
 </resources>

@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
 
 
+
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -27,8 +28,9 @@
     </style>
 
 
-
-
+    <style name="PickerStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
 
 
 </resources>

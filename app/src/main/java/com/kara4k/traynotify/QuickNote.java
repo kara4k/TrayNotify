@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -100,8 +101,11 @@ public class QuickNote extends AppCompatActivity {
                 if (!tray.isChecked()) {
                     ongoing.setChecked(false);
                     ongoing.setEnableStateChange(false);
+                    notify.setChecked(false);
+                    notify.setEnableStateChange(false);
                 } else {
                     ongoing.setEnableStateChange(true);
+                    notify.setEnableStateChange(true);
                 }
             }
         });
@@ -183,14 +187,16 @@ public class QuickNote extends AppCompatActivity {
     public void create() {
 
         if (tray.isChecked()) {
-            createNote(true);
+            createNote();
+            writeToDB();
         } else {
-            createNote(false);
+            writeToDB();
+            Toast.makeText(this, "Note Added", Toast.LENGTH_SHORT).show();
         }
-        writeToDB();
+
     }
 
-    private void createNote(boolean showInTray) {
+    private void createNote() {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
         if (title.getText().toString().equals("")) {
             mBuilder.setContentTitle(title.getHint());
@@ -205,9 +211,7 @@ public class QuickNote extends AppCompatActivity {
             mBuilder.setDefaults(Notification.DEFAULT_ALL);
         }
         mBuilder.setContentIntent(PendingIntent.getActivities(getApplicationContext(), seekbar.getProgress(), makeIntent(), PendingIntent.FLAG_UPDATE_CURRENT));
-        if (tray.isChecked()) {
-            mBuilder.setSmallIcon(R.drawable.notify);
-        }
+        mBuilder.setSmallIcon(R.drawable.notify);
         nm.notify(seekbar.getProgress(), mBuilder.build());
     }
 
