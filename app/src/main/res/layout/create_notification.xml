@@ -119,7 +119,7 @@
             android:checked="false"
             android:minHeight="0dp"
             android:minWidth="0dp"
-            android:padding="4dp"
+            android:padding="5dp"
             android:text="Repeat"
             android:textColor="@android:color/white"
             android:textOff="HIDE"

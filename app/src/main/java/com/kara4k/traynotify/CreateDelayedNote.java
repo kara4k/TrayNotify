@@ -2,9 +2,11 @@ package com.kara4k.traynotify;
 
 
 import android.Manifest;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,6 +18,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -43,6 +47,13 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     private NotificationManager nm;
     private EditText textEdit;
     private EditText titleEdit;
+    private AlarmManager alarmManager;
+    private Intent alarmIntent;
+    private PendingIntent pendingIntent;
+    private LinearLayout daysLayout;
+    private CheckButton[] daysHolders;
+    private DBDelay db;
+    private int checkThis;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,9 +63,17 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         textEdit = (EditText) findViewById(R.id.textEdit);
         titleEdit = (EditText) findViewById(R.id.editTitle);
 
+        db = new DBDelay(getApplicationContext());
+        checkThis = db.getNoteCheckID();
+
         mainCal = Calendar.getInstance();
         sDateFormat = new SimpleDateFormat("dd.MM.yyyy");
         sTimeFormat = new SimpleDateFormat("HH:mm");
+
+        if (getIntent().getExtras() != null) {
+            checkThis = getIntent().getIntExtra("check", 0);
+            Log.e("123", String.valueOf(checkThis));
+        }
 
         setDate = (Button) findViewById(R.id.setDate);
         setDate.setText(sDateFormat.format(new Date(mainCal.getTimeInMillis())));
@@ -90,11 +109,15 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         fri.setText(shortWeekdays[6]);
         sat.setText(shortWeekdays[7]);
         sun.setText(shortWeekdays[1]);
+        daysHolders = new CheckButton[]{mon, tue, wed, thu, fri, sat, sun};
+
 
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
 
         final Button repeat = (Button) findViewById(R.id.repeat);
-        final LinearLayout daysLayout = (LinearLayout) findViewById(R.id.days);
+        daysLayout = (LinearLayout) findViewById(R.id.days);
         repeat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -160,9 +183,147 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: 03.08.2016 fill smth
+                createNotification();
             }
         });
+    }
+
+    private String getNoteText() {
+        return textEdit.getText().toString();
+    }
+
+    private String getNoteTitle() {
+        String title;
+        if (titleEdit.getText().toString().equals("")) {
+            title = titleEdit.getHint().toString();
+        } else {
+            title = titleEdit.getText().toString();
+        }
+        return title;
+    }
+
+    private long getNoteCreateTime() {
+        return Calendar.getInstance().getTimeInMillis();
+    }
+
+    private long getNoteSetTime() {
+        return mainCal.getTimeInMillis();
+    }
+
+    private int getNoteRepeat() {
+        int repeat = daysLayout.getVisibility() == View.VISIBLE ? 0 : 1;
+        return repeat;
+    }
+
+    private String getNoteDays() {
+        String days = "";
+        if (daysLayout.getVisibility() == View.VISIBLE) {
+            for (int i = 0; i < daysHolders.length; i++) {
+                if (daysHolders[i].isChecked()) {
+                    days += "1;";
+                } else {
+                    days += "0;";
+                }
+            }
+        } else {
+            for (int i = 0; i < daysHolders.length; i++) {
+                days += "0;";
+            }
+        }
+        return days;
+    }
+
+    private String getNoteSound() {
+        String sound;
+        if (soundUri != null) {
+            sound = soundUri.toString();
+        } else {
+            sound = "0";
+        }
+        return sound;
+    }
+
+    private String getNoteVibration() {
+        String vibro;
+        if (vibration != null) {
+            vibro = String.valueOf(vibration[1]).concat(";")
+                    + String.valueOf(vibration[2]).concat(";")
+                    + String.valueOf((vibration.length - 1) / 2);
+        } else {
+            vibro = "1";
+        }
+        return vibro;
+    }
+
+    private int getNotePriority() {
+        return 0;
+    }
+
+    private int getNoteCheckId() {
+        return checkThis;
+    }
+
+    private void createNotification() {
+
+        DelayedNote note = new DelayedNote();
+        note.setText(getNoteText());
+        note.setTitle(getNoteTitle());
+        note.setCreateTime(getNoteCreateTime());
+        note.setSetTime(getNoteSetTime());
+        note.setRepeat(getNoteRepeat());
+        note.setDays(getNoteDays());
+        note.setSound(getNoteSound());
+        note.setVibration(getNoteVibration());
+        note.setPriority(getNotePriority());
+        note.setCheckId(getNoteCheckId());
+
+
+        db.addNote(note);
+
+
+        Log.e("check", String.valueOf(note.getCheckId()));
+
+
+        alarmIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("check", note.getCheckId());
+        alarmIntent.putExtras(bundle);
+
+
+        pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        mainCal.add(Calendar.SECOND, 10);
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, mainCal.getTimeInMillis(), 3 * 60 * 1000, pendingIntent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.notification_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.share:
+                Log.e("Shit", "can happen");
+                break;
+            case R.id.clear_forms:
+
+                break;
+            case R.id.action_clear_notification:
+                alarmIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
+                PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                alarmManager.cancel(pi);
+                nm.cancel(checkThis);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void clearForms() {
+        // TODO: 03.08.2016 clear
     }
 
     private void makeTest() {
@@ -183,7 +344,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
             mBuilder.setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
         } else if (vibration != null && soundUri == null) {
             mBuilder.setVibrate(vibration);
-            mBuilder.setDefaults(Notification.DEFAULT_SOUND|Notification.DEFAULT_LIGHTS);
+            mBuilder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS);
         } else if (soundUri != null && vibration != null) {
             mBuilder.setSound(soundUri);
             mBuilder.setVibrate(vibration);
