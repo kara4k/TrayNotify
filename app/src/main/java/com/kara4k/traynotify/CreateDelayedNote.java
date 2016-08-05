@@ -51,7 +51,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     private Intent alarmIntent;
     private PendingIntent pendingIntent;
     private LinearLayout daysLayout;
-    private CheckButton[] daysHolders;
+//    private CheckButton[] daysHolders;
     private DBDelay db;
     private int checkThis;
 
@@ -92,24 +92,24 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
             }
         });
 
-        CheckButton mon = (CheckButton) findViewById(R.id.monday);
-        CheckButton tue = (CheckButton) findViewById(R.id.tuesday);
-        CheckButton wed = (CheckButton) findViewById(R.id.wednesday);
-        CheckButton thu = (CheckButton) findViewById(R.id.thursday);
-        CheckButton fri = (CheckButton) findViewById(R.id.friday);
-        CheckButton sat = (CheckButton) findViewById(R.id.saturday);
-        CheckButton sun = (CheckButton) findViewById(R.id.sunday);
-
-        DateFormatSymbols ddd = DateFormatSymbols.getInstance();
-        String[] shortWeekdays = ddd.getShortWeekdays();
-        mon.setText(shortWeekdays[2]);
-        tue.setText(shortWeekdays[3]);
-        wed.setText(shortWeekdays[4]);
-        thu.setText(shortWeekdays[5]);
-        fri.setText(shortWeekdays[6]);
-        sat.setText(shortWeekdays[7]);
-        sun.setText(shortWeekdays[1]);
-        daysHolders = new CheckButton[]{mon, tue, wed, thu, fri, sat, sun};
+//        CheckButton mon = (CheckButton) findViewById(R.id.monday);
+//        CheckButton tue = (CheckButton) findViewById(R.id.tuesday);
+//        CheckButton wed = (CheckButton) findViewById(R.id.wednesday);
+//        CheckButton thu = (CheckButton) findViewById(R.id.thursday);
+//        CheckButton fri = (CheckButton) findViewById(R.id.friday);
+//        CheckButton sat = (CheckButton) findViewById(R.id.saturday);
+//        CheckButton sun = (CheckButton) findViewById(R.id.sunday);
+//
+//        DateFormatSymbols ddd = DateFormatSymbols.getInstance();
+//        String[] shortWeekdays = ddd.getShortWeekdays();
+//        mon.setText(shortWeekdays[2]);
+//        tue.setText(shortWeekdays[3]);
+//        wed.setText(shortWeekdays[4]);
+//        thu.setText(shortWeekdays[5]);
+//        fri.setText(shortWeekdays[6]);
+//        sat.setText(shortWeekdays[7]);
+//        sun.setText(shortWeekdays[1]);
+//        daysHolders = new CheckButton[]{mon, tue, wed, thu, fri, sat, sun};
 
 
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -215,23 +215,23 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         return repeat;
     }
 
-    private String getNoteDays() {
-        String days = "";
-        if (daysLayout.getVisibility() == View.VISIBLE) {
-            for (int i = 0; i < daysHolders.length; i++) {
-                if (daysHolders[i].isChecked()) {
-                    days += "1;";
-                } else {
-                    days += "0;";
-                }
-            }
-        } else {
-            for (int i = 0; i < daysHolders.length; i++) {
-                days += "0;";
-            }
-        }
-        return days;
-    }
+//    private String getNoteDays() {
+//        String days = "";
+//        if (daysLayout.getVisibility() == View.VISIBLE) {
+//            for (int i = 0; i < daysHolders.length; i++) {
+//                if (daysHolders[i].isChecked()) {
+//                    days += "1;";
+//                } else {
+//                    days += "0;";
+//                }
+//            }
+//        } else {
+//            for (int i = 0; i < daysHolders.length; i++) {
+//                days += "0;";
+//            }
+//        }
+//        return days;
+//    }
 
     private String getNoteSound() {
         String sound;
@@ -271,7 +271,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         note.setCreateTime(getNoteCreateTime());
         note.setSetTime(getNoteSetTime());
         note.setRepeat(getNoteRepeat());
-        note.setDays(getNoteDays());
+//        note.setDays(getNoteDays());
         note.setSound(getNoteSound());
         note.setVibration(getNoteVibration());
         note.setPriority(getNotePriority());

@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="CheckImageButton">
+    <!--<declare-styleable name="CheckImageButton">-->
+        <!--<attr name="isChecked" format="boolean" />-->
+        <!--<attr name="BackgroundOn" format="reference|color" />-->
+        <!--<attr name="BackgroundOff" format="reference|color" />-->
+        <!--<attr name="ImageOn" format="reference|integer" />-->
+        <!--<attr name="ImageOff" format="reference|integer" />-->
+    <!--</declare-styleable>-->
+    <!--<declare-styleable name="CheckButton">-->
+        <!--<attr name="isCheck" format="boolean" />-->
+        <!--<attr name="TextOn" format="string" />-->
+        <!--<attr name="TextOff" format="string" />-->
+        <!--<attr name="BackgroundColorOn" format="reference|color" />-->
+        <!--<attr name="BackgroundColorOff" format="reference|color" />-->
+        <!--<attr name="TextColorOn" format="reference|color" />-->
+        <!--<attr name="TextColorOff" format="reference|color" />-->
+    <!--</declare-styleable>-->
+    <declare-styleable name="MyView">
+        <attr name="Title" format="string" />
+        <attr name="Text" format="string" />
+        <attr name="CheckVisible" format="boolean" />
         <attr name="isChecked" format="boolean" />
-        <attr name="BackgroundOn" format="reference|color" />
-        <attr name="BackgroundOff" format="reference|color" />
-        <attr name="ImageOn" format="reference|integer" />
-        <attr name="ImageOff" format="reference|integer" />
-    </declare-styleable>
-    <declare-styleable name="CheckButton">
-        <attr name="isCheck" format="boolean" />
-        <attr name="TextOn" format="string" />
-        <attr name="TextOff" format="string" />
-        <attr name="BackgroundColorOn" format="reference|color" />
-        <attr name="BackgroundColorOff" format="reference|color" />
-        <attr name="TextColorOn" format="reference|color" />
-        <attr name="TextColorOff" format="reference|color" />
+        <attr name="ImageVisible" format="boolean" />
+        <attr name="Image" format="reference|integer" />
     </declare-styleable>
 </resources>

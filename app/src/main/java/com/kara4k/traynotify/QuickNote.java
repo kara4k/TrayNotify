@@ -5,7 +5,9 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
 import android.view.Menu;
@@ -32,9 +34,10 @@ public class QuickNote extends AppCompatActivity {
 
     private LinearLayout advancedLayout;
     private LinearLayout seekLayout;
-    private CheckImageButton tray;
-    private CheckImageButton ongoing;
-    private CheckImageButton notify;
+    private MyView tray;
+    private MyView ongoing;
+
+    private int id;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,9 +50,8 @@ public class QuickNote extends AppCompatActivity {
         text = (EditText) findViewById(R.id.textedit);
 
 
-        tray = (CheckImageButton) findViewById(R.id.create_tray);
-        ongoing = (CheckImageButton) findViewById(R.id.ongoing);
-        notify = (CheckImageButton) findViewById(R.id.notify);
+        tray = (MyView) findViewById(R.id.tray);
+        ongoing = (MyView) findViewById(R.id.ongoing);
 
         advancedLayout = (LinearLayout) findViewById(R.id.advanced_layout);
         seekLayout = (LinearLayout) findViewById(R.id.seek_layout);
@@ -57,7 +59,15 @@ public class QuickNote extends AppCompatActivity {
         seekbar = (SeekBar) findViewById(R.id.seekBar);
         delete = (Button) findViewById(R.id.delete);
         textId = (TextView) findViewById(R.id.text_id);
-        final Button advancedButton = (Button) findViewById(R.id.advanced);
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        id = sp.getInt("id", -1);
+        Toast.makeText(this, String.valueOf(id), Toast.LENGTH_SHORT).show();
+        sp.edit().putInt("id", id - 1).apply();
+
+
+
+
 
 
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -65,6 +75,17 @@ public class QuickNote extends AppCompatActivity {
 
         intentChecks();
 
+        tray.setSecondOnClickListener(new MyView.SecondOnClickListener() {
+            @Override
+            public void onClick() {
+                if (!tray.getCheckbox().isChecked()) {
+                    ongoing.getCheckbox().setChecked(false);
+                    ongoing.getCheckbox().setEnabled(false);
+                } else {
+                    ongoing.getCheckbox().setEnabled(true);
+                }
+            }
+        });
 
         create.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,35 +116,6 @@ public class QuickNote extends AppCompatActivity {
             }
         });
 
-        tray.setCustomOnClickListener(new CheckImageButton.CustomOnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!tray.isChecked()) {
-                    ongoing.setChecked(false);
-                    ongoing.setEnableStateChange(false);
-                    notify.setChecked(false);
-                    notify.setEnableStateChange(false);
-                } else {
-                    ongoing.setEnableStateChange(true);
-                    notify.setEnableStateChange(true);
-                }
-            }
-        });
-
-        advancedButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (advancedLayout.getVisibility() == view.GONE) {
-                    advancedLayout.setVisibility(view.VISIBLE);
-                    seekLayout.setVisibility(View.VISIBLE);
-                    advancedButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_up_white_24dp, 0);
-                } else {
-                    advancedLayout.setVisibility(View.GONE);
-                    seekLayout.setVisibility(View.GONE);
-                    advancedButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down_white_24dp, 0);
-                }
-            }
-        });
 
     }
 
@@ -131,7 +123,7 @@ public class QuickNote extends AppCompatActivity {
         if (getIntent().getExtras() != null) {
             title.setText(getIntent().getStringExtra(Intent.EXTRA_SUBJECT));
             text.setText(getIntent().getStringExtra(Intent.EXTRA_TEXT));
-            ongoing.setChecked((getIntent().getBooleanExtra("ongoing", true)));
+            ongoing.getCheckbox().setChecked((getIntent().getBooleanExtra("ongoing", true)));
             seekbar.setProgress(getIntent().getIntExtra("id", 0));
             textId.setText("#" + getIntent().getIntExtra("id", 0));
         }
@@ -174,9 +166,9 @@ public class QuickNote extends AppCompatActivity {
         text.setText("");
         seekbar.setProgress(0);
         textId.setText("#0");
-        tray.setChecked(true);
-        ongoing.setChecked(true);
-        notify.setChecked(true);
+        tray.getCheckbox().setChecked(true);
+        ongoing.getCheckbox().setChecked(true);
+        ongoing.getCheckbox().setEnabled(true);
 
     }
 
@@ -186,7 +178,7 @@ public class QuickNote extends AppCompatActivity {
 
     public void create() {
 
-        if (tray.isChecked()) {
+        if (tray.getCheckbox().isChecked()) {
             createNote();
             writeToDB();
         } else {
@@ -206,10 +198,8 @@ public class QuickNote extends AppCompatActivity {
         mBuilder.setContentText(text.getText().toString());
         mBuilder.setContentInfo("#" + seekbar.getProgress());
         mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(text.getText().toString()));
-        mBuilder.setOngoing(ongoing.isChecked());
-        if (notify.isChecked()) {
-            mBuilder.setDefaults(Notification.DEFAULT_ALL);
-        }
+        mBuilder.setOngoing(ongoing.getCheckbox().isChecked());
+        mBuilder.setDefaults(Notification.DEFAULT_ALL);
         mBuilder.setContentIntent(PendingIntent.getActivities(getApplicationContext(), seekbar.getProgress(), makeIntent(), PendingIntent.FLAG_UPDATE_CURRENT));
         mBuilder.setSmallIcon(R.drawable.notify);
         nm.notify(seekbar.getProgress(), mBuilder.build());
@@ -223,7 +213,7 @@ public class QuickNote extends AppCompatActivity {
 
         quick.putExtra(Intent.EXTRA_SUBJECT, title.getText().toString());
         quick.putExtra(Intent.EXTRA_TEXT, text.getText().toString());
-        quick.putExtra("ongoing", ongoing.isChecked());
+        quick.putExtra("ongoing", ongoing.getCheckbox().isChecked());
         quick.putExtra("id", seekbar.getProgress());
         return new Intent[]{main, quick};
     }

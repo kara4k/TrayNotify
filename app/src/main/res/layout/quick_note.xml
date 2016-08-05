@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/dimen_default"
         android:orientation="vertical">
-
 
 
         <LinearLayout
@@ -25,9 +24,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dimen_default"
                 android:layout_marginTop="@dimen/dimen_default"
-                android:background="@drawable/tv_bck"
                 android:text="Text:"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/black" />
 
             <EditText
                 android:id="@+id/textedit"
@@ -40,7 +38,10 @@
 
         </LinearLayout>
 
-        <View style="@style/Divider" />
+        <View
+            style="@style/Divider"
+            android:layout_marginLeft="@dimen/dimen_default"
+            android:layout_marginRight="@dimen/dimen_default" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,9 +55,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dimen_default"
                 android:layout_marginTop="@dimen/dimen_default"
-                android:background="@drawable/tv_bck"
                 android:text="Title:"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/black" />
 
             <EditText
                 android:id="@+id/editTitle"
@@ -66,11 +66,13 @@
                 android:layout_marginRight="@dimen/dimen_default"
                 android:layout_marginTop="@dimen/dimen_default"
                 android:background="@android:color/transparent"
-                android:hint="TrayNotify"
-                />
+                android:hint="TrayNotify" />
         </LinearLayout>
 
-        <View style="@style/Divider" />
+        <View
+            style="@style/Divider"
+            android:layout_marginLeft="@dimen/dimen_default"
+            android:layout_marginRight="@dimen/dimen_default" />
 
 
         <LinearLayout
@@ -79,89 +81,63 @@
             android:layout_marginTop="@dimen/dimen_default"
             android:orientation="horizontal">
 
-
-
-
-            <Button
-                android:id="@+id/advanced"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginLeft="@dimen/dimen_default"
-                android:layout_marginRight="@dimen/dimen_default"
-                android:checked="false"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:background="@color/colorPrimary"
-                android:textColor="@android:color/white"
-                android:padding="4dp"
-                android:text="advanced"
-                android:textOff="HIDE"
-                android:textOn="SHOW"
-                android:drawableRight="@drawable/ic_arrow_drop_down_white_24dp" />
-
         </LinearLayout>
+
+        <com.kara4k.traynotify.MyView
+            android:id="@+id/tray"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:CheckVisible="true"
+            app:ImageVisible="false"
+            app:Text="Show note in tray"
+            app:Title="Tray"
+            app:isChecked="true">
+
+        </com.kara4k.traynotify.MyView>
+
+        <com.kara4k.traynotify.MyView
+            android:id="@+id/ongoing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:CheckVisible="true"
+            app:ImageVisible="false"
+            app:Text="Dont delete on slide"
+            app:Title="Ongoing"
+            app:isChecked="true">
+
+        </com.kara4k.traynotify.MyView>
+
 
 
 
         <LinearLayout
+            android:id="@+id/advanced_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/advanced_layout"
-            android:layout_marginTop="@dimen/dimen_default"
             android:layout_marginLeft="@dimen/dimen_default"
             android:layout_marginRight="@dimen/dimen_default"
-            android:visibility="gone"
-            android:orientation="horizontal">
-
-            <com.kara4k.traynotify.CheckImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/create_tray"
-                android:padding="5dp"
-                app:isChecked="true"
-                app:ImageOn="@drawable/ic_speaker_notes_white_24dp"
-                app:ImageOff="@drawable/ic_speaker_notes_off_black_24dp"
-                app:BackgroundOn="@color/colorPrimary"
-                app:BackgroundOff="?android:attr/colorBackground"
-                android:layout_weight="1"/>
-
-            <com.kara4k.traynotify.CheckImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/ongoing"
-                android:padding="5dp"
-                app:isChecked="true"
-                android:layout_marginLeft="@dimen/dimen_default"
-                app:ImageOn="@drawable/ic_delete_forever_white_24dp"
-                app:BackgroundOn="@color/colorPrimary"
-                app:ImageOff="@drawable/ic_delete_sweep_black_24dp"
-                app:BackgroundOff="?android:attr/colorBackground"
-                android:layout_weight="1"/>
-
-            <com.kara4k.traynotify.CheckImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/notify"
-                android:padding="5dp"
-                app:isChecked="true"
-                android:layout_marginLeft="@dimen/dimen_default"
-                app:ImageOn="@drawable/ic_notifications_active_white_24dp"
-                app:BackgroundOn="@color/colorPrimary"
-                app:ImageOff="@drawable/ic_notifications_off_black_24dp"
-                app:BackgroundOff="?android:attr/colorBackground"
-                android:layout_weight="1"/>
+            android:layout_marginTop="@dimen/dimen_default"
+            android:orientation="horizontal"
+            android:visibility="visible">
 
 
         </LinearLayout>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Number"
+            android:layout_marginLeft="@dimen/dimen_default"
+            android:layout_marginRight="@dimen/dimen_default"
+            android:textColor="@android:color/black"
+            />
+
         <LinearLayout
+            android:id="@+id/seek_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/dimen_default"
-            android:id="@+id/seek_layout"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <SeekBar
                 android:id="@+id/seekBar"
@@ -170,25 +146,24 @@
                 android:layout_marginLeft="@dimen/dimen_default"
                 android:layout_weight="1"
                 android:max="5" />
+
             <TextView
+                android:id="@+id/text_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/text_id"
                 android:layout_marginLeft="@dimen/dimen_default"
                 android:layout_marginRight="@dimen/dimen_default"
-                android:textColor="@android:color/black"
                 android:text="# 0"
-                />
+                android:textColor="@android:color/black" />
 
         </LinearLayout>
-
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_default"
             android:layout_marginBottom="50dp"
+            android:layout_marginTop="@dimen/dimen_default"
             android:orientation="horizontal">
 
             <Button
@@ -196,20 +171,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dimen_default"
-                android:background="@color/colorAccent"
                 android:layout_weight="1"
-                android:padding="@dimen/button_padding"
-                android:text="Create"
+                android:background="@color/colorAccent"
                 android:minHeight="0dp"
                 android:minWidth="0dp"
+                android:padding="@dimen/button_padding"
+                android:text="Create"
                 android:textColor="@android:color/white" />
 
             <Button
                 android:id="@+id/delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dimen_default"
                 android:layout_marginLeft="@dimen/dimen_default"
+                android:layout_marginRight="@dimen/dimen_default"
                 android:layout_weight="1"
                 android:background="@color/colorAccent"
                 android:minHeight="0dp"
