@@ -58,7 +58,7 @@ public class DBDelay {
     }
 
     public void removeNote(int id) {
-        mDB.delete(TABLE_NAME, KEY_ID + "=?", new String[]{String.valueOf(id)});
+        mDB.delete(TABLE_NAME, KEY_CHECKID + "=?", new String[]{String.valueOf(id)});
     }
 
     public Cursor getAlarmNote(int check) {

@@ -37,8 +37,9 @@ public class AlarmReceiver extends BroadcastReceiver {
         mBuilder.setSmallIcon(R.drawable.notify);
 
         mBuilder.setContentText(note.getText());
+        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(note.getText()));
         mBuilder.setContentTitle(note.getTitle());
-
+        Log.e("tage",note.toString());
 
         if (!note.getSound().equals("0")) {
             try {
@@ -81,7 +82,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private void fillNote(Intent intent, DBDelay db) {
         note = new DelayedNote();
-        Cursor current = db.getAlarmNote(intent.getIntExtra("check", 0));
+        Cursor current = db.getAlarmNote(intent.getIntExtra("id", 0));
         if (current.moveToFirst()) {
             note.setText(current.getString(1));
             note.setTitle(current.getString(2));
@@ -103,7 +104,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         main.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         Intent delay = new Intent(context, CreateDelayedNote.class);
-        delay.putExtra("check", note.getCheckId());
+        delay.putExtra("id", note.getCheckId());
         return new Intent[]{main, delay};
     }
 

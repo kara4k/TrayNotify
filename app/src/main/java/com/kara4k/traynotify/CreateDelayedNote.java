@@ -76,7 +76,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         sTimeFormat = new SimpleDateFormat("HH:mm");
 
         if (getIntent().getExtras() != null) {
-            checkThis = getIntent().getIntExtra("check", 0);
+            checkThis = getIntent().getIntExtra("id", 0);
             Log.e("123", String.valueOf(checkThis));
         }
 
@@ -267,7 +267,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     }
 
     private int getNoteRepeat() {
-        int repeat = daysLayout.getVisibility() == View.VISIBLE ? 0 : 1;
+        int repeat = repeat2.getCheckbox().isChecked()  ? 1 : 0;
         return repeat;
     }
 
@@ -342,17 +342,17 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
         alarmIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
         Bundle bundle = new Bundle();
-        bundle.putInt("check", note.getCheckId());
+        bundle.putInt("id", note.getCheckId());
         alarmIntent.putExtras(bundle);
 
 
-        pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), checkThis, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Calendar cl = Calendar.getInstance();
-        cl.add(Calendar.SECOND, 3);
-//        mainCal.add(Calendar.SECOND, 10);
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cl.getTimeInMillis(), 3 * 60 * 1000, pendingIntent);
+        mainCal.set(Calendar.SECOND, 00);
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, mainCal.getTimeInMillis(), 1 * 60 * 1000, pendingIntent);
+        finish();
     }
 
     @Override
@@ -371,9 +371,6 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
                 Log.e("tag", String.valueOf(mainCal.get(Calendar.DAY_OF_WEEK)));
                 break;
             case R.id.action_clear_notification:
-                alarmIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
-                PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                alarmManager.cancel(pi);
                 nm.cancel(checkThis);
                 break;
         }
