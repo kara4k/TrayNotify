@@ -348,9 +348,11 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
         pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        mainCal.add(Calendar.SECOND, 10);
+        Calendar cl = Calendar.getInstance();
+        cl.add(Calendar.SECOND, 3);
+//        mainCal.add(Calendar.SECOND, 10);
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, mainCal.getTimeInMillis(), 3 * 60 * 1000, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cl.getTimeInMillis(), 3 * 60 * 1000, pendingIntent);
     }
 
     @Override
@@ -366,19 +368,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
                 Log.e("Shit", "can happen");
                 break;
             case R.id.clear_forms:
-                DelayedNote note = new DelayedNote();
-                note.setText(getNoteText());
-                note.setTitle(getNoteTitle());
-                note.setCreateTime(getNoteCreateTime());
-                note.setSetTime(getNoteSetTime());
-                note.setRepeat(getNoteRepeat());
-                note.setDays(getNoteDays());
-                note.setSound(getNoteSound());
-                note.setVibration(getNoteVibration());
-                note.setPriority(getNotePriority());
-                note.setCheckId(getNoteCheckId());
-                    Log.e("123", note.toString());
-
+                Log.e("tag", String.valueOf(mainCal.get(Calendar.DAY_OF_WEEK)));
                 break;
             case R.id.action_clear_notification:
                 alarmIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
@@ -418,9 +408,9 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
             mBuilder.setVibrate(vibration);
             mBuilder.setDefaults(Notification.DEFAULT_LIGHTS);
         }
-        mBuilder.setOngoing(true);
+
         mBuilder.setSmallIcon(R.drawable.notify);
-        nm.notify(-10, mBuilder.build());
+        nm.notify(0, mBuilder.build());
     }
 
     private void chooseSoundIntent() {

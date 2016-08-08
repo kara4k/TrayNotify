@@ -15,6 +15,23 @@ public class DelayedNote {
     private int priority;
     private int checkId;
 
+    DelayedNote() {
+
+    }
+
+    public DelayedNote(int id, String text, String title, long createTime, long setTime, int repeat, String days, String sound, String vibration, int priority, int checkId) {
+        this.id = id;
+        this.text = text;
+        this.title = title;
+        this.createTime = createTime;
+        this.setTime = setTime;
+        this.repeat = repeat;
+        this.days = days;
+        this.sound = sound;
+        this.vibration = vibration;
+        this.priority = priority;
+        this.checkId = checkId;
+    }
 
     public int getId() {
         return id;

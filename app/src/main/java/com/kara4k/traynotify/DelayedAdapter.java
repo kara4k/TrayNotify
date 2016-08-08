@@ -13,23 +13,23 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHolder>{
+public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedNotesViewHolder>{
 
-    private static QuickAdapter quickAdapter;
+    private static DelayedAdapter quickAdapter;
 
-    public List<Note> getNotes() {
+    public List<DelayedNote> getNotes() {
         return notes;
     }
 
-    private List<Note> notes;
+    private List<DelayedNote> notes;
     private Context context;
 
-    QuickAdapter() {
+    DelayedAdapter() {
     }
 
-    public static QuickAdapter getInstance() {
+    public static DelayedAdapter getInstance() {
         if (quickAdapter == null) {
-            quickAdapter = new QuickAdapter();
+            quickAdapter = new DelayedAdapter();
         }
         return quickAdapter;
     }
@@ -37,28 +37,28 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
 
 
 
-    public void setList(List<Note> notes) {
+    public void setList(List<DelayedNote> notes) {
         this.notes = notes;
     }
 
     @Override
-    public NotesViewHolder onCreateViewHolder(ViewGroup viewGroup, final int i) {
+    public DelayedNotesViewHolder onCreateViewHolder(ViewGroup viewGroup, final int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.quick_item, viewGroup, false);
         context = viewGroup.getContext();
-        return new NotesViewHolder(v);
+        return new DelayedNotesViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(NotesViewHolder notesViewHolder, int i) {
+    public void onBindViewHolder(DelayedNotesViewHolder notesViewHolder, int i) {
         notesViewHolder.title.setText(notes.get(i).getTitle());
         notesViewHolder.text.setText(notes.get(i).getText());
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd.MM.yyyy");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        String date = dateFormat.format(new Date(notes.get(i).getDate()));
+        String date = dateFormat.format(new Date(notes.get(i).getSetTime()));
         date = date.substring(0, 1).toUpperCase() + date.substring(1);
         notesViewHolder.date.setText(date);
-        notesViewHolder.time.setText(timeFormat.format(new Date(notes.get(i).getDate())));
-        notesViewHolder.numid.setText("#" + notes.get(i).getNumid());
+        notesViewHolder.time.setText(timeFormat.format(new Date(notes.get(i).getSetTime())));
+        notesViewHolder.numid.setText("#" + String.valueOf(notes.get(i).getCheckId()).substring(1));
 
     }
 
@@ -80,7 +80,7 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
 
     }
 
-    public static class NotesViewHolder extends RecyclerView.ViewHolder {
+    public static class DelayedNotesViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView title;
         private final TextView text;
@@ -88,7 +88,7 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
         private final TextView time;
         private final TextView numid;
 
-        NotesViewHolder(final View itemView) {
+        DelayedNotesViewHolder(final View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.title);
             text = (TextView) itemView.findViewById(R.id.text);
@@ -100,14 +100,14 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
                 public void onClick(View view) {
                     try {
                         Context context = view.getContext();
-                        Note note = QuickAdapter.getInstance().getNotes().get(getAdapterPosition());
-                        Intent intent = new Intent(context, QuickNote.class);
+                        DelayedNote note = DelayedAdapter.getInstance().getNotes().get(getAdapterPosition());
+                        Intent intent = new Intent(context, CreateDelayedNote.class);
                         intent.putExtra(Intent.EXTRA_SUBJECT, note.getTitle());
                         intent.putExtra(Intent.EXTRA_TEXT, note.getText());
-                        intent.putExtra("id", note.getNumid());
+                        intent.putExtra("id", note.getCheckId());
                         context.startActivity(intent);
                     } catch (Exception e) {
-                        e.printStackTrace(); // TODO: 29.07.2016  
+                        e.printStackTrace(); // TODO: 29.07.2016
                     }
                 }
             });
@@ -115,9 +115,9 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
                 @Override
                 public boolean onLongClick(View view) {
                     try {
-                        QuickAdapter.getInstance().remove(getAdapterPosition());
+                        DelayedAdapter.getInstance().remove(getAdapterPosition());
                     } catch (Exception e) {
-                        e.printStackTrace(); // TODO: 29.07.2016  
+                        e.printStackTrace(); // TODO: 29.07.2016
                     }
                     return false;
                 }

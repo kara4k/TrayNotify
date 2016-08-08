@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,13 +28,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         db.open();
 
         fillNote(intent, db);
-        Calendar calendar = Calendar.getInstance();
-        calendar.get(Calendar.DAY_OF_WEEK);
 
+        if (isNotify()) {
 
-
-
-
+        }
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         mBuilder.setSmallIcon(R.drawable.notify);
@@ -69,12 +67,15 @@ public class AlarmReceiver extends BroadcastReceiver {
             mBuilder.setVibrate(vibration);
         }
 
+        Log.e("6767", note.toString());
+        isNotify();
+
         mBuilder.setPriority(note.getPriority());
         mBuilder.setContentInfo(String.valueOf(note.getCheckId()));
 
         mBuilder.setAutoCancel(false);
         mBuilder.setContentIntent(PendingIntent.getActivities(context, 0, makeIntent(context), PendingIntent.FLAG_UPDATE_CURRENT));
-
+        mBuilder.setOngoing(true);
         nm.notify(note.getCheckId(), mBuilder.build());
     }
 
@@ -104,5 +105,50 @@ public class AlarmReceiver extends BroadcastReceiver {
         Intent delay = new Intent(context, CreateDelayedNote.class);
         delay.putExtra("check", note.getCheckId());
         return new Intent[]{main, delay};
+    }
+
+    private int getDayNum() {
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        int today;
+        switch (day) {
+            case 1:
+                today = 6;
+                break;
+            case 2:
+                today = 0;
+                break;
+            case 3:
+                today = 1;
+                break;
+            case 4:
+                today = 2;
+                break;
+            case 5:
+                today = 3;
+                break;
+            case 6:
+                today = 4;
+                break;
+            case 7:
+                today = 5;
+                break;
+            default:
+                today = 0;
+        }
+        return today;
+    }
+
+    private boolean isNotify() {
+        if (note.getRepeat() == 1) {
+            String[] split = note.getDays().split(";");
+            if (split[getDayNum()].equals("1")) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
     }
 }

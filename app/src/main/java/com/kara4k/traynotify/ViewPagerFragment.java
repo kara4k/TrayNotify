@@ -23,7 +23,7 @@ public class ViewPagerFragment extends Fragment implements Serializable {
     private Adapter adapter;
     private ViewPager viewPager;
     private QuickNotesFragment quickNotes;
-    private QuickNotesFragment quickNotes2;
+    private DelayedNotesFragment delayedNotes;
 
     @Nullable
     @Override
@@ -32,9 +32,9 @@ public class ViewPagerFragment extends Fragment implements Serializable {
         viewPager = (ViewPager) linearLayout.findViewById(R.id.viewpager);
         adapter = new Adapter(getFragmentManager());
         quickNotes = new QuickNotesFragment();
-        quickNotes2 = new QuickNotesFragment();
+        delayedNotes = new DelayedNotesFragment();
         adapter.addFragment(quickNotes, "Quick Notes");
-        adapter.addFragment(quickNotes2, "Quick Notes2");
+        adapter.addFragment(delayedNotes, "Quick Notes2");
         viewPager.setAdapter(adapter);
 
         tabs = (TabLayout) getActivity().findViewById(R.id.tabs);
