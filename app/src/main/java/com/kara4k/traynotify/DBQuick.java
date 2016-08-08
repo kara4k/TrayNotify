@@ -43,9 +43,22 @@ class DBQuick {
         mDB.delete(TABLE_NAME,KEY_ID + "=?",new String[]{String.valueOf(id)});
     }
 
-//    public Cursor getTodayEvent(String today) {
-//        return mDB.query(TABLE_NAME, new String[]{KEY_DATE, KEY_DAYNAME, KEY_TEXT, KEY_IMG, KEY_THUMB}, KEY_DATE + "= ?", new String[]{today}, null, null, null);
-//    }
+    public int getNoteCheckID() {
+        open();
+        int numId;
+        Cursor cursor = mDB.query(TABLE_NAME, null, null, null, null, null, KEY_NUMID + " ASC");
+        if (cursor.moveToFirst()) {
+            numId = cursor.getInt(5) - 1;
+        } else {
+            numId = -1;
+        }
+        close();
+        return numId;
+    }
+
+    public Cursor getCurrentNote(int id) {
+        return mDB.query(TABLE_NAME, new String[]{KEY_TEXT, KEY_TITLE, KEY_DATE, KEY_NUMID}, KEY_NUMID + "= ?", new String[]{String.valueOf(id)}, null, null, null);
+    }
 
     public void addNote(String title, String text, long date, int numid) {
         ContentValues cv = new ContentValues();
@@ -56,13 +69,13 @@ class DBQuick {
         mDB.insert(TABLE_NAME, null, cv);
     }
 
-    public void updateRec(String title, String text, String date, String numid, String id) {
+    public void updateRec(String title, String text, long date, int numid) {
         ContentValues cv = new ContentValues();
         cv.put(KEY_TITLE, title);
         cv.put(KEY_TEXT, text);
         cv.put(KEY_DATE, date);
         cv.put(KEY_NUMID, numid);
-        mDB.update(TABLE_NAME, cv, KEY_ID + " = ?", new String[]{id});
+        mDB.update(TABLE_NAME, cv, KEY_NUMID + " = ?", new String[]{String.valueOf(numid)});
     }
 
     public void close() {

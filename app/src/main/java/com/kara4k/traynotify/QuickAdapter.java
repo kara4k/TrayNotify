@@ -58,7 +58,7 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
         date = date.substring(0, 1).toUpperCase() + date.substring(1);
         notesViewHolder.date.setText(date);
         notesViewHolder.time.setText(timeFormat.format(new Date(notes.get(i).getDate())));
-        notesViewHolder.numid.setText("#" + notes.get(i).getNumid());
+        notesViewHolder.numid.setText("#" + String.valueOf(notes.get(i).getNumid()).substring(1));
 
     }
 

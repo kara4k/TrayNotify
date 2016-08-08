@@ -6,8 +6,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
 import android.view.Menu;
@@ -38,6 +38,9 @@ public class QuickNote extends AppCompatActivity {
     private MyView ongoing;
 
     private int id;
+    private SharedPreferences sp;
+    private DBQuick dbQuick;
+    private Calendar calendar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,33 +51,16 @@ public class QuickNote extends AppCompatActivity {
 
         title = (EditText) findViewById(R.id.editTitle);
         text = (EditText) findViewById(R.id.textedit);
-
-
         tray = (MyView) findViewById(R.id.tray);
         ongoing = (MyView) findViewById(R.id.ongoing);
-
-        advancedLayout = (LinearLayout) findViewById(R.id.advanced_layout);
-        seekLayout = (LinearLayout) findViewById(R.id.seek_layout);
         create = (Button) findViewById(R.id.create);
-        seekbar = (SeekBar) findViewById(R.id.seekBar);
-        delete = (Button) findViewById(R.id.delete);
-        textId = (TextView) findViewById(R.id.text_id);
 
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        id = sp.getInt("id", -1);
-        Toast.makeText(this, String.valueOf(id), Toast.LENGTH_SHORT).show();
-        sp.edit().putInt("id", id - 1).apply();
-
-
-
-
-
+        dbQuick = new DBQuick(getApplicationContext());
+        id = dbQuick.getNoteCheckID();
 
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-
+        calendar = Calendar.getInstance();
         intentChecks();
-
         tray.setSecondOnClickListener(new MyView.SecondOnClickListener() {
             @Override
             public void onClick() {
@@ -93,28 +79,6 @@ public class QuickNote extends AppCompatActivity {
                 create();
             }
         });
-        delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                delete();
-            }
-        });
-        seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                textId.setText("#" + i);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
 
 
     }
@@ -124,8 +88,7 @@ public class QuickNote extends AppCompatActivity {
             title.setText(getIntent().getStringExtra(Intent.EXTRA_SUBJECT));
             text.setText(getIntent().getStringExtra(Intent.EXTRA_TEXT));
             ongoing.getCheckbox().setChecked((getIntent().getBooleanExtra("ongoing", true)));
-            seekbar.setProgress(getIntent().getIntExtra("id", 0));
-            textId.setText("#" + getIntent().getIntExtra("id", 0));
+            id = getIntent().getIntExtra("id", id);
         }
     }
 
@@ -145,8 +108,8 @@ public class QuickNote extends AppCompatActivity {
             case R.id.clear_forms:
                 clearForms();
                 break;
-            case R.id.action_clear_all:
-                nm.cancelAll();
+            case R.id.action_clear_note:
+                nm.cancel(id);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -164,16 +127,10 @@ public class QuickNote extends AppCompatActivity {
     private void clearForms() {
         title.setText("");
         text.setText("");
-        seekbar.setProgress(0);
-        textId.setText("#0");
         tray.getCheckbox().setChecked(true);
         ongoing.getCheckbox().setChecked(true);
         ongoing.getCheckbox().setEnabled(true);
 
-    }
-
-    private void delete() {
-        nm.cancel(seekbar.getProgress());
     }
 
     public void create() {
@@ -191,18 +148,21 @@ public class QuickNote extends AppCompatActivity {
     private void createNote() {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
         if (title.getText().toString().equals("")) {
-            mBuilder.setContentTitle(title.getHint());
+            mBuilder.setContentTitle(getString(R.string.app_name));
         } else {
             mBuilder.setContentTitle(title.getText().toString());
         }
         mBuilder.setContentText(text.getText().toString());
-        mBuilder.setContentInfo("#" + seekbar.getProgress());
+        mBuilder.setContentInfo("#" + String.valueOf(id).substring(1));
         mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(text.getText().toString()));
         mBuilder.setOngoing(ongoing.getCheckbox().isChecked());
         mBuilder.setDefaults(Notification.DEFAULT_ALL);
-        mBuilder.setContentIntent(PendingIntent.getActivities(getApplicationContext(), seekbar.getProgress(), makeIntent(), PendingIntent.FLAG_UPDATE_CURRENT));
+        mBuilder.setContentIntent(PendingIntent.getActivities(getApplicationContext(), id, makeIntent(), PendingIntent.FLAG_UPDATE_CURRENT));
         mBuilder.setSmallIcon(R.drawable.notify);
-        nm.notify(seekbar.getProgress(), mBuilder.build());
+        nm.notify(id, mBuilder.build());
+        finish();
+
+
     }
 
     private Intent[] makeIntent() {
@@ -214,19 +174,27 @@ public class QuickNote extends AppCompatActivity {
         quick.putExtra(Intent.EXTRA_SUBJECT, title.getText().toString());
         quick.putExtra(Intent.EXTRA_TEXT, text.getText().toString());
         quick.putExtra("ongoing", ongoing.getCheckbox().isChecked());
-        quick.putExtra("id", seekbar.getProgress());
+        quick.putExtra("id", id);
         return new Intent[]{main, quick};
     }
 
     private void writeToDB() {
-        DBQuick dbQuick = new DBQuick(getApplicationContext());
         dbQuick.open();
-        Calendar calendar = Calendar.getInstance();
-        if (title.getText().toString().equals("")) {
-            dbQuick.addNote("TrayNotify", text.getText().toString(), calendar.getTimeInMillis(), seekbar.getProgress());
+        Cursor currentNote = dbQuick.getCurrentNote(id);
+        if (currentNote.moveToFirst()) {
+            if (title.getText().toString().equals("")) {
+                dbQuick.updateRec("TrayNotify", text.getText().toString(), calendar.getTimeInMillis(), id);
+            } else {
+                dbQuick.updateRec(title.getText().toString(), text.getText().toString(), calendar.getTimeInMillis(), id);
+            }
         } else {
-            dbQuick.addNote(title.getText().toString(), text.getText().toString(), calendar.getTimeInMillis(), seekbar.getProgress());
+
+            if (title.getText().toString().equals("")) {
+                dbQuick.addNote("TrayNotify", text.getText().toString(), calendar.getTimeInMillis(), id);
+            } else {
+                dbQuick.addNote(title.getText().toString(), text.getText().toString(), calendar.getTimeInMillis(), id);
+            }
+            dbQuick.close();
         }
-        dbQuick.close();
     }
 }

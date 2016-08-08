@@ -65,8 +65,7 @@
                 android:layout_marginLeft="@dimen/dimen_default"
                 android:layout_marginRight="@dimen/dimen_default"
                 android:layout_marginTop="@dimen/dimen_default"
-                android:background="@android:color/transparent"
-                android:hint="TrayNotify" />
+                android:background="@android:color/transparent" />
         </LinearLayout>
 
         <View
@@ -108,92 +107,23 @@
         </com.kara4k.traynotify.MyView>
 
 
-
-
-        <LinearLayout
-            android:id="@+id/advanced_layout"
+        <Button
+            android:id="@+id/create"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="100dp"
             android:layout_marginLeft="@dimen/dimen_default"
             android:layout_marginRight="@dimen/dimen_default"
             android:layout_marginTop="@dimen/dimen_default"
-            android:orientation="horizontal"
-            android:visibility="visible">
+            android:background="@color/colorAccent"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:paddingBottom="7dp"
+            android:paddingTop="7dp"
+            android:text="Create"
+            android:textColor="@android:color/white" />
 
-
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Number"
-            android:layout_marginLeft="@dimen/dimen_default"
-            android:layout_marginRight="@dimen/dimen_default"
-            android:textColor="@android:color/black"
-            />
-
-        <LinearLayout
-            android:id="@+id/seek_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="visible">
-
-            <SeekBar
-                android:id="@+id/seekBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_default"
-                android:layout_weight="1"
-                android:max="5" />
-
-            <TextView
-                android:id="@+id/text_id"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_default"
-                android:layout_marginRight="@dimen/dimen_default"
-                android:text="# 0"
-                android:textColor="@android:color/black" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
-            android:layout_marginTop="@dimen/dimen_default"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/create"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_default"
-                android:layout_weight="1"
-                android:background="@color/colorAccent"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:padding="@dimen/button_padding"
-                android:text="Create"
-                android:textColor="@android:color/white" />
-
-            <Button
-                android:id="@+id/delete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_default"
-                android:layout_marginRight="@dimen/dimen_default"
-                android:layout_weight="1"
-                android:background="@color/colorAccent"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:padding="@dimen/button_padding"
-                android:text="Delete"
-                android:textColor="@android:color/white" />
-
-        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>
