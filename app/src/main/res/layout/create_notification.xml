@@ -23,9 +23,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dimen_default"
                 android:layout_marginTop="@dimen/dimen_default"
-                android:background="@drawable/tv_bck"
                 android:text="Text:"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/black" />
 
             <EditText
                 android:id="@+id/textEdit"
@@ -52,9 +51,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dimen_default"
                 android:layout_marginTop="@dimen/dimen_default"
-                android:background="@drawable/tv_bck"
                 android:text="Title:"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/black" />
 
             <EditText
                 android:id="@+id/editTitle"
@@ -64,7 +62,7 @@
                 android:layout_marginRight="@dimen/dimen_default"
                 android:layout_marginTop="@dimen/dimen_default"
                 android:background="@android:color/transparent"
-                android:hint="TrayNotify" />
+                 />
         </LinearLayout>
 
         <View style="@style/Divider" />
@@ -75,38 +73,44 @@
             android:layout_marginTop="@dimen/dimen_default"
             android:orientation="horizontal">
 
-            <Button
+            <com.kara4k.traynotify.MyView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/setDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_default"
                 android:layout_weight="1"
-                android:background="@color/colorPrimary"
-                android:drawableLeft="@drawable/ic_date_range_white_24dp"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:padding="4dp"
-                android:text="Set Date"
-                android:textColor="@android:color/white" />
+                app:Title="Date"
+                app:Text="09.01.2016"
+                app:Image="@drawable/ic_event_black_24dp"
+                app:CheckVisible="false"
+                app:ImageVisible="true"/>
 
-            <Button
-                android:id="@+id/setTime"
+            <com.kara4k.traynotify.MyView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_default"
-                android:layout_marginRight="@dimen/dimen_default"
+                android:id="@+id/setTime"
                 android:layout_weight="1"
-                android:background="@color/colorPrimary"
-                android:drawableLeft="@drawable/ic_access_time_white_24dp"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:padding="4dp"
-                android:text="Set Time"
-                android:textColor="@android:color/white" />
+                app:Title="Time"
+                app:Text="18:21"
+                app:Image="@drawable/ic_access_time_black_24dp"
+                app:CheckVisible="false"
+                app:ImageVisible="true"/>
+
+
 
         </LinearLayout>
 
-        <View style="@style/Divider" />
+        <com.kara4k.traynotify.MyView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/repeat2"
+            app:Title="Repeat"
+            app:Text="No"
+            app:ImageVisible="false"
+            app:Image="@drawable/ic_repeat_grey_24dp"
+            app:isChecked="false"
+            app:CheckVisible="true"/>
+
+        <!--<View style="@style/Divider" />-->
 
         <Button
             android:id="@+id/repeat"
@@ -123,7 +127,8 @@
             android:text="Repeat"
             android:textColor="@android:color/white"
             android:textOff="HIDE"
-            android:textOn="SHOW" />
+            android:textOn="SHOW"
+            android:visibility="gone"/>
 
 
         <LinearLayout
@@ -139,28 +144,30 @@
 
         </LinearLayout>
 
-        <View style="@style/Divider" />
+        <!--<View style="@style/Divider" />-->
 
-        <Button
-            android:id="@+id/sound"
+        <com.kara4k.traynotify.MyView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimen_default"
-            android:layout_marginRight="@dimen/dimen_default"
-            android:layout_marginTop="@dimen/dimen_default"
-            android:background="@color/colorPrimary"
-            android:checked="false"
-            android:drawableLeft="@drawable/ic_audiotrack_white_24dp"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
-            android:padding="4dp"
-            android:text="Default"
-            android:textColor="@android:color/white"
-            android:textOff="HIDE"
-            android:textOn="SHOW" />
+            android:id="@+id/sound"
+            app:Title="Sound"
+            app:Text="Default"
+            app:ImageVisible="true"
+            app:Image="@drawable/ic_phonelink_ring_black_24dp"
+            />
+
+        <com.kara4k.traynotify.MyView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/vibrate"
+            app:Title="Vibration"
+            app:Text="Default"
+            app:ImageVisible="true"
+            app:Image="@drawable/ic_vibration_black_24dp"
+            />
 
         <Button
-            android:id="@+id/vibrate"
+            android:id="@+id/vibrate2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_default"
@@ -175,7 +182,8 @@
             android:text="Default"
             android:textColor="@android:color/white"
             android:textOff="HIDE"
-            android:textOn="SHOW" />
+            android:textOn="SHOW"
+            android:visibility="gone"/>
 
         <View style="@style/Divider" />
 

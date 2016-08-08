@@ -53,9 +53,9 @@ public class MyView extends RelativeLayout {
                     } else {
                         checkbox.setChecked(true);
                     }
-                    if (secondOnClickListener != null) {
-                        secondOnClickListener.onClick();
-                    }
+                }
+                if (secondOnClickListener != null) {
+                    secondOnClickListener.onClick();
                 }
             }
         });

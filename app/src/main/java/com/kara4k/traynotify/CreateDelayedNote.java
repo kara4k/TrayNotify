@@ -8,6 +8,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -15,6 +16,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
@@ -36,13 +38,13 @@ import java.util.Date;
 public class CreateDelayedNote extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     private Intent intent;
-    private Button sound;
+    private MyView sound;
     private Uri soundUri;
     private Calendar mainCal;
     private SimpleDateFormat sDateFormat;
     private SimpleDateFormat sTimeFormat;
-    private Button setDate;
-    private Button setTime;
+    private MyView setDate;
+    private MyView setTime;
     private long[] vibration;
     private NotificationManager nm;
     private EditText textEdit;
@@ -51,9 +53,12 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     private Intent alarmIntent;
     private PendingIntent pendingIntent;
     private LinearLayout daysLayout;
-//    private CheckButton[] daysHolders;
+    private boolean[] days;
     private DBDelay db;
     private int checkThis;
+    private DateFormatSymbols formatSymbols;
+    private MyView repeat2;
+    private String[] shortDays;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,10 +80,10 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
             Log.e("123", String.valueOf(checkThis));
         }
 
-        setDate = (Button) findViewById(R.id.setDate);
-        setDate.setText(sDateFormat.format(new Date(mainCal.getTimeInMillis())));
-        setTime = (Button) findViewById(R.id.setTime);
-        setTime.setText(sTimeFormat.format(new Date(mainCal.getTimeInMillis())));
+        setDate = (MyView) findViewById(R.id.setDate);
+        setDate.getText().setText(sDateFormat.format(new Date(mainCal.getTimeInMillis())));
+        setTime = (MyView) findViewById(R.id.setTime);
+        setTime.getText().setText(sTimeFormat.format(new Date(mainCal.getTimeInMillis())));
         setDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,24 +97,19 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
             }
         });
 
-//        CheckButton mon = (CheckButton) findViewById(R.id.monday);
-//        CheckButton tue = (CheckButton) findViewById(R.id.tuesday);
-//        CheckButton wed = (CheckButton) findViewById(R.id.wednesday);
-//        CheckButton thu = (CheckButton) findViewById(R.id.thursday);
-//        CheckButton fri = (CheckButton) findViewById(R.id.friday);
-//        CheckButton sat = (CheckButton) findViewById(R.id.saturday);
-//        CheckButton sun = (CheckButton) findViewById(R.id.sunday);
-//
-//        DateFormatSymbols ddd = DateFormatSymbols.getInstance();
-//        String[] shortWeekdays = ddd.getShortWeekdays();
-//        mon.setText(shortWeekdays[2]);
-//        tue.setText(shortWeekdays[3]);
-//        wed.setText(shortWeekdays[4]);
-//        thu.setText(shortWeekdays[5]);
-//        fri.setText(shortWeekdays[6]);
-//        sat.setText(shortWeekdays[7]);
-//        sun.setText(shortWeekdays[1]);
-//        daysHolders = new CheckButton[]{mon, tue, wed, thu, fri, sat, sun};
+        days = new boolean[]{true, true, true, true, true, true, true,};
+
+
+        formatSymbols = DateFormatSymbols.getInstance();
+        String[] shortWeekdays = formatSymbols.getShortWeekdays();
+        shortDays = new String[] {shortWeekdays[2].substring(0,1).toUpperCase().concat(shortWeekdays[2].substring(1)).concat(", "),
+                shortWeekdays[3].substring(0,1).toUpperCase().concat(shortWeekdays[3].substring(1)).concat(", "),
+                shortWeekdays[4].substring(0,1).toUpperCase().concat(shortWeekdays[4].substring(1)).concat(", "),
+                shortWeekdays[5].substring(0,1).toUpperCase().concat(shortWeekdays[5].substring(1)).concat(", "),
+                shortWeekdays[6].substring(0,1).toUpperCase().concat(shortWeekdays[6].substring(1)).concat(", "),
+                shortWeekdays[7].substring(0,1).toUpperCase().concat(shortWeekdays[7].substring(1)).concat(", "),
+                shortWeekdays[1].substring(0,1).toUpperCase().concat(shortWeekdays[1].substring(1)).concat(", "),
+                };
 
 
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -131,7 +131,18 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
             }
         });
 
-        final Button vibrate = (Button) findViewById(R.id.vibrate);
+        repeat2 = (MyView) findViewById(R.id.repeat2);
+        repeat2.setSecondOnClickListener(new MyView.SecondOnClickListener() {
+            @Override
+            public void onClick() {
+                testo();
+            }
+        });
+
+        setRepeatDaysText();
+
+
+        final MyView vibrate = (MyView) findViewById(R.id.vibrate);
         vibrate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -148,13 +159,13 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
                     @Override
                     public void getResult(long[] vibroPattern, String v, String p, String r) {
                         vibration = vibroPattern;
-                        vibrate.setText(v + " x " + p + " x " + r);
+                        vibrate.getText().setText(v + " x " + p + " x " + r);
                     }
 
                     @Override
                     public void clearVibro() {
                         vibration = null;
-                        vibrate.setText("Default");
+                        vibrate.getText().setText("Default");
                     }
                 });
 
@@ -170,7 +181,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         });
 
 
-        sound = (Button) findViewById(R.id.sound);
+        sound = (MyView) findViewById(R.id.sound);
         sound.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -188,6 +199,51 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         });
     }
 
+    private void setRepeatDaysText() {
+        String selectedDays = "";
+        for (int i = 0; i < days.length; i++) {
+            if (days[i]) {
+                selectedDays+=shortDays[i];
+            }
+        }
+        if (!selectedDays.equals("")) {
+           selectedDays = selectedDays.substring(0, selectedDays.length()-2);
+        }
+        repeat2.getText().setText(selectedDays);
+    }
+
+    private void testo() {
+        String[] weekdays = formatSymbols.getWeekdays();
+        String[] dialogItems = new String[]{weekdays[2].substring(0,1).toUpperCase().concat(weekdays[2].substring(1)),
+                weekdays[3].substring(0,1).toUpperCase().concat(weekdays[3].substring(1)),
+                weekdays[4].substring(0,1).toUpperCase().concat(weekdays[4].substring(1)),
+                weekdays[5].substring(0,1).toUpperCase().concat(weekdays[5].substring(1)),
+                weekdays[6].substring(0,1).toUpperCase().concat(weekdays[6].substring(1)),
+                weekdays[7].substring(0,1).toUpperCase().concat(weekdays[7].substring(1)),
+                weekdays[1].substring(0,1).toUpperCase().concat(weekdays[1].substring(1))
+        };
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Days")
+                .setMultiChoiceItems(dialogItems, days, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
+                            days[indexSelected] = isChecked;
+
+                    }
+                }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        setRepeatDaysText();
+                        repeat2.getCheckbox().setChecked(true);
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                }).create();
+        dialog.show();
+    }
+
     private String getNoteText() {
         return textEdit.getText().toString();
     }
@@ -195,7 +251,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     private String getNoteTitle() {
         String title;
         if (titleEdit.getText().toString().equals("")) {
-            title = titleEdit.getHint().toString();
+            title = getString(R.string.app_name);
         } else {
             title = titleEdit.getText().toString();
         }
@@ -215,23 +271,23 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         return repeat;
     }
 
-//    private String getNoteDays() {
-//        String days = "";
-//        if (daysLayout.getVisibility() == View.VISIBLE) {
-//            for (int i = 0; i < daysHolders.length; i++) {
-//                if (daysHolders[i].isChecked()) {
-//                    days += "1;";
-//                } else {
-//                    days += "0;";
-//                }
-//            }
-//        } else {
-//            for (int i = 0; i < daysHolders.length; i++) {
-//                days += "0;";
-//            }
-//        }
-//        return days;
-//    }
+    private String getNoteDays() {
+        String stringDays = "";
+        if ((repeat2.getCheckbox().isChecked()) && (!repeat2.getText().getText().equals(""))) {
+            for (int i = 0; i < days.length; i++) {
+                if (days[i]) {
+                    stringDays += "1;";
+                } else {
+                    stringDays += "0;";
+                }
+            }
+        } else {
+            for (int i = 0; i < days.length; i++) {
+                stringDays += "0;";
+            }
+        }
+        return stringDays;
+    }
 
     private String getNoteSound() {
         String sound;
@@ -271,7 +327,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         note.setCreateTime(getNoteCreateTime());
         note.setSetTime(getNoteSetTime());
         note.setRepeat(getNoteRepeat());
-//        note.setDays(getNoteDays());
+        note.setDays(getNoteDays());
         note.setSound(getNoteSound());
         note.setVibration(getNoteVibration());
         note.setPriority(getNotePriority());
@@ -310,6 +366,18 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
                 Log.e("Shit", "can happen");
                 break;
             case R.id.clear_forms:
+                DelayedNote note = new DelayedNote();
+                note.setText(getNoteText());
+                note.setTitle(getNoteTitle());
+                note.setCreateTime(getNoteCreateTime());
+                note.setSetTime(getNoteSetTime());
+                note.setRepeat(getNoteRepeat());
+                note.setDays(getNoteDays());
+                note.setSound(getNoteSound());
+                note.setVibration(getNoteVibration());
+                note.setPriority(getNotePriority());
+                note.setCheckId(getNoteCheckId());
+                    Log.e("123", note.toString());
 
                 break;
             case R.id.action_clear_notification:
@@ -350,6 +418,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
             mBuilder.setVibrate(vibration);
             mBuilder.setDefaults(Notification.DEFAULT_LIGHTS);
         }
+        mBuilder.setOngoing(true);
         mBuilder.setSmallIcon(R.drawable.notify);
         nm.notify(-10, mBuilder.build());
     }
@@ -380,7 +449,8 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
                 if (soundUri != null) {
                     Cursor mCursor = getContentResolver().query(soundUri, null, null, null, null);
                     if (mCursor.moveToFirst()) {
-                        sound.setText(mCursor.getString(8));
+                        sound.getText().setText(mCursor.getString(8));
+                        mCursor.close();
                     }
 
                 }
@@ -401,14 +471,15 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     @Override
     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
         mainCal.set(i, i1, i2);
-        setDate.setText(sDateFormat.format(new Date(mainCal.getTimeInMillis())));
+        setDate.getText().setText(sDateFormat.format(new Date(mainCal.getTimeInMillis())));
     }
 
     @Override
     public void onTimeSet(TimePicker timePicker, int i, int i1) {
         mainCal.set(Calendar.HOUR_OF_DAY, i);
         mainCal.set(Calendar.MINUTE, i1);
-        setTime.setText(sTimeFormat.format(new Date(mainCal.getTimeInMillis())));
+        mainCal.set(Calendar.SECOND, 0);
+        setTime.getText().setText(sTimeFormat.format(new Date(mainCal.getTimeInMillis())));
     }
 
     private void checkSDPermission() {
