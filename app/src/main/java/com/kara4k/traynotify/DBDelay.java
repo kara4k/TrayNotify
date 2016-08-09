@@ -85,15 +85,23 @@ public class DBDelay {
     }
 
 
-//
-//    public void updateRec(String title, String text, String date, String numid, String id) {
-//        ContentValues cv = new ContentValues();
-//        cv.put(KEY_TITLE, title);
-//        cv.put(KEY_TEXT, text);
-//        cv.put(KEY_DATE, date);
-//        cv.put(KEY_NUMID, numid);
-//        mDB.update(TABLE_NAME, cv, KEY_ID + " = ?", new String[]{id});
-//    }
+
+    public void editNote(DelayedNote note, int id) {
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_TEXT, note.getText());
+        cv.put(KEY_TITLE, note.getTitle());
+        cv.put(KEY_CREATE_TIME, note.getCreateTime());
+        cv.put(KEY_SET_TIME, note.getSetTime());
+        cv.put(KEY_REPEAT, note.getRepeat());
+        cv.put(KEY_DAYS, note.getDays());
+        cv.put(KEY_SOUND, note.getSound());
+        cv.put(KEY_VIBRATION, note.getVibration());
+        cv.put(KEY_PRIORITY, note.getPriority());
+        cv.put(KEY_CHECKID, note.getCheckId());
+        open();
+        mDB.update(TABLE_NAME, cv, KEY_CHECKID + "=?", new String[]{String.valueOf(id)} );
+        close();
+    }
 
     public void close() {
         if (dbManager != null) dbManager.close();

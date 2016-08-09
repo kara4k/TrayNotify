@@ -44,7 +44,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             mBuilder.setContentInfo(String.valueOf(note.getCheckId()));
             mBuilder.setAutoCancel(false);
             mBuilder.setContentIntent(PendingIntent.getActivities(context, note.getCheckId(), makeIntent(context), PendingIntent.FLAG_UPDATE_CURRENT));
-            mBuilder.setOngoing(true);
+            mBuilder.setOngoing(false);
             nm.notify(note.getCheckId(), mBuilder.build());
         }
         DelayedAdapter.getInstance().notifyDataSetChanged();
@@ -120,6 +120,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         Intent delay = new Intent(context, CreateDelayedNote.class);
         delay.putExtra("id", note.getCheckId());
+        delay.putExtra(Intent.EXTRA_SUBJECT, note.getTitle());
+        delay.putExtra(Intent.EXTRA_TEXT, note.getText());
         return new Intent[]{main, delay};
     }
 

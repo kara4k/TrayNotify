@@ -111,17 +111,17 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
                     }
                 }
             });
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    try {
-                        QuickAdapter.getInstance().remove(getAdapterPosition());
-                    } catch (Exception e) {
-                        e.printStackTrace(); // TODO: 29.07.2016  
-                    }
-                    return false;
-                }
-            });
+//            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+//                @Override
+//                public boolean onLongClick(View view) {
+//                    try {
+//                        QuickAdapter.getInstance().remove(getAdapterPosition());
+//                    } catch (Exception e) {
+//                        e.printStackTrace(); //
+//                    }
+//                    return false;
+//                }
+//            });
         }
 
     }

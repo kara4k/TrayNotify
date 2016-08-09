@@ -8,22 +8,27 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewPagerFragment extends Fragment implements Serializable {
+public class ViewPagerFragment extends Fragment  {
 
     private TabLayout tabs;
     private Adapter adapter;
     private ViewPager viewPager;
     private QuickNotesFragment quickNotes;
     private DelayedNotesFragment delayedNotes;
+    private getPagerItem getPagerItem;
+
+    public interface getPagerItem {
+        void getItem(int i);
+    }
 
     @Nullable
     @Override
@@ -34,12 +39,14 @@ public class ViewPagerFragment extends Fragment implements Serializable {
         quickNotes = new QuickNotesFragment();
         delayedNotes = new DelayedNotesFragment();
         adapter.addFragment(quickNotes, "Quick Notes");
-        adapter.addFragment(delayedNotes, "Quick Notes2");
+        adapter.addFragment(delayedNotes, "Notifications");
         viewPager.setAdapter(adapter);
-
         tabs = (TabLayout) getActivity().findViewById(R.id.tabs);
         tabs.setVisibility(View.VISIBLE);
         tabs.setupWithViewPager(viewPager);
+        Log.e("fragge", String.valueOf(getArguments().getInt("item", 0)));
+        viewPager.setCurrentItem(getArguments().getInt("item", 0));
+
         return linearLayout;
     }
 
@@ -48,8 +55,14 @@ public class ViewPagerFragment extends Fragment implements Serializable {
     public void onDetach() {
         super.onDetach();
         tabs.setVisibility(View.GONE);
+        if (getPagerItem!=null) {
+            getPagerItem.getItem(viewPager.getCurrentItem());
+        }
     }
 
+    public void setGetPagerItem(ViewPagerFragment.getPagerItem getPagerItem) {
+        this.getPagerItem = getPagerItem;
+    }
 
     static class Adapter extends FragmentStatePagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();

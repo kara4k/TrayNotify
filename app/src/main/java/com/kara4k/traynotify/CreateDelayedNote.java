@@ -32,8 +32,10 @@ import android.widget.Toast;
 
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class CreateDelayedNote extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
@@ -59,26 +61,26 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     private DateFormatSymbols formatSymbols;
     private MyView repeat;
     private String[] shortDays;
+    private DelayedNote note;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_notification);
 
+        note = new DelayedNote();
+
         textEdit = (EditText) findViewById(R.id.textEdit);
         titleEdit = (EditText) findViewById(R.id.editTitle);
 
         db = new DBDelay(getApplicationContext());
         checkThis = db.getNoteCheckID();
+        int tempId = checkThis;
 
         mainCal = Calendar.getInstance();
         sDateFormat = new SimpleDateFormat("dd.MM.yyyy");
         sTimeFormat = new SimpleDateFormat("HH:mm");
 
-        if (getIntent().getExtras() != null) {
-            checkThis = getIntent().getIntExtra("id", 0);
-            Log.e("123", String.valueOf(checkThis));
-        }
 
         setDate = (MyView) findViewById(R.id.setDate);
         setDate.getText().setText(sDateFormat.format(new Date(mainCal.getTimeInMillis())));
@@ -116,12 +118,8 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
 
-        final Button repeat = (Button) findViewById(R.id.repeat);
-        daysLayout = (LinearLayout) findViewById(R.id.days);
-
-
-        this.repeat = (MyView) findViewById(R.id.repeat2);
-        this.repeat.setSecondOnClickListener(new MyView.SecondOnClickListener() {
+        repeat = (MyView) findViewById(R.id.repeat2);
+        repeat.setSecondOnClickListener(new MyView.SecondOnClickListener() {
             @Override
             public void onClick() {
                 chooseDays();
@@ -186,13 +184,151 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
                 createNotification();
             }
         });
+
+        onIntentReceive(tempId, vibrate);
     }
+
+    private void onIntentReceive(int tempId, MyView vibrate) {
+        if (getIntent().getExtras() != null) {
+            checkThis = getIntent().getIntExtra("id", 0);
+            if (checkThis != 0) {
+                db.open();
+                Cursor alarmNote = db.getAlarmNote(checkThis);
+                if (alarmNote.moveToFirst()) {
+                    fillNoteFromDb(alarmNote);
+                    fillFormsFromNote(vibrate);
+                } else {
+                    titleEdit.setText(getIntent().getStringExtra(Intent.EXTRA_SUBJECT));
+                    textEdit.setText(getIntent().getStringExtra(Intent.EXTRA_TEXT));
+                }
+                db.close();
+            } else if (checkThis == 0) {
+                titleEdit.setText(getIntent().getStringExtra(Intent.EXTRA_SUBJECT));
+                textEdit.setText(getIntent().getStringExtra(Intent.EXTRA_TEXT));
+                checkThis = tempId;
+            }
+
+
+        }
+    }
+
+    private void fillNoteFromDb(Cursor alarmNote) {
+        note.setText(alarmNote.getString(1));
+        note.setTitle(alarmNote.getString(2));
+        note.setCreateTime(alarmNote.getLong(3));
+        note.setSetTime(alarmNote.getLong(4));
+        note.setRepeat(alarmNote.getInt(5));
+        note.setDays(alarmNote.getString(6));
+        note.setSound(alarmNote.getString(7));
+        note.setVibration(alarmNote.getString(8));
+        note.setPriority(alarmNote.getInt(9));
+        note.setCheckId(alarmNote.getInt(10));
+    }
+
+    private void fillFormsFromNote(MyView vibrate) {
+        parseTextTitleDate();
+        parseRepeat();
+        if (!note.getSound().equals("0")) {
+            parseSound();
+        }
+        if (!note.getVibration().equals("1")) {
+            parseVibration(vibrate);
+        }
+    }
+
+    private void parseTextTitleDate() {
+        titleEdit.setText(note.getTitle());
+        textEdit.setText(note.getText());
+        setDate.setText(sDateFormat.format(note.getSetTime()));
+        setTime.setText(sTimeFormat.format(note.getSetTime()));
+    }
+
+    private void parseRepeat() {
+        if (note.getRepeat() == 1) {
+            this.repeat.getCheckbox().setChecked(true);
+            String[] split = note.getDays().split(";");
+            for (int i = 0; i < split.length; i++) {
+                if (split[i].equals("0")) {
+                    days[i] = false;
+                } else {
+                    days[i] = true;
+                }
+            }
+            setRepeatDaysText();
+        } else {
+            this.repeat.getCheckbox().setChecked(false);
+        }
+    }
+
+    private void parseSound() {
+        try {
+            soundUri = Uri.parse(note.getSound());
+            Cursor mCursor = getContentResolver().query(soundUri, null, null, null, null);
+            if (mCursor.moveToFirst()) {
+                sound.getText().setText(mCursor.getString(8));
+                mCursor.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void parseVibration(MyView vibrate) {
+        String[] strings = note.getVibration().split(";");
+        int repeatTime = Integer.parseInt(strings[2]);
+        List<Long> vibratePattern = new ArrayList<Long>();
+        vibratePattern.add(0, (long) 0);
+
+        for (int k = 0; k < repeatTime; k++) {
+            vibratePattern.add(Long.parseLong(strings[0]));
+            vibratePattern.add(Long.parseLong(strings[1]));
+        }
+
+        long[] vibration = new long[vibratePattern.size()];
+        for (int j = 0; j < vibratePattern.size(); j++) {
+            vibration[j] = vibratePattern.get(j);
+        }
+
+        setVibrationTextFromString(vibrate, vibration);
+    }
+
+    private void setVibrationTextFromString(MyView vibrate, long[] vibration) {
+        long v = vibration[1] / 100;
+        long p = vibration[2] / 100;
+
+        String vText = "";
+        String pText = "";
+        String rText = String.valueOf((vibration.length - 1) / 2);
+
+        if (v < 10) {
+            vText = (String.format("0.%d", v));
+        } else {
+            vText = (String.valueOf(v)
+                    .substring(0, 1)
+                    .concat(".")
+                    .concat(String.valueOf(v).substring(1)));
+        }
+
+
+        if (p < 10) {
+            pText = (String.format("0.%d", p));
+        } else {
+            pText = (String.valueOf(p)
+                    .substring(0, 1)
+                    .concat(".")
+                    .concat(String.valueOf(p).substring(1)));
+        }
+
+        vibrate.setText(vText.concat(" x ").concat(pText).concat(" x ").concat(rText));
+    }
+
 
     private void setRepeatDaysText() {
         String selectedDays = "";
         for (int i = 0; i < days.length; i++) {
             if (days[i]) {
                 selectedDays += shortDays[i];
+                Log.e("tag", String.valueOf(days[i]));
             }
         }
         if (!selectedDays.equals("")) {
@@ -310,7 +446,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
     private void createNotification() {
 
-        DelayedNote note = new DelayedNote();
+
         note.setText(getNoteText());
         note.setTitle(getNoteTitle());
         note.setCreateTime(getNoteCreateTime());
@@ -322,7 +458,13 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         note.setPriority(getNotePriority());
         note.setCheckId(getNoteCheckId());
 
-        db.addNote(note);
+        db.open();
+        Cursor alarmNote = db.getAlarmNote(checkThis);
+        if(alarmNote.moveToFirst()) {
+            db.editNote(note,checkThis);
+        } else {
+            db.addNote(note);
+        }
 
 
         Log.e("check", String.valueOf(note.getCheckId()));

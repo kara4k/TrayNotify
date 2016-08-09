@@ -12,14 +12,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ViewPagerFragment.getPagerItem{
 
     private DrawerLayout mDrawerLayout;
     private NotificationManager nm;
+    private int pagerItem = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +69,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.container, new ViewPagerFragment());
-        ft.commitAllowingStateLoss();
+//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//        ft.replace(R.id.container, new ViewPagerFragment());
+//        ft.commitAllowingStateLoss();
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -85,7 +87,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() { // TODO: 27.07.2016
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.container, new ViewPagerFragment());
+        ViewPagerFragment vp = new ViewPagerFragment();
+        Bundle bundle = new Bundle();
+        Log.e("MAIN", String.valueOf(pagerItem));
+        bundle.putInt("item", pagerItem);
+        vp.setArguments(bundle);
+        vp.setGetPagerItem(this);
+        ft.replace(R.id.container, vp);
         ft.commitAllowingStateLoss();
         super.onStart();
 
@@ -122,5 +130,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void clear() {
         nm.cancelAll();
+    }
+
+    @Override
+    public void getItem(int i) {
+        pagerItem = i;
+        Log.e("tytyty", "isitworksa");
+        Log.e("tytyty", String.valueOf(i));
     }
 }
