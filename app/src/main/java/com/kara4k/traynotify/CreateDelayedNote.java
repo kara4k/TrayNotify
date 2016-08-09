@@ -57,7 +57,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     private DBDelay db;
     private int checkThis;
     private DateFormatSymbols formatSymbols;
-    private MyView repeat2;
+    private MyView repeat;
     private String[] shortDays;
 
     @Override
@@ -102,14 +102,14 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
         formatSymbols = DateFormatSymbols.getInstance();
         String[] shortWeekdays = formatSymbols.getShortWeekdays();
-        shortDays = new String[] {shortWeekdays[2].substring(0,1).toUpperCase().concat(shortWeekdays[2].substring(1)).concat(", "),
-                shortWeekdays[3].substring(0,1).toUpperCase().concat(shortWeekdays[3].substring(1)).concat(", "),
-                shortWeekdays[4].substring(0,1).toUpperCase().concat(shortWeekdays[4].substring(1)).concat(", "),
-                shortWeekdays[5].substring(0,1).toUpperCase().concat(shortWeekdays[5].substring(1)).concat(", "),
-                shortWeekdays[6].substring(0,1).toUpperCase().concat(shortWeekdays[6].substring(1)).concat(", "),
-                shortWeekdays[7].substring(0,1).toUpperCase().concat(shortWeekdays[7].substring(1)).concat(", "),
-                shortWeekdays[1].substring(0,1).toUpperCase().concat(shortWeekdays[1].substring(1)).concat(", "),
-                };
+        shortDays = new String[]{shortWeekdays[2].substring(0, 1).toUpperCase().concat(shortWeekdays[2].substring(1)).concat(", "),
+                shortWeekdays[3].substring(0, 1).toUpperCase().concat(shortWeekdays[3].substring(1)).concat(", "),
+                shortWeekdays[4].substring(0, 1).toUpperCase().concat(shortWeekdays[4].substring(1)).concat(", "),
+                shortWeekdays[5].substring(0, 1).toUpperCase().concat(shortWeekdays[5].substring(1)).concat(", "),
+                shortWeekdays[6].substring(0, 1).toUpperCase().concat(shortWeekdays[6].substring(1)).concat(", "),
+                shortWeekdays[7].substring(0, 1).toUpperCase().concat(shortWeekdays[7].substring(1)).concat(", "),
+                shortWeekdays[1].substring(0, 1).toUpperCase().concat(shortWeekdays[1].substring(1)).concat(", "),
+        };
 
 
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -118,24 +118,13 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
         final Button repeat = (Button) findViewById(R.id.repeat);
         daysLayout = (LinearLayout) findViewById(R.id.days);
-        repeat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (daysLayout.getVisibility() == view.GONE) {
-                    daysLayout.setVisibility(view.VISIBLE);
-                    repeat.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_white_24dp, 0);
-                } else {
-                    daysLayout.setVisibility(View.GONE);
-                    repeat.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-                }
-            }
-        });
 
-        repeat2 = (MyView) findViewById(R.id.repeat2);
-        repeat2.setSecondOnClickListener(new MyView.SecondOnClickListener() {
+
+        this.repeat = (MyView) findViewById(R.id.repeat2);
+        this.repeat.setSecondOnClickListener(new MyView.SecondOnClickListener() {
             @Override
             public void onClick() {
-                testo();
+                chooseDays();
             }
         });
 
@@ -203,38 +192,38 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         String selectedDays = "";
         for (int i = 0; i < days.length; i++) {
             if (days[i]) {
-                selectedDays+=shortDays[i];
+                selectedDays += shortDays[i];
             }
         }
         if (!selectedDays.equals("")) {
-           selectedDays = selectedDays.substring(0, selectedDays.length()-2);
+            selectedDays = selectedDays.substring(0, selectedDays.length() - 2);
         }
-        repeat2.getText().setText(selectedDays);
+        repeat.getText().setText(selectedDays);
     }
 
-    private void testo() {
+    private void chooseDays() {
         String[] weekdays = formatSymbols.getWeekdays();
-        String[] dialogItems = new String[]{weekdays[2].substring(0,1).toUpperCase().concat(weekdays[2].substring(1)),
-                weekdays[3].substring(0,1).toUpperCase().concat(weekdays[3].substring(1)),
-                weekdays[4].substring(0,1).toUpperCase().concat(weekdays[4].substring(1)),
-                weekdays[5].substring(0,1).toUpperCase().concat(weekdays[5].substring(1)),
-                weekdays[6].substring(0,1).toUpperCase().concat(weekdays[6].substring(1)),
-                weekdays[7].substring(0,1).toUpperCase().concat(weekdays[7].substring(1)),
-                weekdays[1].substring(0,1).toUpperCase().concat(weekdays[1].substring(1))
+        String[] dialogItems = new String[]{weekdays[2].substring(0, 1).toUpperCase().concat(weekdays[2].substring(1)),
+                weekdays[3].substring(0, 1).toUpperCase().concat(weekdays[3].substring(1)),
+                weekdays[4].substring(0, 1).toUpperCase().concat(weekdays[4].substring(1)),
+                weekdays[5].substring(0, 1).toUpperCase().concat(weekdays[5].substring(1)),
+                weekdays[6].substring(0, 1).toUpperCase().concat(weekdays[6].substring(1)),
+                weekdays[7].substring(0, 1).toUpperCase().concat(weekdays[7].substring(1)),
+                weekdays[1].substring(0, 1).toUpperCase().concat(weekdays[1].substring(1))
         };
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("Days")
                 .setMultiChoiceItems(dialogItems, days, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
-                            days[indexSelected] = isChecked;
+                        days[indexSelected] = isChecked;
 
                     }
                 }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         setRepeatDaysText();
-                        repeat2.getCheckbox().setChecked(true);
+                        repeat.getCheckbox().setChecked(true);
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
@@ -267,13 +256,13 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     }
 
     private int getNoteRepeat() {
-        int repeat = repeat2.getCheckbox().isChecked()  ? 1 : 0;
+        int repeat = this.repeat.getCheckbox().isChecked() ? 1 : 0;
         return repeat;
     }
 
     private String getNoteDays() {
         String stringDays = "";
-        if ((repeat2.getCheckbox().isChecked()) && (!repeat2.getText().getText().equals(""))) {
+        if ((repeat.getCheckbox().isChecked()) && (!repeat.getText().getText().equals(""))) {
             for (int i = 0; i < days.length; i++) {
                 if (days[i]) {
                     stringDays += "1;";
@@ -333,7 +322,6 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         note.setPriority(getNotePriority());
         note.setCheckId(getNoteCheckId());
 
-
         db.addNote(note);
 
 
@@ -346,12 +334,15 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         alarmIntent.putExtras(bundle);
 
 
-        pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), checkThis, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
         mainCal.set(Calendar.SECOND, 00);
+        mainCal.set(Calendar.MILLISECOND, 0000);
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, mainCal.getTimeInMillis(), 1 * 60 * 1000, pendingIntent);
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE SSSS, dd.MM.yyyy; HH:mm:ss:SSSSS ");
+
+        Log.e("tag", sdf.format(mainCal.getTimeInMillis()));
+
+        pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), checkThis, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, mainCal.getTimeInMillis(), 24 * 60 * 60 * 1000, pendingIntent);
         finish();
     }
 
@@ -368,7 +359,11 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
                 Log.e("Shit", "can happen");
                 break;
             case R.id.clear_forms:
-                Log.e("tag", String.valueOf(mainCal.get(Calendar.DAY_OF_WEEK)));
+                SimpleDateFormat sdf = new SimpleDateFormat("EEE SSSS, dd.MM.yyyy; HH:mm:ss:SSSSS ");
+                Calendar cal = Calendar.getInstance();
+                cal.set(Calendar.SECOND, 00);
+                cal.set(Calendar.MILLISECOND, 0000);
+                Log.e("tag", sdf.format(cal.getTimeInMillis()));
                 break;
             case R.id.action_clear_notification:
                 nm.cancel(checkThis);
@@ -451,8 +446,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         new DatePickerDialog(this, R.style.PickerStyle, this,
                 mainCal.get(Calendar.YEAR),
                 mainCal.get(Calendar.MONTH),
-                mainCal.get(Calendar.DAY_OF_MONTH))
-                .show();
+                mainCal.get(Calendar.DAY_OF_MONTH)).show();
     }
 
     @Override
@@ -473,7 +467,6 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             int hasWriteSDPermission = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
             if (hasWriteSDPermission == PackageManager.PERMISSION_DENIED) {
-                Log.e("enter", "here");
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
                 return;
             } else {

@@ -71,7 +71,6 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
 
     private void highlightFinishedNotes(DelayedNotesViewHolder notesViewHolder, int i) {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND, 30);
         long now = calendar.getTimeInMillis();
         long setTime = notes.get(i).getSetTime();
         if (((notes.get(i).getRepeat() == 0) || (notes.get(i).getDays().equals("0;0;0;0;0;0;0;")))&&(now > setTime)) {

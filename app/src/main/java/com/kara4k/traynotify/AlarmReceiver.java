@@ -1,6 +1,7 @@
 package com.kara4k.traynotify;
 
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -10,6 +11,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,55 +31,68 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         fillNote(intent, db);
 
+        Log.e("TAG", String.valueOf(isNotify()));
+
         if (isNotify()) {
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
+            mBuilder.setSmallIcon(R.drawable.notify);
+            mBuilder.setContentText(note.getText());
+            mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(note.getText()));
+            mBuilder.setContentTitle(note.getTitle());
+            setVibroSound(context, mBuilder);
+            mBuilder.setPriority(note.getPriority());
+            mBuilder.setContentInfo(String.valueOf(note.getCheckId()));
+            mBuilder.setAutoCancel(false);
+            mBuilder.setContentIntent(PendingIntent.getActivities(context, note.getCheckId(), makeIntent(context), PendingIntent.FLAG_UPDATE_CURRENT));
+            mBuilder.setOngoing(true);
+            nm.notify(note.getCheckId(), mBuilder.build());
+        }
+        DelayedAdapter.getInstance().notifyDataSetChanged();
 
+
+    }
+
+    private void setVibroSound(Context context, NotificationCompat.Builder mBuilder) {
+        if ((note.getSound().equals("0")) && (note.getVibration().equals("1"))) {
+            mBuilder.setDefaults(Notification.DEFAULT_ALL);
+        } else if ((!(note.getSound().equals("0")) && (note.getVibration().equals("1")))) {
+            mBuilder.setDefaults(Notification.DEFAULT_VIBRATE|Notification.DEFAULT_LIGHTS);
+            setCustomSound(context, mBuilder);
+        } else if (((note.getSound().equals("0")) && (!note.getVibration().equals("1")))) {
+            mBuilder.setDefaults(Notification.DEFAULT_SOUND|Notification.DEFAULT_LIGHTS);
+            setCustomVibration(mBuilder);
+        } else if ((!note.getSound().equals("0")) && (!note.getVibration().equals("1"))) {
+            mBuilder.setDefaults(Notification.DEFAULT_LIGHTS);
+            setCustomSound(context, mBuilder);
+            setCustomVibration(mBuilder);
+        }
+    }
+
+    private void setCustomSound(Context context, NotificationCompat.Builder mBuilder) {
+        try {
+            mBuilder.setSound(Uri.parse(note.getSound()));
+        } catch (Exception e) {
+            Toast.makeText(context, "Can't open sound file", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void setCustomVibration(NotificationCompat.Builder mBuilder) {
+        String[] strings = note.getVibration().split(";");
+        int repeat = Integer.parseInt(strings[2]);
+        List<Long> vibratePattern = new ArrayList<Long>();
+        vibratePattern.add(0, (long) 0);
+
+        for (int k = 0; k < repeat; k++) {
+            vibratePattern.add(Long.parseLong(strings[0]));
+            vibratePattern.add(Long.parseLong(strings[1]));
         }
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
-        mBuilder.setSmallIcon(R.drawable.notify);
-
-        mBuilder.setContentText(note.getText());
-        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(note.getText()));
-        mBuilder.setContentTitle(note.getTitle());
-        Log.e("tage",note.toString());
-
-        if (!note.getSound().equals("0")) {
-            try {
-                mBuilder.setSound(Uri.parse(note.getSound()));
-            } catch (Exception e) {
-                // TODO: 04.08.2016 defaults
-            }
+        long[] vibration = new long[vibratePattern.size()];
+        for (int j = 0; j < vibratePattern.size(); j++) {
+            vibration[j] = vibratePattern.get(j);
         }
 
-        if (!note.getVibration().equals("1")) {
-            String[] strings = note.getVibration().split(";");
-            int repeat = Integer.parseInt(strings[2]);
-            List<Long> vibratePattern = new ArrayList<Long>();
-            vibratePattern.add(0, (long) 0);
-
-            for (int k = 0; k < repeat; k++) {
-                vibratePattern.add(Long.parseLong(strings[0]));
-                vibratePattern.add(Long.parseLong(strings[1]));
-            }
-
-            long[] vibration = new long[vibratePattern.size()];
-            for (int j = 0; j < vibratePattern.size(); j++) {
-                vibration[j] = vibratePattern.get(j);
-            }
-
-            mBuilder.setVibrate(vibration);
-        }
-
-        Log.e("6767", note.toString());
-        isNotify();
-
-        mBuilder.setPriority(note.getPriority());
-        mBuilder.setContentInfo(String.valueOf(note.getCheckId()));
-
-        mBuilder.setAutoCancel(false);
-        mBuilder.setContentIntent(PendingIntent.getActivities(context, 0, makeIntent(context), PendingIntent.FLAG_UPDATE_CURRENT));
-        mBuilder.setOngoing(true);
-        nm.notify(note.getCheckId(), mBuilder.build());
+        mBuilder.setVibrate(vibration);
     }
 
     private void fillNote(Intent intent, DBDelay db) {
@@ -149,7 +164,13 @@ public class AlarmReceiver extends BroadcastReceiver {
                 return false;
             }
         } else {
-            return true;
+            long now = Calendar.getInstance().getTimeInMillis();
+            long set = note.getSetTime();
+            if (now - 30 * 60000 < set) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 }
