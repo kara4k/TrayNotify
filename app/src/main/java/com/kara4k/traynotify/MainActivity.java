@@ -17,11 +17,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity implements ViewPagerFragment.getPagerItem{
+public class MainActivity extends AppCompatActivity {
 
+    final private int DELAYED = 1;
+    final private int QUICK = 2;
     private DrawerLayout mDrawerLayout;
     private NotificationManager nm;
     private int pagerItem = 0;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,10 @@ public class MainActivity extends AppCompatActivity implements ViewPagerFragment
                         switch (menuItem.getItemId()) {
                             case R.id.add_note:
                                 fragment = new ViewPagerFragment();
+                                Bundle bundle = new Bundle();
+                                Log.e("MAIN", String.valueOf(pagerItem));
+                                bundle.putInt("item", pagerItem);
+                                fragment.setArguments(bundle);
                                 break;
                             case R.id.new_delayed:
                                 fragment = new QuickNotesFragment();
@@ -69,9 +77,7 @@ public class MainActivity extends AppCompatActivity implements ViewPagerFragment
                     }
                 });
 
-//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//        ft.replace(R.id.container, new ViewPagerFragment());
-//        ft.commitAllowingStateLoss();
+
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -79,20 +85,18 @@ public class MainActivity extends AppCompatActivity implements ViewPagerFragment
             @Override
             public void onClick(View view) {
                 Intent notification = new Intent(getApplicationContext(), CreateDelayedNote.class);
-                startActivity(notification);
+                startActivityForResult(notification,DELAYED);
             }
         });
     }
 
     @Override
-    protected void onStart() { // TODO: 27.07.2016
+    protected void onStart() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ViewPagerFragment vp = new ViewPagerFragment();
         Bundle bundle = new Bundle();
-        Log.e("MAIN", String.valueOf(pagerItem));
         bundle.putInt("item", pagerItem);
         vp.setArguments(bundle);
-        vp.setGetPagerItem(this);
         ft.replace(R.id.container, vp);
         ft.commitAllowingStateLoss();
         super.onStart();
@@ -120,22 +124,29 @@ public class MainActivity extends AppCompatActivity implements ViewPagerFragment
             return true;
         } else if (id == R.id.quick_note) {
             Intent quick = new Intent(this, QuickNote.class);
-            startActivity(quick);
+            startActivityForResult(quick, QUICK);
         } else if (id == android.R.id.home) {
             mDrawerLayout.openDrawer(GravityCompat.START);
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case QUICK:
+                pagerItem = 1;
+                break;
+            case DELAYED:
+                pagerItem = 0;
+                break;
+        }
+    }
 
     public void clear() {
         nm.cancelAll();
     }
 
-    @Override
-    public void getItem(int i) {
-        pagerItem = i;
-        Log.e("tytyty", "isitworksa");
-        Log.e("tytyty", String.valueOf(i));
-    }
+
 }

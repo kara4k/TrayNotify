@@ -26,7 +26,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -54,7 +53,6 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     private AlarmManager alarmManager;
     private Intent alarmIntent;
     private PendingIntent pendingIntent;
-    private LinearLayout daysLayout;
     private boolean[] days;
     private DBDelay db;
     private int checkThis;
@@ -62,6 +60,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     private MyView repeat;
     private String[] shortDays;
     private DelayedNote note;
+    private MyView vibrate;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -129,7 +128,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         setRepeatDaysText();
 
 
-        final MyView vibrate = (MyView) findViewById(R.id.vibrate);
+        vibrate = (MyView) findViewById(R.id.vibrate);
         vibrate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -460,8 +459,8 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
         db.open();
         Cursor alarmNote = db.getAlarmNote(checkThis);
-        if(alarmNote.moveToFirst()) {
-            db.editNote(note,checkThis);
+        if (alarmNote.moveToFirst()) {
+            db.editNote(note, checkThis);
         } else {
             db.addNote(note);
         }
@@ -498,14 +497,10 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.share:
-                Log.e("Shit", "can happen");
+                sendIntent();
                 break;
             case R.id.clear_forms:
-                SimpleDateFormat sdf = new SimpleDateFormat("EEE SSSS, dd.MM.yyyy; HH:mm:ss:SSSSS ");
-                Calendar cal = Calendar.getInstance();
-                cal.set(Calendar.SECOND, 00);
-                cal.set(Calendar.MILLISECOND, 0000);
-                Log.e("tag", sdf.format(cal.getTimeInMillis()));
+                clearForms();
                 break;
             case R.id.action_clear_notification:
                 nm.cancel(checkThis);
@@ -514,8 +509,30 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         return super.onOptionsItemSelected(item);
     }
 
+    private void sendIntent() {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_SUBJECT, titleEdit.getText().toString());
+        sendIntent.putExtra(Intent.EXTRA_TEXT, textEdit.getText().toString());
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
+    }
+
     private void clearForms() {
-        // TODO: 03.08.2016 clear
+        note = new DelayedNote();
+        textEdit.setText("");
+        titleEdit.setText("");
+        Calendar cal = Calendar.getInstance();
+        setDate.setText(sDateFormat.format(cal.getTimeInMillis()));
+        setTime.setText(sTimeFormat.format(cal.getTimeInMillis()));
+        days = new boolean[]{true, true, true, true, true, true, true};
+        setRepeatDaysText();
+        repeat.getCheckbox().setChecked(false);
+        soundUri = null;
+        sound.setText("Default");
+        vibration = null;
+        vibrate.setText("Default");
+
     }
 
     private void makeTest() {
@@ -635,6 +652,10 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         }
     }
 
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        setResult(RESULT_OK);
+    }
 }
 

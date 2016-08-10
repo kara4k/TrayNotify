@@ -7,7 +7,7 @@ class QuickTouchHelper extends ItemTouchHelper.SimpleCallback {
     private QuickAdapter quickAdapter;
 
     public QuickTouchHelper(QuickAdapter quickAdapter) {
-        super(0 , ItemTouchHelper.RIGHT);
+        super(0 , ItemTouchHelper.LEFT);
         this.quickAdapter = quickAdapter;
     }
 

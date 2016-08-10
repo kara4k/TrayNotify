@@ -197,4 +197,10 @@ public class QuickNote extends AppCompatActivity {
             dbQuick.close();
         }
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        setResult(RESULT_OK);
+    }
 }

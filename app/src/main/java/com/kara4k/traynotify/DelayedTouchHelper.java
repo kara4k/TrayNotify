@@ -8,7 +8,7 @@ public class DelayedTouchHelper extends ItemTouchHelper.SimpleCallback {
     private DelayedAdapter delayedAdapter;
 
     public DelayedTouchHelper(DelayedAdapter delayedAdapter) {
-        super(0, ItemTouchHelper.LEFT);
+        super(0, ItemTouchHelper.RIGHT);
         this.delayedAdapter = delayedAdapter;
     }
 

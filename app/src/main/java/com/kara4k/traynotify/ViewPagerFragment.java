@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,11 +23,8 @@ public class ViewPagerFragment extends Fragment  {
     private ViewPager viewPager;
     private QuickNotesFragment quickNotes;
     private DelayedNotesFragment delayedNotes;
-    private getPagerItem getPagerItem;
 
-    public interface getPagerItem {
-        void getItem(int i);
-    }
+
 
     @Nullable
     @Override
@@ -38,14 +34,18 @@ public class ViewPagerFragment extends Fragment  {
         adapter = new Adapter(getFragmentManager());
         quickNotes = new QuickNotesFragment();
         delayedNotes = new DelayedNotesFragment();
-        adapter.addFragment(quickNotes, "Quick Notes");
         adapter.addFragment(delayedNotes, "Notifications");
+        adapter.addFragment(quickNotes, "Quick Notes");
         viewPager.setAdapter(adapter);
         tabs = (TabLayout) getActivity().findViewById(R.id.tabs);
         tabs.setVisibility(View.VISIBLE);
         tabs.setupWithViewPager(viewPager);
-        Log.e("fragge", String.valueOf(getArguments().getInt("item", 0)));
-        viewPager.setCurrentItem(getArguments().getInt("item", 0));
+
+        if (getArguments()!= null) {
+            int item = getArguments().getInt("item", 0);
+            viewPager.setCurrentItem(item);
+        }
+
 
         return linearLayout;
     }
@@ -55,13 +55,7 @@ public class ViewPagerFragment extends Fragment  {
     public void onDetach() {
         super.onDetach();
         tabs.setVisibility(View.GONE);
-        if (getPagerItem!=null) {
-            getPagerItem.getItem(viewPager.getCurrentItem());
-        }
-    }
 
-    public void setGetPagerItem(ViewPagerFragment.getPagerItem getPagerItem) {
-        this.getPagerItem = getPagerItem;
     }
 
     static class Adapter extends FragmentStatePagerAdapter {
