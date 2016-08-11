@@ -117,7 +117,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
 
-        repeat = (MyView) findViewById(R.id.repeat2);
+        repeat = (MyView) findViewById(R.id.repeat);
         repeat.setSecondOnClickListener(new MyView.SecondOnClickListener() {
             @Override
             public void onClick() {
@@ -482,8 +482,11 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
         Log.e("tag", sdf.format(mainCal.getTimeInMillis()));
 
+
+
         pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), checkThis, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, mainCal.getTimeInMillis(), 24 * 60 * 60 * 1000, pendingIntent);
+
         finish();
     }
 

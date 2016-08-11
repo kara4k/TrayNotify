@@ -2,6 +2,7 @@ package com.kara4k.traynotify;
 
 import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -24,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private NotificationManager nm;
     private int pagerItem = 0;
-
+    private ViewPagerFragment vp;
+    private NavigationView navigationView;
 
 
     @Override
@@ -41,11 +43,15 @@ public class MainActivity extends AppCompatActivity {
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        if (savedInstanceState!= null) {
+           pagerItem = savedInstanceState.getInt("item", 0);
+        }
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
 
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     // This method will trigger on item Click of navigation menu
@@ -61,10 +67,11 @@ public class MainActivity extends AppCompatActivity {
                                 fragment.setArguments(bundle);
                                 break;
                             case R.id.new_delayed:
-                                fragment = new QuickNotesFragment();
+                                fragment = new SMSFragment();
                                 break;
                             default:
                                 fragment = new NotifyList();
+                                break;
                         }
                         menuItem.setChecked(true);
                         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -80,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,15 +99,31 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        int item = vp.getViewPager().getCurrentItem();
+        outState.putInt("item", item);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
     @Override
     protected void onStart() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ViewPagerFragment vp = new ViewPagerFragment();
+        vp = new ViewPagerFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("item", pagerItem);
         vp.setArguments(bundle);
         ft.replace(R.id.container, vp);
         ft.commitAllowingStateLoss();
+        navigationView.getMenu().getItem(0).setChecked(true);
         super.onStart();
 
     }

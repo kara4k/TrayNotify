@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -61,8 +61,7 @@
                 android:layout_marginLeft="@dimen/dimen_default"
                 android:layout_marginRight="@dimen/dimen_default"
                 android:layout_marginTop="@dimen/dimen_default"
-                android:background="@android:color/transparent"
-                 />
+                android:background="@android:color/transparent" />
         </LinearLayout>
 
         <View style="@style/Divider" />
@@ -74,97 +73,59 @@
             android:orientation="horizontal">
 
             <com.kara4k.traynotify.MyView
+                android:id="@+id/setDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/setDate"
                 android:layout_weight="1"
-                app:Title="Date"
-                app:Text="09.01.2016"
-                app:Image="@drawable/ic_event_black_24dp"
                 app:CheckVisible="false"
-                app:ImageVisible="true"/>
+                app:Image="@drawable/ic_event_black_24dp"
+                app:ImageVisible="true"
+                app:Text="09.01.2016"
+                app:Title="Date" />
 
             <com.kara4k.traynotify.MyView
+                android:id="@+id/setTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/setTime"
                 android:layout_weight="1"
-                app:Title="Time"
-                app:Text="18:21"
-                app:Image="@drawable/ic_access_time_black_24dp"
                 app:CheckVisible="false"
-                app:ImageVisible="true"/>
-
+                app:Image="@drawable/ic_access_time_black_24dp"
+                app:ImageVisible="true"
+                app:Text="18:21"
+                app:Title="Time" />
 
 
         </LinearLayout>
 
         <com.kara4k.traynotify.MyView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/repeat2"
-            app:Title="Repeat"
-            app:Text="No"
-            app:ImageVisible="false"
-            app:Image="@drawable/ic_repeat_grey_24dp"
-            app:isChecked="false"
-            app:CheckVisible="true"/>
-
-        <!--<View style="@style/Divider" />-->
-
-        <Button
             android:id="@+id/repeat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimen_default"
-            android:layout_marginRight="@dimen/dimen_default"
-            android:layout_marginTop="@dimen/dimen_default"
-            android:background="@color/colorPrimary"
-            android:checked="false"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
-            android:padding="5dp"
-            android:text="Repeat"
-            android:textColor="@android:color/white"
-            android:textOff="HIDE"
-            android:textOn="SHOW"
-            android:visibility="gone"/>
+            app:CheckVisible="true"
+            app:Image="@drawable/ic_repeat_grey_24dp"
+            app:ImageVisible="false"
+            app:Text="No"
+            app:Title="Repeat"
+            app:isChecked="false" />
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/days"
-            android:layout_marginLeft="@dimen/dimen_default"
-            android:layout_marginRight="@dimen/dimen_default"
-            android:layout_marginTop="@dimen/dimen_default"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-
-        </LinearLayout>
-
-        <!--<View style="@style/Divider" />-->
 
         <com.kara4k.traynotify.MyView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/sound"
-            app:Title="Sound"
-            app:Text="Default"
-            app:ImageVisible="true"
-            app:Image="@drawable/ic_phonelink_ring_black_24dp"
-            />
-
-        <com.kara4k.traynotify.MyView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/vibrate"
-            app:Title="Vibration"
-            app:Text="Default"
+            app:Image="@drawable/ic_phonelink_ring_black_24dp"
             app:ImageVisible="true"
+            app:Text="Default"
+            app:Title="Sound" />
+
+        <com.kara4k.traynotify.MyView
+            android:id="@+id/vibrate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:Image="@drawable/ic_vibration_black_24dp"
-            />
+            app:ImageVisible="true"
+            app:Text="Default"
+            app:Title="Vibration" />
 
         <Button
             android:id="@+id/vibrate2"
@@ -183,7 +144,7 @@
             android:textColor="@android:color/white"
             android:textOff="HIDE"
             android:textOn="SHOW"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <View style="@style/Divider" />
 
@@ -222,7 +183,6 @@
                 android:textColor="@android:color/white" />
 
         </LinearLayout>
-
 
 
     </LinearLayout>

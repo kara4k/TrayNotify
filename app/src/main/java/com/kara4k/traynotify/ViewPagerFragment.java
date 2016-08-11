@@ -50,6 +50,9 @@ public class ViewPagerFragment extends Fragment  {
         return linearLayout;
     }
 
+    public ViewPager getViewPager() {
+        return viewPager;
+    }
 
     @Override
     public void onDetach() {

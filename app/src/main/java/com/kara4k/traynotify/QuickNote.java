@@ -18,7 +18,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -115,6 +114,7 @@ public class QuickNote extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     private void sendIntent() {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
@@ -140,7 +140,6 @@ public class QuickNote extends AppCompatActivity {
             writeToDB();
         } else {
             writeToDB();
-            Toast.makeText(this, "Note Added", Toast.LENGTH_SHORT).show();
         }
 
     }

@@ -3,6 +3,5 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="dimen_default">16dp</dimen>
     <dimen name="navheader_height">200dp</dimen>
-    <dimen name="oval_padding">7dp</dimen>
     <dimen name="button_padding">7dp</dimen>
 </resources>
