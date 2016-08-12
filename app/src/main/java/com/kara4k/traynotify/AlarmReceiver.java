@@ -1,6 +1,7 @@
 package com.kara4k.traynotify;
 
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,10 +10,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -44,10 +48,39 @@ public class AlarmReceiver extends BroadcastReceiver {
             mBuilder.setContentInfo(String.valueOf(note.getCheckId()));
             mBuilder.setAutoCancel(false);
             mBuilder.setContentIntent(PendingIntent.getActivities(context, note.getCheckId(), makeIntent(context), PendingIntent.FLAG_UPDATE_CURRENT));
-            mBuilder.setOngoing(false);
+            mBuilder.setOngoing(true);
             nm.notify(note.getCheckId(), mBuilder.build());
         }
-        DelayedAdapter.getInstance().notifyDataSetChanged();
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if ((note.getRepeat() == 1) && (!note.getDays().equals("0;0;0;0;0;0;0;"))){
+                Log.e("TAG", note.getRepeat() + "\n" + note.getDays() );
+                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("id", note.getCheckId());
+                alarmIntent.putExtras(bundle);
+
+                Calendar settedCal = Calendar.getInstance();
+                settedCal.setTimeInMillis(note.getSetTime());
+                Calendar now = Calendar.getInstance();
+                now.add(Calendar.DAY_OF_MONTH, 1);
+                settedCal.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
+                settedCal.set(Calendar.MILLISECOND,0000);
+
+                SimpleDateFormat sdf = new SimpleDateFormat("EEE SSSS, dd.MM.yyyy; HH:mm:ss:SSSSS ");
+                Log.e("tag", sdf.format(settedCal.getTimeInMillis()));
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, note.getCheckId(), alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, settedCal.getTimeInMillis(), pendingIntent);
+            }
+
+        }
+
+    }
+
+
+
+    {
 
 
     }
@@ -56,10 +89,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         if ((note.getSound().equals("0")) && (note.getVibration().equals("1"))) {
             mBuilder.setDefaults(Notification.DEFAULT_ALL);
         } else if ((!(note.getSound().equals("0")) && (note.getVibration().equals("1")))) {
-            mBuilder.setDefaults(Notification.DEFAULT_VIBRATE|Notification.DEFAULT_LIGHTS);
+            mBuilder.setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
             setCustomSound(context, mBuilder);
         } else if (((note.getSound().equals("0")) && (!note.getVibration().equals("1")))) {
-            mBuilder.setDefaults(Notification.DEFAULT_SOUND|Notification.DEFAULT_LIGHTS);
+            mBuilder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS);
             setCustomVibration(mBuilder);
         } else if ((!note.getSound().equals("0")) && (!note.getVibration().equals("1"))) {
             mBuilder.setDefaults(Notification.DEFAULT_LIGHTS);
@@ -158,7 +191,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     private boolean isNotify() {
-        if (note.getRepeat() == 1) {
+        if ((note.getRepeat() == 1) && (!note.getDays().equals("0;0;0;0;0;0;0;"))) {
             String[] split = note.getDays().split(";");
             if (split[getDayNum()].equals("1")) {
                 return true;

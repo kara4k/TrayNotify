@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ActionBar supportActionBar = getSupportActionBar();
+        final ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
             supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
@@ -65,9 +65,11 @@ public class MainActivity extends AppCompatActivity {
                                 Log.e("MAIN", String.valueOf(pagerItem));
                                 bundle.putInt("item", pagerItem);
                                 fragment.setArguments(bundle);
+                                supportActionBar.setTitle(getString(R.string.app_name));
                                 break;
                             case R.id.new_delayed:
                                 fragment = new SMSFragment();
+                                supportActionBar.setTitle("Messages");
                                 break;
                             default:
                                 fragment = new NotifyList();
@@ -124,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
         ft.replace(R.id.container, vp);
         ft.commitAllowingStateLoss();
         navigationView.getMenu().getItem(0).setChecked(true);
+        getSupportActionBar().setTitle(getString(R.string.app_name));
         super.onStart();
 
     }

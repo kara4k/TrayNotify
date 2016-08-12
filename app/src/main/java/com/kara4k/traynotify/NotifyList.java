@@ -3,13 +3,11 @@ package com.kara4k.traynotify;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,30 +28,30 @@ public class NotifyList extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ScrollView scrollView = (ScrollView) inflater.inflate(R.layout.test, container, false);
         sms = (TextView) scrollView.findViewById(R.id.sms);
-        String[] reqCols = new String[]{"_id", "address", "body", "person", "date"};
-        Cursor cursor = getContext().getContentResolver().query(Uri.parse("content://sms/inbox"), reqCols, null, null, null);
-
-        if (cursor.moveToFirst()) {
-
-            for (int i = 0; i < cursor.getColumnCount(); i++) {
-                Log.e("Tag", cursor.getColumnName(i));
-            }
-            do {
-                Log.e("taggge", cursor.getString(0) + "\n" +
-                        cursor.getString(1) + "\n" +
-                        cursor.getString(2) + "\n" +
-                        cursor.getInt(3) + "\n" +
-                        cursor.getLong(4) + "\n\n");
-            } while (cursor.moveToNext());
+//        String[] reqCols = new String[]{"_id", "address", "body", "person", "date"};
+//        Cursor cursor = getContext().getContentResolver().query(Uri.parse("content://sms/inbox"), reqCols, null, null, null);
+//
+//        if (cursor.moveToFirst()) {
+//
+//            for (int i = 0; i < cursor.getColumnCount(); i++) {
+//                Log.e("Tag", cursor.getColumnName(i));
+//            }
+//            do {
+//                Log.e("taggge", cursor.getString(0) + "\n" +
+//                        cursor.getString(1) + "\n" +
+//                        cursor.getString(2) + "\n" +
+//                        cursor.getInt(3) + "\n" +
+//                        cursor.getLong(4) + "\n\n");
+//            } while (cursor.moveToNext());
 
 
 //            do {
 //                msgData += cursor.getInt(0) + "\n" + cursor.getString(1) + "\n" + cursor.getString(2) + "\n\n\n";
 //            } while (cursor.moveToNext());
 
-        }
+//        }
 
-        sms.setText(msgData);
+//        sms.setText(msgData);
 //
 //
 //        Cursor phones = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,null,null, null);
@@ -78,7 +76,7 @@ public class NotifyList extends Fragment {
 //        }
 //        cur.close();
 
-//        new MyTask().execute(); !!!!!!!!!!!!!!!
+        new MyTask().execute();
 
 //        getBirthdays();
 
@@ -124,7 +122,6 @@ public class NotifyList extends Fragment {
             if (birthdayCur.getCount() > 0) {
                 while (birthdayCur.moveToNext()) {
                     String birthday = birthdayCur.getString(birthdayCur.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE));
-                    Log.e("TAG", "onCreateView: " + displayName + "\n" + birthday);
                     birthdays += displayName + "\n" + birthday + "\n\n";
                 }
             }

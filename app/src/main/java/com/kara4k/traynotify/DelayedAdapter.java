@@ -80,7 +80,7 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
 
     private void setRepeatOnceView(DelayedNotesViewHolder notesViewHolder, int i) {
         if ((notes.get(i).getRepeat() == 0) || (notes.get(i).getDays().equals("0;0;0;0;0;0;0;"))) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd.MM.yy");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd.MM.yyyy");
             String date = dateFormat.format(new Date(notes.get(i).getSetTime()));
             date = date.substring(0, 1).toUpperCase() + date.substring(1);
             notesViewHolder.date.setText(date);

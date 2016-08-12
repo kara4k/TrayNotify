@@ -14,8 +14,10 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
@@ -481,11 +483,18 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         SimpleDateFormat sdf = new SimpleDateFormat("EEE SSSS, dd.MM.yyyy; HH:mm:ss:SSSSS ");
 
         Log.e("tag", sdf.format(mainCal.getTimeInMillis()));
+        Log.e("tag", note.getDays());
 
 
 
         pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), checkThis, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, mainCal.getTimeInMillis(), 24 * 60 * 60 * 1000, pendingIntent);
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, mainCal.getTimeInMillis(), pendingIntent);
+        } else {
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, mainCal.getTimeInMillis(), 24 * 60 * 60 * 1000, pendingIntent);
+        }
 
         finish();
     }
@@ -627,7 +636,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
     private void checkSDPermission() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            int hasWriteSDPermission = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+            int hasWriteSDPermission = ContextCompat.checkSelfPermission(getApplicationContext(),Manifest.permission.READ_EXTERNAL_STORAGE);
             if (hasWriteSDPermission == PackageManager.PERMISSION_DENIED) {
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
                 return;
