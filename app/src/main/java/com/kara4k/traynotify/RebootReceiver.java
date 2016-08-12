@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 
 public class RebootReceiver extends BroadcastReceiver{
@@ -26,10 +27,23 @@ public class RebootReceiver extends BroadcastReceiver{
                 bundle.putInt("id", allData.getInt(10));
                 alarmIntent.putExtras(bundle);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(context, allData.getInt(10), alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, allData.getLong(4), 24 * 60 * 60 * 1000, pendingIntent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, allData.getLong(4), pendingIntent);
+                } else {
+                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, allData.getLong(4), 24 * 60 * 60 * 1000, pendingIntent);
+                }
             } while (allData.moveToNext());
 
         }
         db.close();
+
+
+
+
+
+
+
     }
+
+
 }

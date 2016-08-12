@@ -201,7 +201,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         } else {
             long now = Calendar.getInstance().getTimeInMillis();
             long set = note.getSetTime();
-            if (now - 30 * 60000 < set) {
+            if (now - 60000 < set) {
                 return true;
             } else {
                 return false;
