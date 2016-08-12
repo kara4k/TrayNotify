@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
@@ -140,6 +141,7 @@ public class QuickNote extends AppCompatActivity {
             writeToDB();
         } else {
             writeToDB();
+            finish();
         }
 
     }
@@ -158,6 +160,9 @@ public class QuickNote extends AppCompatActivity {
         mBuilder.setDefaults(Notification.DEFAULT_ALL);
         mBuilder.setContentIntent(PendingIntent.getActivities(getApplicationContext(), id, makeIntent(), PendingIntent.FLAG_UPDATE_CURRENT));
         mBuilder.setSmallIcon(R.drawable.notify);
+
+
+        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.user1 ));     // TODO: 12.08.2016
         nm.notify(id, mBuilder.build());
         finish();
 

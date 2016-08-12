@@ -86,7 +86,7 @@ public class MyView extends RelativeLayout {
 
     private void init(Context c) {
         inflate(c, R.layout.my_view, this);
-        title = (TextView) findViewById(R.id.title);
+        title = (TextView) findViewById(R.id.name);
         text = (TextView) findViewById(R.id.text);
         checkbox = (CheckBox) findViewById(R.id.check);
         image = (ImageView) findViewById(R.id.image);

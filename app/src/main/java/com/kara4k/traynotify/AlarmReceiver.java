@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,7 +37,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         if (isNotify()) {
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
-            mBuilder.setSmallIcon(R.drawable.notify);
             mBuilder.setContentText(note.getText());
             mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(note.getText()));
             mBuilder.setContentTitle(note.getTitle());
@@ -46,6 +46,10 @@ public class AlarmReceiver extends BroadcastReceiver {
             mBuilder.setAutoCancel(false);
             mBuilder.setContentIntent(PendingIntent.getActivities(context, note.getCheckId(), makeIntent(context), PendingIntent.FLAG_UPDATE_CURRENT));
             mBuilder.setOngoing(true);
+            mBuilder.setSmallIcon(R.drawable.notify);
+
+            mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(),R.drawable.user1 ));     // TODO: 12.08.2016
+
             nm.notify(note.getCheckId(), mBuilder.build());
         }
 

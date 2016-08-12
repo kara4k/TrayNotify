@@ -72,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
                                 supportActionBar.setTitle("Messages");
                                 break;
                             default:
-                                fragment = new NotifyList();
+                                fragment = new BirthdayFragment();
+                                supportActionBar.setTitle("Birthdays");
                                 break;
                         }
                         menuItem.setChecked(true);

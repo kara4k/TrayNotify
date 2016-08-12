@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -574,6 +575,8 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         }
 
         mBuilder.setSmallIcon(R.drawable.notify);
+
+        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.user1 ) ); // TODO: 12.08.2016  
         nm.notify(0, mBuilder.build());
     }
 

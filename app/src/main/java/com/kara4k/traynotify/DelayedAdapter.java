@@ -161,10 +161,10 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
 
         DelayedNotesViewHolder(final View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.title);
+            title = (TextView) itemView.findViewById(R.id.name);
             text = (TextView) itemView.findViewById(R.id.text);
             date = (TextView) itemView.findViewById(R.id.date);
-            time = (TextView) itemView.findViewById(R.id.time);
+            time = (TextView) itemView.findViewById(R.id.day_of_week);
             numid = (TextView) itemView.findViewById(R.id.numid);
             TextView mon = (TextView) itemView.findViewById(R.id.mon);
             TextView tue = (TextView) itemView.findViewById(R.id.tue);

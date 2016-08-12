@@ -90,10 +90,10 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
 
         NotesViewHolder(final View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.title);
+            title = (TextView) itemView.findViewById(R.id.name);
             text = (TextView) itemView.findViewById(R.id.text);
             date = (TextView) itemView.findViewById(R.id.date);
-            time = (TextView) itemView.findViewById(R.id.time);
+            time = (TextView) itemView.findViewById(R.id.day_of_week);
             numid = (TextView) itemView.findViewById(R.id.numid);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
