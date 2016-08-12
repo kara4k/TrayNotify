@@ -14,9 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -35,7 +33,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         fillNote(intent, db);
 
-        Log.e("TAG", String.valueOf(isNotify()));
 
         if (isNotify()) {
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
@@ -68,8 +65,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 settedCal.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
                 settedCal.set(Calendar.MILLISECOND,0000);
 
-                SimpleDateFormat sdf = new SimpleDateFormat("EEE SSSS, dd.MM.yyyy; HH:mm:ss:SSSSS ");
-                Log.e("tag", sdf.format(settedCal.getTimeInMillis()));
+
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(context, note.getCheckId(), alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, settedCal.getTimeInMillis(), pendingIntent);
             }
@@ -105,7 +101,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         try {
             mBuilder.setSound(Uri.parse(note.getSound()));
         } catch (Exception e) {
-            Toast.makeText(context, "Can't open sound file", Toast.LENGTH_SHORT).show();
+
         }
     }
 

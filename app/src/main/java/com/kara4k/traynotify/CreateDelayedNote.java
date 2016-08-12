@@ -242,6 +242,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         textEdit.setText(note.getText());
         setDate.setText(sDateFormat.format(note.getSetTime()));
         setTime.setText(sTimeFormat.format(note.getSetTime()));
+        mainCal.setTimeInMillis(note.getSetTime());
     }
 
     private void parseRepeat() {
