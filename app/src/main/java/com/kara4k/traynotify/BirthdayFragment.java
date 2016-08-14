@@ -20,7 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -90,7 +92,9 @@ public class BirthdayFragment extends Fragment {
                 if (bdc.moveToFirst()) {
                     String birthday = bdc.getString(0);
                     Log.e("TAG", id + "\n" + name + "\n" + birthday);
-                    list.add(new Birthday(id, name, birthday, id));
+                    list.add(new Birthday(id, name, getStringDate(birthday), id, daysLeft(birthday), getAge(birthday)));
+                    Log.e("TAG", String.valueOf(daysLeft(birthday)));
+                    Log.e("TAG", String.valueOf(getAge(birthday)));
                 }
             } while (cur.moveToNext());
         }
@@ -100,18 +104,109 @@ public class BirthdayFragment extends Fragment {
 
     }
 
-    class GetInfo extends AsyncTask<Void,Void,Void> {
+    private int getAge(String birthday) {
+        Calendar birthdayDate = Calendar.getInstance();
+        String[] yearMonthDay = birthday.split("-");
+        int year = Integer.parseInt(yearMonthDay[0]);
+        int month = Integer.parseInt(yearMonthDay[1]) - 1;
+        int day = Integer.parseInt(yearMonthDay[2]);
+        birthdayDate.set(year, month, day, 00, 00);
+        birthdayDate.set(Calendar.SECOND, 00);
+        birthdayDate.set(Calendar.MILLISECOND, 0000);
+
+
+        Calendar now = Calendar.getInstance();
+        now.set(Calendar.HOUR_OF_DAY, 00);
+        now.set(Calendar.MINUTE, 00);
+        now.set(Calendar.SECOND, 00);
+        now.set(Calendar.MILLISECOND, 0000);
+
+        Calendar temp = Calendar.getInstance();
+        temp.setTimeInMillis(birthdayDate.getTimeInMillis());
+        temp.set(Calendar.YEAR, now.get(Calendar.YEAR));
+
+        int age;
+
+        if (temp.getTimeInMillis() >= now.getTimeInMillis()) {
+            age = now.get(Calendar.YEAR) - birthdayDate.get(Calendar.YEAR);
+        } else {
+            age = ((now.get(Calendar.YEAR) - birthdayDate.get(Calendar.YEAR))+1);
+        }
+        return age;
+    }
+
+    private int daysLeft(String birthday) {
+        Calendar birthdayDate = Calendar.getInstance();
+        String[] yearMonthDay = birthday.split("-");
+        int year = Integer.parseInt(yearMonthDay[0]);
+        int month = Integer.parseInt(yearMonthDay[1]) - 1;
+        int day = Integer.parseInt(yearMonthDay[2]);
+
+        Calendar now = Calendar.getInstance();
+        birthdayDate.set(now.get(Calendar.YEAR), month, day, 00, 00);
+        birthdayDate.set(Calendar.SECOND, 00);
+        birthdayDate.set(Calendar.MILLISECOND, 0000);
+
+        if (today(birthdayDate, now)) {
+            return 0;
+        }
+
+        if (now.getTimeInMillis() > birthdayDate.getTimeInMillis()) {
+            birthdayDate.add(Calendar.YEAR, 1);
+        }
+
+        now.set(Calendar.HOUR_OF_DAY, 00);
+        now.set(Calendar.MINUTE, 00);
+        now.set(Calendar.SECOND, 00);
+        now.set(Calendar.MILLISECOND, 0000);
+        long difference = birthdayDate.getTimeInMillis() - now.getTimeInMillis();
+        long days = difference / (24 * 60 * 60 * 1000);
+        return (int) days;
+    }
+
+    private boolean today(Calendar birthdayDate, Calendar now) {
+        if ((birthdayDate.get(Calendar.MONTH) == now.get(Calendar.MONTH))
+                && ((birthdayDate.get(Calendar.DAY_OF_MONTH) == now.get(Calendar.DAY_OF_MONTH)))) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    private String getStringDate(String birthday) {
+        String[] yearMonthDay = birthday.split("-");
+        return yearMonthDay[2] + " " + getStringMonth(yearMonthDay[1]) + " " + yearMonthDay[0];
+
+    }
+
+    private String getStringMonth(String month) {
+        DateFormatSymbols dfs = DateFormatSymbols.getInstance();
+        String[] months = dfs.getMonths();
+        return months[Integer.parseInt(month) - 1];
+
+    }
+
+    class GetInfo extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            getContactsInfo();
+            try {
+                getContactsInfo();
+            } catch (Exception e) {
+                Log.e("tag", "testoooo");
+            }
 
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            adapter.notifyDataSetChanged();
+            try {
+                adapter.notifyDataSetChanged();
+            } catch (Exception e) {
+                Log.e("TAG", "onPostExecute: shit ");
+            }
             super.onPostExecute(aVoid);
         }
     }

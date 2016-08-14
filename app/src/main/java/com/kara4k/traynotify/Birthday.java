@@ -11,12 +11,12 @@ public class Birthday {
     private int age;
     private int daysLeft;
     private int sign;
-    private String dayOfWeek;
+    private long setTime;
 
     public Birthday() {
     }
 
-    public Birthday(String id, String name, String photoUri, String date, int age, int daysLeft, int sign, String dayOfWeek) {
+    public Birthday(String id, String name, String photoUri, String date, int age, int daysLeft, int sign, long setTime) {
         this.id = id;
         this.name = name;
         this.photoUri = photoUri;
@@ -24,14 +24,16 @@ public class Birthday {
         this.age = age;
         this.daysLeft = daysLeft;
         this.sign = sign;
-        this.dayOfWeek = dayOfWeek;
+        this.setTime = setTime;
     }
 
-    public Birthday(String id, String name, String date, String cId) {
+    public Birthday(String id, String name, String date, String cId, int daysLeft, int age) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.photoUri = "content://com.android.contacts/contacts/"+ cId + "/display_photo";
+        this.daysLeft = daysLeft;
+        this.age = age;
     }
 
     public String getId() {
@@ -90,11 +92,11 @@ public class Birthday {
         this.sign = sign;
     }
 
-    public String getDayOfWeek() {
-        return dayOfWeek;
+    public long getSetTime() {
+        return setTime;
     }
 
-    public void setDayOfWeek(String dayOfWeek) {
-        this.dayOfWeek = dayOfWeek;
+    public void setSetTime(long setTime) {
+        this.setTime = setTime;
     }
 }

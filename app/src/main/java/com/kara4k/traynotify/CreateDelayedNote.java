@@ -395,8 +395,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     }
 
     private int getNoteRepeat() {
-        int repeat = this.repeat.getCheckbox().isChecked() ? 1 : 0;
-        return repeat;
+        return this.repeat.getCheckbox().isChecked() ? 1 : 0;
     }
 
     private String getNoteDays() {

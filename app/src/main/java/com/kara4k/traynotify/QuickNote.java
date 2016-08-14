@@ -1,7 +1,6 @@
 package com.kara4k.traynotify;
 
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -48,6 +47,8 @@ public class QuickNote extends AppCompatActivity {
         setContentView(R.layout.quick_note);
 
         getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+
+
 
         title = (EditText) findViewById(R.id.editTitle);
         text = (EditText) findViewById(R.id.textedit);
@@ -157,7 +158,7 @@ public class QuickNote extends AppCompatActivity {
         mBuilder.setContentInfo("#" + String.valueOf(id).substring(1));
         mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(text.getText().toString()));
         mBuilder.setOngoing(ongoing.getCheckbox().isChecked());
-        mBuilder.setDefaults(Notification.DEFAULT_ALL);
+//        mBuilder.setDefaults(Notification.DEFAULT_ALL);
         mBuilder.setContentIntent(PendingIntent.getActivities(getApplicationContext(), id, makeIntent(), PendingIntent.FLAG_UPDATE_CURRENT));
         mBuilder.setSmallIcon(R.drawable.notify);
 

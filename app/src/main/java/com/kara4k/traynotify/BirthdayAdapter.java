@@ -3,6 +3,7 @@ package com.kara4k.traynotify;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +16,7 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.util.List;
 
-public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.BirthdayViewHolder>{
+public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.BirthdayViewHolder> {
 
     private static BirthdayAdapter birthdayAdapter;
     private Context context;
@@ -49,9 +50,20 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.Birthd
 
     @Override
     public void onBindViewHolder(BirthdayViewHolder holder, int position) {
-    holder.nameView.setText(birthdays.get(position).getName());
+        holder.nameView.setText(birthdays.get(position).getName());
         holder.dateView.setText(birthdays.get(position).getDate());
-    setPhoto(holder.photoView, position);
+        setPhoto(holder.photoView, position);
+        setDaysLeft(holder, position);
+        holder.ageView.setText("Age: " + birthdays.get(position).getAge());
+    }
+
+    private void setDaysLeft(BirthdayViewHolder holder, int position) {
+        if (birthdays.get(position).getDaysLeft() == 0) {
+            holder.daysLeftView.setText("Today");
+            holder.daysLeftView.setTextColor(Color.RED);
+        } else {
+            holder.daysLeftView.setText("Left: " + birthdays.get(position).getDaysLeft() + " days");
+        }
     }
 
     private void setPhoto(ImageView imageView, int position) {
