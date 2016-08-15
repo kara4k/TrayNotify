@@ -248,6 +248,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         if (!note.getVibration().equals("1")) {
             parseVibration(vibrate);
         }
+        birthday = note.getBirthday();
     }
 
     private void parseTextTitleDate() {

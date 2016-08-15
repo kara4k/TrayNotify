@@ -36,7 +36,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         db.open();
 
         fillNote(intent, db);
-//        int birthday = intent.getIntExtra("birthday", 0);
+
 
 
 

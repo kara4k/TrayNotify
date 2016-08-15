@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -36,6 +37,8 @@ public class BirthdayFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
+        TabLayout tabs = (TabLayout) getActivity().findViewById(R.id.tabs);
+        tabs.setVisibility(View.GONE);
         adapter = BirthdayAdapter.getInstance();
         birthdaysList = new ArrayList<>();
         adapter.setBirthdays(birthdaysList);

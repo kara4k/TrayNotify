@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private int pagerItem = 0;
     private ViewPagerFragment vp;
     private NavigationView navigationView;
+    private FloatingActionButton fab;
 
 
     @Override
@@ -43,13 +45,14 @@ public class MainActivity extends AppCompatActivity {
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        if (savedInstanceState!= null) {
-           pagerItem = savedInstanceState.getInt("item", 0);
+        if (savedInstanceState != null) {
+            pagerItem = savedInstanceState.getInt("item", 0);
         }
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
 
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
@@ -60,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
                         Fragment fragment;
                         switch (menuItem.getItemId()) {
                             case R.id.add_note:
+                                fab.setVisibility(View.VISIBLE);
                                 fragment = new ViewPagerFragment();
                                 Bundle bundle = new Bundle();
                                 Log.e("MAIN", String.valueOf(pagerItem));
@@ -70,8 +74,10 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.new_delayed:
                                 fragment = new SMSFragment();
                                 supportActionBar.setTitle("Messages");
+                                fab.setVisibility(View.INVISIBLE);
                                 break;
                             default:
+                                fab.setVisibility(View.INVISIBLE);
                                 fragment = new BirthdayFragment();
                                 supportActionBar.setTitle("Birthdays");
                                 break;
@@ -79,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                         menuItem.setChecked(true);
                         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                         ft.replace(R.id.container, fragment);
-                        ft.commit();
+                        ft.commitAllowingStateLoss();
                         // TODO: handle navigation
                         // Closing drawer on item click
                         mDrawerLayout.closeDrawers();
@@ -90,19 +96,17 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent notification = new Intent(getApplicationContext(), CreateDelayedNote.class);
-                startActivityForResult(notification,DELAYED);
+                startActivityForResult(notification, DELAYED);
             }
         });
+
+        showFirstFragment();
     }
-
-
 
 
     @Override
@@ -119,15 +123,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        vp = new ViewPagerFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt("item", pagerItem);
-        vp.setArguments(bundle);
-        ft.replace(R.id.container, vp);
-        ft.commitAllowingStateLoss();
-        navigationView.getMenu().getItem(0).setChecked(true);
-        getSupportActionBar().setTitle(getString(R.string.app_name));
+
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
+        if (currentFragment instanceof ViewPagerFragment) {
+            showFirstFragment();
+        } else {
+            fab.setVisibility(View.INVISIBLE);
+        }
+
+
         super.onStart();
 
     }
@@ -138,6 +142,42 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
+        if (currentFragment instanceof SMSFragment) {
+            showFirstFragment();
+        } else if (currentFragment instanceof BirthdayFragment) {
+            showFirstFragment();
+        } else if (currentFragment instanceof ViewPagerFragment) {
+            super.onBackPressed();
+        }
+
+    }
+
+    private void showFirstFragment() {
+        fab.setVisibility(View.VISIBLE);
+        firstFragmentTransaction();
+        navigationView.getMenu().getItem(0).setChecked(true);
+        getSupportActionBar().setTitle(getString(R.string.app_name));
+    }
+
+    private void firstFragmentTransaction() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        vp = new ViewPagerFragment();
+        Bundle bundle = createFragmentBundle();
+        vp.setArguments(bundle);
+        ft.replace(R.id.container, vp);
+        ft.commitAllowingStateLoss();
+    }
+
+    @NonNull
+    private Bundle createFragmentBundle() {
+        Bundle bundle = new Bundle();
+        bundle.putInt("item", pagerItem);
+        return bundle;
     }
 
     @Override
@@ -176,7 +216,6 @@ public class MainActivity extends AppCompatActivity {
     public void clear() {
         nm.cancelAll();
     }
-
 
 
 }
