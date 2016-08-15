@@ -23,6 +23,7 @@ import android.widget.Toast;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -91,14 +92,12 @@ public class BirthdayFragment extends Fragment {
                                 + ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY, null, android.provider.ContactsContract.Data.DISPLAY_NAME);
                 if (bdc.moveToFirst()) {
                     String birthday = bdc.getString(0);
-                    Log.e("TAG", id + "\n" + name + "\n" + birthday);
-                    list.add(new Birthday(id, name, getStringDate(birthday), id, daysLeft(birthday), getAge(birthday)));
-                    Log.e("TAG", String.valueOf(daysLeft(birthday)));
-                    Log.e("TAG", String.valueOf(getAge(birthday)));
+                    list.add(new Birthday(id, name, getStringDate(birthday), id, daysLeft(birthday), getAge(birthday), getZodiacSign(birthday), getNotificationTime(birthday)));
                 }
             } while (cur.moveToNext());
         }
         cur.close();
+        Collections.sort(list);
         birthdaysList = list;
         adapter.setBirthdays(birthdaysList);
 
@@ -130,9 +129,107 @@ public class BirthdayFragment extends Fragment {
         if (temp.getTimeInMillis() >= now.getTimeInMillis()) {
             age = now.get(Calendar.YEAR) - birthdayDate.get(Calendar.YEAR);
         } else {
-            age = ((now.get(Calendar.YEAR) - birthdayDate.get(Calendar.YEAR))+1);
+            age = ((now.get(Calendar.YEAR) - birthdayDate.get(Calendar.YEAR)) + 1);
         }
         return age;
+    }
+
+    private int getZodiacSign(String birthday) {
+        Calendar birthdayDate = Calendar.getInstance();
+        String[] yearMonthDay = birthday.split("-");
+        int month = Integer.parseInt(yearMonthDay[1]);
+        int day = Integer.parseInt(yearMonthDay[2]);
+
+        int sign = R.drawable.capricorn;
+        switch (month) {
+
+            case 1:
+                if (day <= 20) {
+                    sign = R.drawable.capricorn;
+                } else {
+                    sign = R.drawable.aquarius;
+                }
+                break;
+            case 2:
+                if (day <= 20) {
+                    sign = R.drawable.aquarius;
+                } else {
+                    sign = R.drawable.pisces;
+                }
+                break;
+            case 3:
+                if (day <= 20) {
+                    sign = R.drawable.pisces;
+                } else {
+                    sign = R.drawable.aries;
+                }
+                break;
+            case 4:
+                if (day <= 20) {
+                    sign = R.drawable.aries;
+                } else {
+                    sign = R.drawable.taurus;
+                }
+                break;
+            case 5:
+                if (day <= 20) {
+                    sign = R.drawable.taurus;
+                } else {
+                    sign = R.drawable.gemini;
+                }
+                break;
+            case 6:
+                if (day <= 21) {
+                    sign = R.drawable.gemini;
+                } else {
+                    sign = R.drawable.cancer;
+                }
+                break;
+            case 7:
+                if (day <= 22) {
+                    sign = R.drawable.cancer;
+                } else {
+                    sign = R.drawable.leo;
+                }
+                break;
+            case 8:
+                if (day <= 23) {
+                    sign = R.drawable.leo;
+                } else {
+                    sign = R.drawable.virgo;
+                }
+                break;
+            case 9:
+                if (day <= 23) {
+                    sign = R.drawable.virgo;
+                } else {
+                    sign = R.drawable.libra;
+                }
+                break;
+            case 10:
+                if (day <= 23) {
+                    sign = R.drawable.libra;
+                } else {
+                    sign = R.drawable.scorpio;
+                }
+                break;
+            case 11:
+                if (day <= 22) {
+                    sign = R.drawable.scorpio;
+                } else {
+                    sign = R.drawable.sagittarius;
+                }
+                break;
+            case 12:
+                if (day <= 21) {
+                    sign = R.drawable.sagittarius;
+                } else {
+                    sign = R.drawable.capricorn;
+                }
+                break;
+        }
+
+        return sign;
     }
 
     private int daysLeft(String birthday) {
@@ -185,6 +282,33 @@ public class BirthdayFragment extends Fragment {
         String[] months = dfs.getMonths();
         return months[Integer.parseInt(month) - 1];
 
+    }
+
+    private long getNotificationTime(String birthday) {
+        Calendar birthdayDate = Calendar.getInstance();
+        String[] yearMonthDay = birthday.split("-");
+        int year = Integer.parseInt(yearMonthDay[0]);
+        int month = Integer.parseInt(yearMonthDay[1]) - 1;
+        int day = Integer.parseInt(yearMonthDay[2]);
+        birthdayDate.set(year, month, day, 00, 00);
+        birthdayDate.set(Calendar.SECOND, 00);
+        birthdayDate.set(Calendar.MILLISECOND, 0000);
+
+        Calendar now = Calendar.getInstance();
+        now.set(Calendar.HOUR_OF_DAY, 00);
+        now.set(Calendar.MINUTE, 00);
+        now.set(Calendar.SECOND, 00);
+        now.set(Calendar.MILLISECOND, 0000);
+
+        birthdayDate.set(Calendar.YEAR, now.get(Calendar.YEAR));
+
+        if (birthdayDate.getTimeInMillis() <= now.getTimeInMillis()) {
+            birthdayDate.add(Calendar.YEAR, 1);
+        }
+        birthdayDate.set(Calendar.HOUR_OF_DAY, 9);
+
+        long time = birthdayDate.getTimeInMillis();
+        return time;
     }
 
     class GetInfo extends AsyncTask<Void, Void, Void> {

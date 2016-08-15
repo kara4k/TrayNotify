@@ -114,11 +114,19 @@ public class SMSFragment extends Fragment {
                 requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, 1);
                 return;
             } else {
-                getContactNames();
+                try {
+                    getContactNames();
+                } catch (Exception e) {
+
+                }
                 checkReadSMSPermissions();
             }
         } else {
-            getContactNames();
+            try {
+                getContactNames();
+            } catch (Exception e) {
+
+            }
             checkReadSMSPermissions();
         }
     }
@@ -147,7 +155,11 @@ public class SMSFragment extends Fragment {
                     Toast.makeText(getContext(), "Contacts access denied", Toast.LENGTH_SHORT).show();
                     checkReadSMSPermissions();
                 } else {
-                    getContactNames();
+                    try {
+                        getContactNames();
+                    } catch (Exception e) {
+
+                    }
                     checkReadSMSPermissions();
                 }
                 break;
@@ -168,7 +180,11 @@ public class SMSFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            getContactNames();
+            try {
+                getContactNames();
+            } catch (Exception e) {
+
+            }
             getSMS();
             return null;
         }

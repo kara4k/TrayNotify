@@ -12,11 +12,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -32,6 +34,7 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,6 +67,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     private String[] shortDays;
     private DelayedNote note;
     private MyView vibrate;
+    private int birthday = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -205,6 +209,13 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
                 }
                 db.close();
             } else if (checkThis == 0) {
+                birthday = getIntent().getIntExtra("birthday", 0);
+                if (birthday != 0) {
+                    mainCal.setTimeInMillis(getIntent().getLongExtra("time", mainCal.getTimeInMillis()));
+                    setDate.setText(sDateFormat.format(mainCal.getTimeInMillis()));
+                    setTime.setText(sTimeFormat.format(mainCal.getTimeInMillis()));
+
+                }
                 titleEdit.setText(getIntent().getStringExtra(Intent.EXTRA_SUBJECT));
                 textEdit.setText(getIntent().getStringExtra(Intent.EXTRA_TEXT));
                 checkThis = tempId;
@@ -225,6 +236,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         note.setVibration(alarmNote.getString(8));
         note.setPriority(alarmNote.getInt(9));
         note.setCheckId(alarmNote.getInt(10));
+        note.setBirthday(alarmNote.getInt(11));
     }
 
     private void fillFormsFromNote(MyView vibrate) {
@@ -459,6 +471,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         note.setVibration(getNoteVibration());
         note.setPriority(getNotePriority());
         note.setCheckId(getNoteCheckId());
+        note.setBirthday(getNoteBirthday());
 
         db.open();
         Cursor alarmNote = db.getAlarmNote(checkThis);
@@ -475,6 +488,11 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         alarmIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
         Bundle bundle = new Bundle();
         bundle.putInt("id", note.getCheckId());
+
+//        if(birthday!=0) {
+//            bundle.putInt("birthday", birthday);
+//        }
+
         alarmIntent.putExtras(bundle);
 
 
@@ -487,7 +505,6 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         Log.e("tag", note.getDays());
 
 
-
         pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), checkThis, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, mainCal.getTimeInMillis(), 24 * 60 * 60 * 1000, pendingIntent);
 
@@ -498,6 +515,10 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         }
 
         finish();
+    }
+
+    private int getNoteBirthday() {
+        return birthday;
     }
 
     @Override
@@ -545,6 +566,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         sound.setText("Default");
         vibration = null;
         vibrate.setText("Default");
+        birthday = 0;
 
     }
 
@@ -575,7 +597,17 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
         mBuilder.setSmallIcon(R.drawable.notify);
 
-        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.user1 ) ); // TODO: 12.08.2016  
+        if(birthday!=0) {
+            try {
+                Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), Uri.parse("content://com.android.contacts/contacts/"+ birthday + "/display_photo"));
+                mBuilder.setLargeIcon(mBitmap);
+            } catch (IOException e) {
+                mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.user1));
+            }
+        } else {
+            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.user1));
+        }
+
         nm.notify(0, mBuilder.build());
     }
 
@@ -639,7 +671,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
     private void checkSDPermission() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            int hasWriteSDPermission = ContextCompat.checkSelfPermission(getApplicationContext(),Manifest.permission.READ_EXTERNAL_STORAGE);
+            int hasWriteSDPermission = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
             if (hasWriteSDPermission == PackageManager.PERMISSION_DENIED) {
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
                 return;

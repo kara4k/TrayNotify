@@ -9,13 +9,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -33,6 +36,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         db.open();
 
         fillNote(intent, db);
+//        int birthday = intent.getIntExtra("birthday", 0);
+
 
 
         if (isNotify()) {
@@ -48,7 +53,17 @@ public class AlarmReceiver extends BroadcastReceiver {
             mBuilder.setOngoing(true);
             mBuilder.setSmallIcon(R.drawable.notify);
 
-            mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(),R.drawable.user1 ));     // TODO: 12.08.2016
+            if(note.getBirthday()!=0) {
+                try {
+                    Bitmap mBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse("content://com.android.contacts/contacts/"+ note.getBirthday() + "/display_photo"));
+                    mBuilder.setLargeIcon(mBitmap);
+                } catch (IOException e) {
+                    mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.user1));
+                }
+            } else {
+                mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(),R.drawable.user1 ));
+            }
+
 
             nm.notify(note.getCheckId(), mBuilder.build());
         }
@@ -142,6 +157,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             note.setVibration(current.getString(8));
             note.setPriority(current.getInt(9));
             note.setCheckId(current.getInt(10));
+            note.setBirthday(current.getInt(11));
 
         }
         db.close();

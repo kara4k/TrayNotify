@@ -1,7 +1,7 @@
 package com.kara4k.traynotify;
 
 
-public class Birthday {
+public class Birthday implements Comparable<Birthday> {
 
 
     private String id;
@@ -16,24 +16,18 @@ public class Birthday {
     public Birthday() {
     }
 
-    public Birthday(String id, String name, String photoUri, String date, int age, int daysLeft, int sign, long setTime) {
-        this.id = id;
-        this.name = name;
-        this.photoUri = photoUri;
-        this.date = date;
-        this.age = age;
-        this.daysLeft = daysLeft;
-        this.sign = sign;
-        this.setTime = setTime;
-    }
 
-    public Birthday(String id, String name, String date, String cId, int daysLeft, int age) {
+
+
+    public Birthday(String id, String name, String date, String cId, int daysLeft, int age, int sign, long setTime) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.photoUri = "content://com.android.contacts/contacts/"+ cId + "/display_photo";
         this.daysLeft = daysLeft;
         this.age = age;
+        this.sign = sign;
+        this.setTime = setTime;
     }
 
     public String getId() {
@@ -99,4 +93,15 @@ public class Birthday {
     public void setSetTime(long setTime) {
         this.setTime = setTime;
     }
+
+    @Override
+    public int compareTo(Birthday birthday) {
+
+            if(this.daysLeft > birthday.daysLeft)
+                return 1;
+            if(this.daysLeft < birthday.daysLeft)
+                return -1;
+            return 0;
+        }
+
 }

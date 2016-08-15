@@ -2,6 +2,7 @@ package com.kara4k.traynotify;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -55,6 +56,15 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.Birthd
         setPhoto(holder.photoView, position);
         setDaysLeft(holder, position);
         holder.ageView.setText("Age: " + birthdays.get(position).getAge());
+        setZodiacSign(holder, position);
+    }
+
+    private void setZodiacSign(BirthdayViewHolder holder, int position) {
+        try {
+            holder.zodiac.setImageResource(birthdays.get(position).getSign());
+        } catch (Exception e) {
+
+        }
     }
 
     private void setDaysLeft(BirthdayViewHolder holder, int position) {
@@ -92,7 +102,7 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.Birthd
         private TextView dayOfWeek;
 
 
-        public BirthdayViewHolder(View itemView) {
+        public BirthdayViewHolder(final View itemView) {
             super(itemView);
             photoView = (ImageView) itemView.findViewById(R.id.photo);
             nameView = (TextView) itemView.findViewById(R.id.name);
@@ -104,7 +114,19 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.Birthd
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Intent delayed = new Intent(context, CreateDelayedNote.class);
+                    delayed.putExtra(Intent.EXTRA_SUBJECT, "Birthday!");
+                    String name = BirthdayAdapter.getInstance().getBirthdays().get(getAdapterPosition()).getName();
+                    int age = BirthdayAdapter.getInstance().getBirthdays().get(getAdapterPosition()).getAge();
+                    String date = BirthdayAdapter.getInstance().getBirthdays().get(getAdapterPosition()).getDate();
+                    long setTimer = BirthdayAdapter.getInstance().getBirthdays().get(getAdapterPosition()).getSetTime();
+                    int id = Integer.parseInt(BirthdayAdapter.getInstance().getBirthdays().get(getAdapterPosition()).getId());
 
+
+                    delayed.putExtra(Intent.EXTRA_TEXT, name + ",\n" + date +",\n" +  age + " years.");
+                    delayed.putExtra("time", setTimer);
+                    delayed.putExtra("birthday", id);
+                    context.startActivity(delayed);
                 }
             });
 

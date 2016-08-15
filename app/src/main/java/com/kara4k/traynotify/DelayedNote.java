@@ -14,6 +14,7 @@ public class DelayedNote {
     private String vibration;
     private int priority;
     private int checkId;
+    private int birthday;
 
     DelayedNote() {
 
@@ -48,6 +49,7 @@ public class DelayedNote {
     public void setText(String text) {
         this.text = text;
     }
+
 
     public String getTitle() {
         return title;
@@ -119,6 +121,14 @@ public class DelayedNote {
 
     public void setCheckId(int checkId) {
         this.checkId = checkId;
+    }
+
+    public int getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(int birthday) {
+        this.birthday = birthday;
     }
 
     @Override

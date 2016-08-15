@@ -24,6 +24,7 @@ public class DBDelay {
     private static final String KEY_VIBRATION = "VIBRATION";
     private static final String KEY_PRIORITY = "PRIORITY";
     private static final String KEY_CHECKID = "CHECKID";
+    private static final String KEY_BIRTHDAY = "BIRTHDAY";
 
 
     private final Context mContext;
@@ -63,7 +64,7 @@ public class DBDelay {
 
     public Cursor getAlarmNote(int check) {
         return mDB.query(TABLE_NAME,
-                new String[]{KEY_ID, KEY_TEXT, KEY_TITLE, KEY_CREATE_TIME, KEY_SET_TIME, KEY_REPEAT, KEY_DAYS, KEY_SOUND, KEY_VIBRATION,KEY_PRIORITY, KEY_CHECKID},
+                new String[]{KEY_ID, KEY_TEXT, KEY_TITLE, KEY_CREATE_TIME, KEY_SET_TIME, KEY_REPEAT, KEY_DAYS, KEY_SOUND, KEY_VIBRATION,KEY_PRIORITY, KEY_CHECKID, KEY_BIRTHDAY},
                 KEY_CHECKID + "= ?", new String[]{String.valueOf(check)}, null, null, null);
     }
 
@@ -79,6 +80,7 @@ public class DBDelay {
         cv.put(KEY_VIBRATION, note.getVibration());
         cv.put(KEY_PRIORITY, note.getPriority());
         cv.put(KEY_CHECKID, note.getCheckId());
+        cv.put(KEY_BIRTHDAY, note.getBirthday());
         open();
         mDB.insert(TABLE_NAME, null, cv);
         close();
@@ -98,6 +100,7 @@ public class DBDelay {
         cv.put(KEY_VIBRATION, note.getVibration());
         cv.put(KEY_PRIORITY, note.getPriority());
         cv.put(KEY_CHECKID, note.getCheckId());
+        cv.put(KEY_BIRTHDAY, note.getBirthday());
         open();
         mDB.update(TABLE_NAME, cv, KEY_CHECKID + "=?", new String[]{String.valueOf(id)} );
         close();
@@ -128,7 +131,8 @@ public class DBDelay {
                     + KEY_SOUND + " text,"
                     + KEY_VIBRATION + " text,"
                     + KEY_PRIORITY + " integer,"
-                    + KEY_CHECKID + " integer" + ");");
+                    + KEY_CHECKID + " integer,"
+                    + KEY_BIRTHDAY + " integer" + ");");
         }
 
         @Override
