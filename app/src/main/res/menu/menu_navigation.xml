@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="single"
+        android:id="@+id/up">
         <item
-            android:title="Notifications"
             android:id="@+id/add_note"
-            android:icon="@drawable/ic_add_black_24dp"/>
+            android:icon="@drawable/ic_note_add_black_24dp"
+            android:title="Notifications" />
         <item
-            android:id="@+id/new_delayed"
+            android:id="@+id/messages"
+            android:icon="@drawable/ic_sms_black_24dp"
             android:title="Messages" />
         <item
+            android:id="@+id/birthdays"
+            android:icon="@drawable/ic_perm_contact_calendar_black_24dp"
             android:title="Birthdays" />
+    </group>
+    <group android:id="@+id/down"
+        android:checkableBehavior="all">
+
+        <item
+            android:id="@+id/rate"
+            android:icon="@drawable/ic_star_half_black_24dp"
+            android:title="Rate" />
+        <item
+            android:id="@+id/feedback"
+            android:icon="@drawable/ic_send_black_24dp"
+            android:title="Feedback" />
     </group>
 </menu>

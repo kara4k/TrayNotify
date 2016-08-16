@@ -1,8 +1,10 @@
 package com.kara4k.traynotify;
 
 import android.app.NotificationManager;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -14,7 +16,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,37 +64,27 @@ public class MainActivity extends AppCompatActivity {
                         Fragment fragment;
                         switch (menuItem.getItemId()) {
                             case R.id.add_note:
-                                fab.setVisibility(View.VISIBLE);
-                                fragment = new ViewPagerFragment();
-                                Bundle bundle = new Bundle();
-                                Log.e("MAIN", String.valueOf(pagerItem));
-                                bundle.putInt("item", pagerItem);
-                                fragment.setArguments(bundle);
-                                supportActionBar.setTitle(getString(R.string.app_name));
+                                showFirstFragment();
                                 break;
-                            case R.id.new_delayed:
-                                fragment = new SMSFragment();
+                            case R.id.messages:
+                                showSecondaryFragment(new SMSFragment());
                                 supportActionBar.setTitle("Messages");
-                                fab.setVisibility(View.INVISIBLE);
                                 break;
-                            default:
-                                fab.setVisibility(View.INVISIBLE);
-                                fragment = new BirthdayFragment();
+                            case R.id.birthdays:
+                                showSecondaryFragment(new BirthdayFragment());
                                 supportActionBar.setTitle("Birthdays");
                                 break;
+                            case R.id.rate:
+                                rateApp();
+                                break;
+                            case R.id.feedback:
+                                sendEmail(new String[]{"kara4k@gmail.com"});
+                                break;
                         }
-                        menuItem.setChecked(true);
-                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                        ft.replace(R.id.container, fragment);
-                        ft.commitAllowingStateLoss();
-                        // TODO: handle navigation
-                        // Closing drawer on item click
                         mDrawerLayout.closeDrawers();
                         return true;
                     }
                 });
-
-
 
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -106,6 +97,39 @@ public class MainActivity extends AppCompatActivity {
         });
 
         showFirstFragment();
+    }
+
+    private void sendEmail(String[] addresses) {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:"));
+        intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
+
+    private void showSecondaryFragment(Fragment fragment) {
+        FragmentTransaction fta = getSupportFragmentManager().beginTransaction();
+        fta.replace(R.id.container, fragment);
+        fta.commitAllowingStateLoss();
+        fab.setVisibility(View.INVISIBLE);
+    }
+
+    private void rateApp() {
+        Uri uri = Uri.parse("market://details?id=" + getApplicationContext().getPackageName());
+        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET |
+                Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        try {
+            startActivity(goToMarket);
+        } catch (ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + getApplicationContext().getPackageName())));
+        }
+
     }
 
 

@@ -37,16 +37,34 @@ public class BirthdayFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
-        TabLayout tabs = (TabLayout) getActivity().findViewById(R.id.tabs);
-        tabs.setVisibility(View.GONE);
+        hideVPTabs();
         adapter = BirthdayAdapter.getInstance();
         birthdaysList = new ArrayList<>();
         adapter.setBirthdays(birthdaysList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        new GetInfo().execute();
-//        checkReadContactsPermissions();
+
+        checkReadContactsPermissions();
+
         return recyclerView;
+    }
+
+//    private void checkPermissions() {
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+//            int hasReadContactsPermission = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS);
+//            if (hasReadContactsPermission == PackageManager.PERMISSION_GRANTED) {
+//                new GetInfo().execute();
+//            } else {
+//                checkReadContactsPermissions();
+//            }
+//        } else {
+//            new GetInfo().execute();
+//        }
+//    }
+
+    private void hideVPTabs() {
+        TabLayout tabs = (TabLayout) getActivity().findViewById(R.id.tabs);
+        tabs.setVisibility(View.GONE);
     }
 
     void checkReadContactsPermissions() {
@@ -56,10 +74,17 @@ public class BirthdayFragment extends Fragment {
                 requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, 1);
                 return;
             } else {
-                getContactsInfo();
+                new GetInfo().execute();
             }
         } else {
+            new GetInfo().execute();
+        }
+    }
+
+    private void tryGetContactsInfo() {
+        try {
             getContactsInfo();
+        } catch (Exception e) {
         }
     }
 
@@ -70,7 +95,7 @@ public class BirthdayFragment extends Fragment {
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     Toast.makeText(getContext(), "Contacts access denied", Toast.LENGTH_SHORT).show();
                 } else {
-                    getContactsInfo();
+                    new GetInfo().execute();
                 }
                 break;
 
@@ -319,7 +344,7 @@ public class BirthdayFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                getContactsInfo();
+                tryGetContactsInfo();
             } catch (Exception e) {
                 Log.e("tag", "testoooo");
             }

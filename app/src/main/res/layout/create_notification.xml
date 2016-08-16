@@ -165,7 +165,7 @@
                 android:minHeight="0dp"
                 android:minWidth="0dp"
                 android:padding="@dimen/button_padding"
-                android:text="TEST"
+                android:text="Show"
                 android:textColor="@android:color/white" />
 
             <Button

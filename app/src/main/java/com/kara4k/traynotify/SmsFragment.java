@@ -35,8 +35,7 @@ public class SMSFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
-        TabLayout tabs = (TabLayout) getActivity().findViewById(R.id.tabs);
-        tabs.setVisibility(View.GONE);
+        hideVPTabs();
         adapter = SMSAdapter.getInstance();
         smsList = new ArrayList<>();
         adapter.setSmsList(smsList);
@@ -44,6 +43,11 @@ public class SMSFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         checkPermissions();
         return recyclerView;
+    }
+
+    private void hideVPTabs() {
+        TabLayout tabs = (TabLayout) getActivity().findViewById(R.id.tabs);
+        tabs.setVisibility(View.GONE);
     }
 
     private void checkPermissions() {
