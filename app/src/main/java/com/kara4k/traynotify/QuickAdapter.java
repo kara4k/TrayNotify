@@ -17,14 +17,14 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
 
     private static QuickAdapter quickAdapter;
 
-    public List<Note> getNotes() {
+    private List<Note> getNotes() {
         return notes;
     }
 
     private List<Note> notes;
     private Context context;
 
-    QuickAdapter() {
+    private QuickAdapter() {
     }
 
     public static QuickAdapter getInstance() {
@@ -107,21 +107,10 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
                         intent.putExtra("id", note.getNumid());
                         context.startActivity(intent);
                     } catch (Exception e) {
-                        e.printStackTrace(); // TODO: 29.07.2016  
                     }
                 }
             });
-//            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-//                @Override
-//                public boolean onLongClick(View view) {
-//                    try {
-//                        QuickAdapter.getInstance().remove(getAdapterPosition());
-//                    } catch (Exception e) {
-//                        e.printStackTrace(); //
-//                    }
-//                    return false;
-//                }
-//            });
+
         }
 
     }

@@ -16,15 +16,14 @@ import java.util.List;
 public class SMSAdapter extends RecyclerView.Adapter<SMSAdapter.SMSViewHolder>{
 
     private List<SMS> smsList;
-    private Context context;
 
     private static SMSAdapter smsAdapter;
 
-    public List<SMS> getSMS() {
+    private List<SMS> getSMS() {
         return smsList;
     }
 
-    SMSAdapter() {
+    private SMSAdapter() {
     }
 
     public static SMSAdapter getInstance() {
@@ -41,7 +40,6 @@ public class SMSAdapter extends RecyclerView.Adapter<SMSAdapter.SMSViewHolder>{
     @Override
     public SMSViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.quick_item, parent, false);
-        context = parent.getContext();
         return new SMSViewHolder(v);
     }
 
@@ -88,7 +86,6 @@ public class SMSAdapter extends RecyclerView.Adapter<SMSAdapter.SMSViewHolder>{
                         intent.putExtra(Intent.EXTRA_TEXT, sms.getBody());
                         context.startActivity(intent);
                     } catch (Exception e) {
-                        e.printStackTrace(); // TODO: 29.07.2016
                     }
                 }
             });

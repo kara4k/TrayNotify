@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="@dimen/dimen_default"
         android:orientation="vertical">
 
@@ -24,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dimen_default"
                 android:layout_marginTop="@dimen/dimen_default"
-                android:text="Text:"
+                android:text="@string/message_text"
                 android:textColor="@android:color/black" />
 
             <EditText
@@ -34,7 +35,8 @@
                 android:layout_marginLeft="@dimen/dimen_default"
                 android:layout_marginRight="@dimen/dimen_default"
                 android:layout_marginTop="@dimen/dimen_default"
-                android:background="@android:color/transparent" />
+                android:background="@android:color/transparent"
+                tools:ignore="TextFields" />
 
         </LinearLayout>
 
@@ -50,12 +52,11 @@
 
 
             <TextView
-                android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dimen_default"
                 android:layout_marginTop="@dimen/dimen_default"
-                android:text="Title:"
+                android:text="@string/message_title"
                 android:textColor="@android:color/black" />
 
             <EditText
@@ -65,7 +66,8 @@
                 android:layout_marginLeft="@dimen/dimen_default"
                 android:layout_marginRight="@dimen/dimen_default"
                 android:layout_marginTop="@dimen/dimen_default"
-                android:background="@android:color/transparent" />
+                android:background="@android:color/transparent"
+                tools:ignore="TextFields" />
         </LinearLayout>
 
         <View
@@ -74,18 +76,11 @@
             android:layout_marginRight="@dimen/dimen_default" />
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_default"
-            android:orientation="horizontal">
-
-        </LinearLayout>
-
         <com.kara4k.traynotify.MyView
             android:id="@+id/tray"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_default"
             app:CheckVisible="true"
             app:ImageVisible="false"
             app:Text="Show note in tray"
@@ -125,7 +120,7 @@
             android:minWidth="0dp"
             android:paddingBottom="7dp"
             android:paddingTop="7dp"
-            android:text="Create"
+            android:text="@string/create"
             android:textColor="@android:color/white" />
 
 

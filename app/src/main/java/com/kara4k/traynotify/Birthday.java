@@ -1,7 +1,9 @@
 package com.kara4k.traynotify;
 
 
-public class Birthday implements Comparable<Birthday> {
+import android.support.annotation.NonNull;
+
+class Birthday implements Comparable<Birthday> {
 
 
     private String id;
@@ -95,7 +97,7 @@ public class Birthday implements Comparable<Birthday> {
     }
 
     @Override
-    public int compareTo(Birthday birthday) {
+    public int compareTo(@NonNull Birthday birthday) {
 
             if(this.daysLeft > birthday.daysLeft)
                 return 1;

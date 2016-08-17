@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,14 +22,14 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
 
     private static DelayedAdapter quickAdapter;
 
-    public List<DelayedNote> getNotes() {
+    private List<DelayedNote> getNotes() {
         return notes;
     }
 
     private List<DelayedNote> notes;
     private Context context;
 
-    DelayedAdapter() {
+    private DelayedAdapter() {
     }
 
     public static DelayedAdapter getInstance() {
@@ -113,7 +112,6 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
         }
 
         String stringDays = notes.get(i).getDays();
-        Log.e("tagddd", stringDays);
         String[] split = stringDays.split(";");
         for (int k = 0; k < 5; k++) {
             if (split[k].equals("1")) {
@@ -186,21 +184,9 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
                         intent.putExtra("id", note.getCheckId());
                         context.startActivity(intent);
                     } catch (Exception e) {
-                        e.printStackTrace(); // TODO: 29.07.2016
                     }
                 }
             });
-//            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-//                @Override
-//                public boolean onLongClick(View view) {
-//                    try {
-//                        DelayedAdapter.getInstance().remove(getAdapterPosition());
-//                    } catch (Exception e) {
-//                        e.printStackTrace(); //
-//                    }
-//                    return false;
-//                }
-//            });
         }
 
     }

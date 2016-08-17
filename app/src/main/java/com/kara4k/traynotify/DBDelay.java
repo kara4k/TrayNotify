@@ -7,7 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class DBDelay {
+class DBDelay {
 
     private static final String DB_NAME = "Delay";
     private static final int DB_VERSION = 1;

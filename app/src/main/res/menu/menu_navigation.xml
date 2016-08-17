@@ -5,26 +5,25 @@
         <item
             android:id="@+id/add_note"
             android:icon="@drawable/ic_note_add_black_24dp"
-            android:title="Notifications" />
+            android:title="@string/notifications" />
         <item
             android:id="@+id/messages"
             android:icon="@drawable/ic_sms_black_24dp"
-            android:title="Messages" />
+            android:title="@string/messages" />
         <item
             android:id="@+id/birthdays"
             android:icon="@drawable/ic_perm_contact_calendar_black_24dp"
-            android:title="Birthdays" />
+            android:title="@string/birthdays" />
     </group>
-    <group android:id="@+id/down"
-        android:checkableBehavior="all">
+    <group android:checkableBehavior="all">
 
         <item
             android:id="@+id/rate"
             android:icon="@drawable/ic_star_half_black_24dp"
-            android:title="Rate" />
+            android:title="@string/rate" />
         <item
             android:id="@+id/feedback"
             android:icon="@drawable/ic_send_black_24dp"
-            android:title="Feedback" />
+            android:title="@string/feedback" />
     </group>
 </menu>

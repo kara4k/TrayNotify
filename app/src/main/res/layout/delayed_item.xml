@@ -13,7 +13,7 @@
 
         <TextView
             android:id="@+id/name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="New Text"
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginLeft="@dimen/dimen_default"
-            android:text="#0" />
+             />
     </LinearLayout>
 
 
@@ -49,11 +49,10 @@
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="25.02.1989"
             android:textColor="@android:color/black" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_weight="1"
@@ -63,49 +62,42 @@
                 android:id="@+id/mon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Пн, "
                 android:textColor="@android:color/darker_gray" />
 
             <TextView
                 android:id="@+id/tue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Вт, "
                 android:textColor="@android:color/darker_gray" />
 
             <TextView
                 android:id="@+id/wed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ср, "
                 android:textColor="@android:color/darker_gray" />
 
             <TextView
                 android:id="@+id/thu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Чт, "
                 android:textColor="@android:color/darker_gray" />
 
             <TextView
                 android:id="@+id/fri"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Пт, "
                 android:textColor="@android:color/darker_gray" />
 
             <TextView
                 android:id="@+id/sat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Сб, "
                 android:textColor="@android:color/darker_gray" />
 
             <TextView
                 android:id="@+id/sun"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Вс "
                 android:textColor="@android:color/darker_gray" />
         </LinearLayout>
 
@@ -115,7 +107,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:text="18.46"
             android:textColor="@android:color/black" />
 
 

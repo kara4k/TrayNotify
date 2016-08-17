@@ -16,7 +16,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.NotificationCompat;
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ import java.util.List;
 public class AlarmReceiver extends BroadcastReceiver {
 
 
-    DelayedNote note;
+    private DelayedNote note;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -45,7 +44,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             mBuilder.setContentText(note.getText());
             mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(note.getText()));
             mBuilder.setContentTitle(note.getTitle());
-            setVibroSound(context, mBuilder);
+            setVibroSound(mBuilder);
             mBuilder.setPriority(note.getPriority());
             mBuilder.setContentInfo(String.valueOf(note.getCheckId()));
             mBuilder.setAutoCancel(false);
@@ -70,7 +69,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if ((note.getRepeat() == 1) && (!note.getDays().equals("0;0;0;0;0;0;0;"))){
-                Log.e("TAG", note.getRepeat() + "\n" + note.getDays() );
                 AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                 Intent alarmIntent = new Intent(context, AlarmReceiver.class);
                 Bundle bundle = new Bundle();
@@ -95,28 +93,25 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 
 
-    {
 
 
-    }
-
-    private void setVibroSound(Context context, NotificationCompat.Builder mBuilder) {
+    private void setVibroSound(NotificationCompat.Builder mBuilder) {
         if ((note.getSound().equals("0")) && (note.getVibration().equals("1"))) {
             mBuilder.setDefaults(Notification.DEFAULT_ALL);
         } else if ((!(note.getSound().equals("0")) && (note.getVibration().equals("1")))) {
             mBuilder.setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
-            setCustomSound(context, mBuilder);
+            setCustomSound(mBuilder);
         } else if (((note.getSound().equals("0")) && (!note.getVibration().equals("1")))) {
             mBuilder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS);
             setCustomVibration(mBuilder);
         } else if ((!note.getSound().equals("0")) && (!note.getVibration().equals("1"))) {
             mBuilder.setDefaults(Notification.DEFAULT_LIGHTS);
-            setCustomSound(context, mBuilder);
+            setCustomSound(mBuilder);
             setCustomVibration(mBuilder);
         }
     }
 
-    private void setCustomSound(Context context, NotificationCompat.Builder mBuilder) {
+    private void setCustomSound(NotificationCompat.Builder mBuilder) {
         try {
             mBuilder.setSound(Uri.parse(note.getSound()));
         } catch (Exception e) {

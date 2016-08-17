@@ -1,7 +1,7 @@
 package com.kara4k.traynotify;
 
 
-public class DelayedNote {
+class DelayedNote {
 
     private int id;
     private String text;
@@ -34,7 +34,7 @@ public class DelayedNote {
         this.checkId = checkId;
     }
 
-    public int getId() {
+    private int getId() {
         return id;
     }
 

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="@dimen/dimen_default"
         android:orientation="vertical">
 
@@ -23,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dimen_default"
                 android:layout_marginTop="@dimen/dimen_default"
-                android:text="Text:"
+                android:text="@string/message_text"
                 android:textColor="@android:color/black" />
 
             <EditText
@@ -33,7 +34,8 @@
                 android:layout_marginLeft="@dimen/dimen_default"
                 android:layout_marginRight="@dimen/dimen_default"
                 android:layout_marginTop="@dimen/dimen_default"
-                android:background="@android:color/transparent" />
+                android:background="@android:color/transparent"
+                tools:ignore="TextFields" />
 
         </LinearLayout>
 
@@ -46,12 +48,11 @@
 
 
             <TextView
-                android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dimen_default"
                 android:layout_marginTop="@dimen/dimen_default"
-                android:text="Title:"
+                android:text="@string/message_title"
                 android:textColor="@android:color/black" />
 
             <EditText
@@ -61,7 +62,8 @@
                 android:layout_marginLeft="@dimen/dimen_default"
                 android:layout_marginRight="@dimen/dimen_default"
                 android:layout_marginTop="@dimen/dimen_default"
-                android:background="@android:color/transparent" />
+                android:background="@android:color/transparent"
+                tools:ignore="TextFields" />
         </LinearLayout>
 
         <View style="@style/Divider" />
@@ -128,7 +130,6 @@
             app:Title="Vibration" />
 
         <Button
-            android:id="@+id/vibrate2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_default"
@@ -140,7 +141,7 @@
             android:minHeight="0dp"
             android:minWidth="0dp"
             android:padding="4dp"
-            android:text="Default"
+            android:text="@string/text_default"
             android:textColor="@android:color/white"
             android:textOff="HIDE"
             android:textOn="SHOW"
@@ -165,7 +166,7 @@
                 android:minHeight="0dp"
                 android:minWidth="0dp"
                 android:padding="@dimen/button_padding"
-                android:text="Show"
+                android:text="@string/show"
                 android:textColor="@android:color/white" />
 
             <Button
@@ -179,7 +180,7 @@
                 android:minHeight="0dp"
                 android:minWidth="0dp"
                 android:padding="@dimen/button_padding"
-                android:text="Create"
+                android:text="@string/create"
                 android:textColor="@android:color/white" />
 
         </LinearLayout>

@@ -19,11 +19,7 @@ import java.util.List;
 public class ViewPagerFragment extends Fragment  {
 
     private TabLayout tabs;
-    private Adapter adapter;
     private ViewPager viewPager;
-    private QuickNotesFragment quickNotes;
-    private DelayedNotesFragment delayedNotes;
-
 
 
     @Nullable
@@ -31,11 +27,11 @@ public class ViewPagerFragment extends Fragment  {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.viewpager_fragment, container, false);
         viewPager = (ViewPager) linearLayout.findViewById(R.id.viewpager);
-        adapter = new Adapter(getFragmentManager());
-        quickNotes = new QuickNotesFragment();
-        delayedNotes = new DelayedNotesFragment();
-        adapter.addFragment(delayedNotes, "Notifications");
-        adapter.addFragment(quickNotes, "Quick Notes");
+        Adapter adapter = new Adapter(getFragmentManager());
+        QuickNotesFragment quickNotes = new QuickNotesFragment();
+        DelayedNotesFragment delayedNotes = new DelayedNotesFragment();
+        adapter.addFragment(delayedNotes, getString(R.string.notifications));
+        adapter.addFragment(quickNotes, getString(R.string.notes));
         viewPager.setAdapter(adapter);
         tabs = (TabLayout) getActivity().findViewById(R.id.tabs);
         tabs.setVisibility(View.VISIBLE);

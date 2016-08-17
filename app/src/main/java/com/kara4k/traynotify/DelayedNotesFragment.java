@@ -17,15 +17,14 @@ import java.util.List;
 
 public class DelayedNotesFragment extends Fragment {
 
-    List<DelayedNote> notes;
-    DelayedAdapter adapter;
+    private List<DelayedNote> notes;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         inflater.inflate(R.layout.quick_notes_fragment, container);
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
-        adapter = DelayedAdapter.getInstance();
+        DelayedAdapter adapter = DelayedAdapter.getInstance();
         getAllNotesFromDB();
         adapter.setList(notes);
         recyclerView.setAdapter(adapter);
@@ -36,7 +35,7 @@ public class DelayedNotesFragment extends Fragment {
         return recyclerView;
     }
 
-    public void getAllNotesFromDB() {
+    private void getAllNotesFromDB() {
         DBDelay db = new DBDelay(getActivity());
         db.open();
         List<DelayedNote> allnotes = new ArrayList<>();

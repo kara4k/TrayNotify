@@ -4,7 +4,6 @@ package com.kara4k.traynotify;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -15,9 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.SeekBar;
-import android.widget.TextView;
 
 import java.util.Calendar;
 
@@ -25,19 +21,12 @@ public class QuickNote extends AppCompatActivity {
 
     private EditText title;
     private EditText text;
-    private Button create;
-    private SeekBar seekbar;
-    private Button delete;
     private NotificationManager nm;
-    private TextView textId;
 
-    private LinearLayout advancedLayout;
-    private LinearLayout seekLayout;
     private MyView tray;
     private MyView ongoing;
 
     private int id;
-    private SharedPreferences sp;
     private DBQuick dbQuick;
     private Calendar calendar;
 
@@ -46,15 +35,14 @@ public class QuickNote extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.quick_note);
 
-        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
-
+        trySetDefaultAsHomeEnabled();
 
 
         title = (EditText) findViewById(R.id.editTitle);
         text = (EditText) findViewById(R.id.textedit);
         tray = (MyView) findViewById(R.id.tray);
         ongoing = (MyView) findViewById(R.id.ongoing);
-        create = (Button) findViewById(R.id.create);
+        Button create = (Button) findViewById(R.id.create);
 
         dbQuick = new DBQuick(getApplicationContext());
         id = dbQuick.getNoteCheckID();
@@ -82,6 +70,14 @@ public class QuickNote extends AppCompatActivity {
         });
 
 
+    }
+
+    private void trySetDefaultAsHomeEnabled() {
+        try {
+            getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void intentChecks() {
@@ -135,7 +131,7 @@ public class QuickNote extends AppCompatActivity {
 
     }
 
-    public void create() {
+    private void create() {
 
         if (tray.getCheckbox().isChecked()) {
             createNote();
@@ -158,12 +154,11 @@ public class QuickNote extends AppCompatActivity {
         mBuilder.setContentInfo("#" + String.valueOf(id).substring(1));
         mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(text.getText().toString()));
         mBuilder.setOngoing(ongoing.getCheckbox().isChecked());
-//        mBuilder.setDefaults(Notification.DEFAULT_ALL);
         mBuilder.setContentIntent(PendingIntent.getActivities(getApplicationContext(), id, makeIntent(), PendingIntent.FLAG_UPDATE_CURRENT));
         mBuilder.setSmallIcon(R.drawable.notify);
 
 
-        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.user1 ));     // TODO: 12.08.2016
+        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.user1 ));
         nm.notify(id, mBuilder.build());
         finish();
 
@@ -188,14 +183,14 @@ public class QuickNote extends AppCompatActivity {
         Cursor currentNote = dbQuick.getCurrentNote(id);
         if (currentNote.moveToFirst()) {
             if (title.getText().toString().equals("")) {
-                dbQuick.updateRec("TrayNotify", text.getText().toString(), calendar.getTimeInMillis(), id);
+                dbQuick.updateRec(getString(R.string.app_name), text.getText().toString(), calendar.getTimeInMillis(), id);
             } else {
                 dbQuick.updateRec(title.getText().toString(), text.getText().toString(), calendar.getTimeInMillis(), id);
             }
         } else {
 
             if (title.getText().toString().equals("")) {
-                dbQuick.addNote("TrayNotify", text.getText().toString(), calendar.getTimeInMillis(), id);
+                dbQuick.addNote(getString(R.string.app_name), text.getText().toString(), calendar.getTimeInMillis(), id);
             } else {
                 dbQuick.addNote(title.getText().toString(), text.getText().toString(), calendar.getTimeInMillis(), id);
             }

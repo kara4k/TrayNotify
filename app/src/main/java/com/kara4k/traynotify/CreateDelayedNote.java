@@ -19,12 +19,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,7 +44,6 @@ import java.util.List;
 
 public class CreateDelayedNote extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    private Intent intent;
     private MyView sound;
     private Uri soundUri;
     private Calendar mainCal;
@@ -57,8 +56,6 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     private EditText textEdit;
     private EditText titleEdit;
     private AlarmManager alarmManager;
-    private Intent alarmIntent;
-    private PendingIntent pendingIntent;
     private boolean[] days;
     private DBDelay db;
     private int checkThis;
@@ -147,7 +144,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
                     bundle.putInt("repeat", (vibration.length - 1) / 2);
                     vibroDialog.setArguments(bundle);
                 }
-                vibroDialog.show(getFragmentManager(), "Set pattern");
+                vibroDialog.show(getFragmentManager(), getString(R.string.pattern));
                 vibroDialog.setmDialogInterface(new VibroDialogFragment.MDialogInterface() {
                     @Override
                     public void getResult(long[] vibroPattern, String v, String p, String r) {
@@ -158,7 +155,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
                     @Override
                     public void clearVibro() {
                         vibration = null;
-                        vibrate.getText().setText("Default");
+                        vibrate.getText().setText(getString(R.string.text_default));
                     }
                 });
 
@@ -344,7 +341,6 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         for (int i = 0; i < days.length; i++) {
             if (days[i]) {
                 selectedDays += shortDays[i];
-                Log.e("tag", String.valueOf(days[i]));
             }
         }
         if (!selectedDays.equals("")) {
@@ -364,7 +360,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
                 weekdays[1].substring(0, 1).toUpperCase().concat(weekdays[1].substring(1))
         };
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("Days")
+                .setTitle(R.string.days_capital)
                 .setMultiChoiceItems(dialogItems, days, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
@@ -377,7 +373,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
                         setRepeatDaysText();
                         repeat.getCheckbox().setChecked(true);
                     }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                     }
@@ -414,15 +410,15 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     private String getNoteDays() {
         String stringDays = "";
         if ((repeat.getCheckbox().isChecked()) && (!repeat.getText().getText().equals(""))) {
-            for (int i = 0; i < days.length; i++) {
-                if (days[i]) {
+            for (boolean day : days) {
+                if (day) {
                     stringDays += "1;";
                 } else {
                     stringDays += "0;";
                 }
             }
         } else {
-            for (int i = 0; i < days.length; i++) {
+            for (boolean day : days) {
                 stringDays += "0;";
             }
         }
@@ -483,16 +479,12 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         }
 
 
-        Log.e("check", String.valueOf(note.getCheckId()));
 
 
-        alarmIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        Intent alarmIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
         Bundle bundle = new Bundle();
         bundle.putInt("id", note.getCheckId());
 
-//        if(birthday!=0) {
-//            bundle.putInt("birthday", birthday);
-//        }
 
         alarmIntent.putExtras(bundle);
 
@@ -502,11 +494,9 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
         SimpleDateFormat sdf = new SimpleDateFormat("EEE SSSS, dd.MM.yyyy; HH:mm:ss:SSSSS ");
 
-        Log.e("tag", sdf.format(mainCal.getTimeInMillis()));
-        Log.e("tag", note.getDays());
 
 
-        pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), checkThis, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), checkThis, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, mainCal.getTimeInMillis(), 24 * 60 * 60 * 1000, pendingIntent);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -564,9 +554,9 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         setRepeatDaysText();
         repeat.getCheckbox().setChecked(false);
         soundUri = null;
-        sound.setText("Default");
+        sound.setText(getString(R.string.text_default));
         vibration = null;
-        vibrate.setText("Default");
+        vibrate.setText(getString(R.string.text_default));
         birthday = 0;
 
     }
@@ -613,9 +603,9 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     }
 
     private void chooseSoundIntent() {
-        intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALL);
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone");
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, getString(R.string.melody));
         if (soundUri != null) {
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, soundUri);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, soundUri);
@@ -644,12 +634,12 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
                 }
             } catch (Exception e) {
-                e.printStackTrace(); // TODO: 03.08.2016 toast smth wrong
+
             }
         }
     }
 
-    public void pickDate(View v) {
+    private void pickDate(View v) {
         new DatePickerDialog(this, R.style.PickerStyle, this,
                 mainCal.get(Calendar.YEAR),
                 mainCal.get(Calendar.MONTH),
@@ -685,7 +675,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case 1:
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED) {

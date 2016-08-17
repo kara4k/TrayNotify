@@ -24,7 +24,7 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.Birthd
     private List<Birthday> birthdays;
 
 
-    BirthdayAdapter() {
+    private BirthdayAdapter() {
     }
 
     public static BirthdayAdapter getInstance() {
@@ -34,7 +34,7 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.Birthd
         return birthdayAdapter;
     }
 
-    public List<Birthday> getBirthdays() {
+    private List<Birthday> getBirthdays() {
         return birthdays;
     }
 
@@ -55,7 +55,7 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.Birthd
         holder.dateView.setText(birthdays.get(position).getDate());
         setPhoto(holder.photoView, position);
         setDaysLeft(holder, position);
-        holder.ageView.setText("Age: " + birthdays.get(position).getAge());
+        holder.ageView.setText(context.getString(R.string.age) + birthdays.get(position).getAge());
         setZodiacSign(holder, position);
     }
 
@@ -69,10 +69,10 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.Birthd
 
     private void setDaysLeft(BirthdayViewHolder holder, int position) {
         if (birthdays.get(position).getDaysLeft() == 0) {
-            holder.daysLeftView.setText("Today");
+            holder.daysLeftView.setText(R.string.today);
             holder.daysLeftView.setTextColor(Color.RED);
         } else {
-            holder.daysLeftView.setText("Left: " + birthdays.get(position).getDaysLeft() + " days");
+            holder.daysLeftView.setText(context.getString(R.string.left) + birthdays.get(position).getDaysLeft() + context.getString(R.string.days));
         }
     }
 
@@ -93,13 +93,12 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.Birthd
 
     public class BirthdayViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView photoView;
-        private TextView nameView;
-        private TextView dateView;
-        private TextView daysLeftView;
-        private TextView ageView;
-        private ImageView zodiac;
-        private TextView dayOfWeek;
+        private final ImageView photoView;
+        private final TextView nameView;
+        private final TextView dateView;
+        private final TextView daysLeftView;
+        private final TextView ageView;
+        private final ImageView zodiac;
 
 
         public BirthdayViewHolder(final View itemView) {
@@ -110,12 +109,11 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.Birthd
             daysLeftView = (TextView) itemView.findViewById(R.id.days_left);
             ageView = (TextView) itemView.findViewById(R.id.age);
             zodiac = (ImageView) itemView.findViewById(R.id.sign);
-            dayOfWeek = (TextView) itemView.findViewById(R.id.day_of_week);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent delayed = new Intent(context, CreateDelayedNote.class);
-                    delayed.putExtra(Intent.EXTRA_SUBJECT, "Birthday!");
+                    delayed.putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.birthday_title));
                     String name = BirthdayAdapter.getInstance().getBirthdays().get(getAdapterPosition()).getName();
                     int age = BirthdayAdapter.getInstance().getBirthdays().get(getAdapterPosition()).getAge();
                     String date = BirthdayAdapter.getInstance().getBirthdays().get(getAdapterPosition()).getDate();
@@ -123,7 +121,7 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.Birthd
                     int id = Integer.parseInt(BirthdayAdapter.getInstance().getBirthdays().get(getAdapterPosition()).getId());
 
 
-                    delayed.putExtra(Intent.EXTRA_TEXT, name + ",\n" + date +",\n" +  age + " years.");
+                    delayed.putExtra(Intent.EXTRA_TEXT, name + ",\n" + date +",\n" +  age + context.getString(R.string.years));
                     delayed.putExtra("time", setTimer);
                     delayed.putExtra("birthday", id);
                     context.startActivity(delayed);

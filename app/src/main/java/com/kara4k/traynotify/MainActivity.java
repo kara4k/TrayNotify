@@ -61,18 +61,17 @@ public class MainActivity extends AppCompatActivity {
                     // This method will trigger on item Click of navigation menu
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        Fragment fragment;
                         switch (menuItem.getItemId()) {
                             case R.id.add_note:
                                 showFirstFragment();
                                 break;
                             case R.id.messages:
                                 showSecondaryFragment(new SMSFragment());
-                                supportActionBar.setTitle("Messages");
+                                setBarTitle(supportActionBar,getString(R.string.messages));
                                 break;
                             case R.id.birthdays:
                                 showSecondaryFragment(new BirthdayFragment());
-                                supportActionBar.setTitle("Birthdays");
+                                setBarTitle(supportActionBar, getString(R.string.birthdays));
                                 break;
                             case R.id.rate:
                                 rateApp();
@@ -106,6 +105,14 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
+        }
+    }
+
+    private void setBarTitle(ActionBar bar, String title) {
+        try {
+            bar.setTitle(title);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -151,11 +158,7 @@ public class MainActivity extends AppCompatActivity {
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
         if (currentFragment instanceof ViewPagerFragment) {
             showFirstFragment();
-        } else {
-            fab.setVisibility(View.INVISIBLE);
         }
-
-
         super.onStart();
 
     }
@@ -163,7 +166,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -182,8 +184,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showFirstFragment() {
-        fab.setVisibility(View.VISIBLE);
         firstFragmentTransaction();
+        fab.setVisibility(View.VISIBLE);
         navigationView.getMenu().getItem(0).setChecked(true);
         getSupportActionBar().setTitle(getString(R.string.app_name));
     }
@@ -206,12 +208,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_clear_all) {
             clear();
             return true;
@@ -237,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void clear() {
+    private void clear() {
         nm.cancelAll();
     }
 

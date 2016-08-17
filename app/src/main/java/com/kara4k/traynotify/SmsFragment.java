@@ -29,8 +29,8 @@ import java.util.Map;
 
 public class SMSFragment extends Fragment {
 
-    SMSAdapter adapter;
-    List<SMS> smsList;
+    private SMSAdapter adapter;
+    private List<SMS> smsList;
     private Map<Integer, String> names;
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -65,7 +65,15 @@ public class SMSFragment extends Fragment {
         }
     }
 
-    public void getSMS() {
+    private void tryGetSMS() {
+        try {
+            getSMS();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getSMS() {
         String[] reqCols = new String[]{"_id", "person", "address", "body", "date"};
         Cursor cursor = getContext().getContentResolver().query(Uri.parse("content://sms/inbox"), reqCols, null, null, null);
         List<SMS> allSms = new ArrayList<>();
@@ -98,7 +106,7 @@ public class SMSFragment extends Fragment {
         return name;
     }
 
-    public void getContactNames() {
+    private void getContactNames() {
         ContentResolver cr = getContext().getContentResolver();
         String[] projection = new String[]{ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME};
         Uri uri = Uri.parse("content://contacts/people");
@@ -113,7 +121,7 @@ public class SMSFragment extends Fragment {
         cur.close();
     }
 
-    void checkReadContactsPermissions() {
+    private void checkReadContactsPermissions() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             int hasReadContactsPermission = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS);
             if (hasReadContactsPermission == PackageManager.PERMISSION_DENIED) {
@@ -137,18 +145,18 @@ public class SMSFragment extends Fragment {
         }
     }
 
-    void checkReadSMSPermissions() {
+    private void checkReadSMSPermissions() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             int hasReadContactsPermission = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_SMS);
             if (hasReadContactsPermission == PackageManager.PERMISSION_DENIED) {
                 requestPermissions(new String[]{Manifest.permission.READ_SMS}, 2);
                 return;
             } else {
-                getSMS();
+                tryGetSMS();
                 adapter.notifyDataSetChanged();
             }
         } else {
-            getSMS();
+            tryGetSMS();
             adapter.notifyDataSetChanged();
         }
     }
@@ -158,7 +166,7 @@ public class SMSFragment extends Fragment {
         switch (requestCode) {
             case 1:
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    Toast.makeText(getContext(), "Contacts access denied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.contacts_access_denied), Toast.LENGTH_SHORT).show();
                     checkReadSMSPermissions();
                 } else {
                     try {
@@ -171,9 +179,9 @@ public class SMSFragment extends Fragment {
                 break;
             case 2:
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    Toast.makeText(getContext(), "SMS access denied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.sms_access_denied, Toast.LENGTH_SHORT).show();
                 } else {
-                    getSMS();
+                   tryGetSMS();
                     adapter.notifyDataSetChanged();
                 }
 
@@ -182,7 +190,7 @@ public class SMSFragment extends Fragment {
         }
     }
 
-    class GetSmsListTask extends AsyncTask<Void, Void, Void> {
+    private class GetSmsListTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -191,7 +199,7 @@ public class SMSFragment extends Fragment {
             } catch (Exception e) {
 
             }
-            getSMS();
+            tryGetSMS();
             return null;
         }
 

@@ -15,7 +15,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,25 +48,14 @@ public class BirthdayFragment extends Fragment {
         return recyclerView;
     }
 
-//    private void checkPermissions() {
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-//            int hasReadContactsPermission = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS);
-//            if (hasReadContactsPermission == PackageManager.PERMISSION_GRANTED) {
-//                new GetInfo().execute();
-//            } else {
-//                checkReadContactsPermissions();
-//            }
-//        } else {
-//            new GetInfo().execute();
-//        }
-//    }
+
 
     private void hideVPTabs() {
         TabLayout tabs = (TabLayout) getActivity().findViewById(R.id.tabs);
         tabs.setVisibility(View.GONE);
     }
 
-    void checkReadContactsPermissions() {
+    private void checkReadContactsPermissions() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             int hasReadContactsPermission = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS);
             if (hasReadContactsPermission == PackageManager.PERMISSION_DENIED) {
@@ -93,7 +81,7 @@ public class BirthdayFragment extends Fragment {
         switch (requestCode) {
             case 1:
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    Toast.makeText(getContext(), "Contacts access denied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.contacts_access_denied, Toast.LENGTH_SHORT).show();
                 } else {
                     new GetInfo().execute();
                 }
@@ -163,7 +151,6 @@ public class BirthdayFragment extends Fragment {
     }
 
     private int getZodiacSign(String birthday) {
-        Calendar birthdayDate = Calendar.getInstance();
         String[] yearMonthDay = birthday.split("-");
         int month = Integer.parseInt(yearMonthDay[1]);
         int day = Integer.parseInt(yearMonthDay[2]);
@@ -263,7 +250,6 @@ public class BirthdayFragment extends Fragment {
     private int daysLeft(String birthday) {
         Calendar birthdayDate = Calendar.getInstance();
         String[] yearMonthDay = birthday.split("-");
-        int year = Integer.parseInt(yearMonthDay[0]);
         int month = Integer.parseInt(yearMonthDay[1]) - 1;
         int day = Integer.parseInt(yearMonthDay[2]);
 
@@ -290,12 +276,8 @@ public class BirthdayFragment extends Fragment {
     }
 
     private boolean today(Calendar birthdayDate, Calendar now) {
-        if ((birthdayDate.get(Calendar.MONTH) == now.get(Calendar.MONTH))
-                && ((birthdayDate.get(Calendar.DAY_OF_MONTH) == now.get(Calendar.DAY_OF_MONTH)))) {
-            return true;
-        } else {
-            return false;
-        }
+        return (birthdayDate.get(Calendar.MONTH) == now.get(Calendar.MONTH))
+                && ((birthdayDate.get(Calendar.DAY_OF_MONTH) == now.get(Calendar.DAY_OF_MONTH)));
 
     }
 
@@ -335,18 +317,16 @@ public class BirthdayFragment extends Fragment {
         }
         birthdayDate.set(Calendar.HOUR_OF_DAY, 9);
 
-        long time = birthdayDate.getTimeInMillis();
-        return time;
+        return birthdayDate.getTimeInMillis();
     }
 
-    class GetInfo extends AsyncTask<Void, Void, Void> {
+    private class GetInfo extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... voids) {
             try {
                 tryGetContactsInfo();
             } catch (Exception e) {
-                Log.e("tag", "testoooo");
             }
 
             return null;
@@ -357,7 +337,6 @@ public class BirthdayFragment extends Fragment {
             try {
                 adapter.notifyDataSetChanged();
             } catch (Exception e) {
-                Log.e("TAG", "onPostExecute: shit ");
             }
             super.onPostExecute(aVoid);
         }

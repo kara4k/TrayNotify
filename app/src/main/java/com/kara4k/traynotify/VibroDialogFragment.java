@@ -20,7 +20,7 @@ public class VibroDialogFragment extends DialogFragment implements DialogInterfa
     private TextView pauseText;
     private TextView repeatText;
 
-    MDialogInterface mDialogInterface;
+    private MDialogInterface mDialogInterface;
     private SeekBar vibrate;
     private SeekBar pause;
     private SeekBar repeat;
@@ -55,7 +55,7 @@ public class VibroDialogFragment extends DialogFragment implements DialogInterfa
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        return builder.setView(form).setNeutralButton("Default", this).setPositiveButton(android.R.string.ok, this)
+        return builder.setView(form).setNeutralButton(getString(R.string.text_default), this).setPositiveButton(android.R.string.ok, this)
                 .setNegativeButton(android.R.string.cancel, this).create();
 
     }
@@ -99,28 +99,28 @@ public class VibroDialogFragment extends DialogFragment implements DialogInterfa
         switch (seekBar.getId()) {
             case R.id.vibrate:
                 if (i < 10) {
-                    vibrateText.setText(String.format("0.%d" + " sec.", i));
+                    vibrateText.setText("0." + i + getString(R.string.sec));
                 } else {
                     vibrateText.setText(String.valueOf(i)
                             .substring(0, 1)
                             .concat(".")
                             .concat(String.valueOf(i).substring(1))
-                            .concat(" sec."));
+                            .concat(getString(R.string.sec)));
                 }
                 break;
             case R.id.pause:
                 if (i < 10) {
-                    pauseText.setText(String.format("0.%d" + " sec.", i));
+                    pauseText.setText("0." + i + getString(R.string.sec));
                 } else {
                     pauseText.setText(String.valueOf(i)
                             .substring(0, 1)
                             .concat(".")
                             .concat(String.valueOf(i).substring(1))
-                            .concat(" sec."));
+                            .concat(getString(R.string.sec)));
                 }
                 break;
             case R.id.repeat:
-                repeatText.setText(i + 1 + " times.");
+                repeatText.setText(i + 1 + getString(R.string.times));
                 break;
         }
     }

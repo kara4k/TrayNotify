@@ -17,7 +17,7 @@ import java.util.List;
 
 public class QuickNotesFragment extends Fragment {
 
-    List<Note> notes;
+    private List<Note> notes;
     private QuickAdapter adapter;
 
 
@@ -48,7 +48,7 @@ public class QuickNotesFragment extends Fragment {
 
 
 
-    public void getAllNotesFromDB() {
+    private void getAllNotesFromDB() {
         DBQuick db = new DBQuick(getActivity());
         db.open();
         List<Note> allnotes = new ArrayList<>();

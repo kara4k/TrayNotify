@@ -1,4 +1,37 @@
 <resources>
     <string name="app_name">TrayNotify</string>
     <string name="sd_permission_denied">Permission denied</string>
+    <string name="quick_note">Quick Note</string>
+    <string name="completely_tray_clean">Completely Tray Clean</string>
+    <string name="notifications">Notifications</string>
+    <string name="messages">Messages</string>
+    <string name="birthdays">Birthdays</string>
+    <string name="rate">Rate</string>
+    <string name="feedback">Feedback</string>
+    <string name="share">Share</string>
+    <string name="clear_forms">Clear Forms</string>
+    <string name="delete_tray_notification">Delete TRay Notification</string>
+    <string name="message_text">Text:</string>
+    <string name="message_title">Title:</string>
+    <string name="text_default">Default</string>
+    <string name="show">Show</string>
+    <string name="create">Create</string>
+    <string name="vibrate">Vibrate</string>
+    <string name="pause">Pause</string>
+    <string name="repeat">Repeat</string>
+    <string name="age">"Age: "</string>
+    <string name="today">Today</string>
+    <string name="left">"Left: "</string>
+    <string name="days">" days"</string>
+    <string name="birthday_title">Birthday!</string>
+    <string name="years">" years."</string>
+    <string name="contacts_access_denied">Contacts access denied</string>
+    <string name="pattern">Set pattern</string>
+    <string name="days_capital">Days</string>
+    <string name="cancel">Cancel</string>
+    <string name="melody">Select Tone</string>
+    <string name="sms_access_denied">SMS access denied</string>
+    <string name="sec">" sec."</string>
+    <string name="times">" times."</string>
+    <string name="notes">Quick Notes</string>
 </resources>
