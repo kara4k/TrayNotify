@@ -83,8 +83,8 @@
             android:layout_marginTop="@dimen/dimen_default"
             app:CheckVisible="true"
             app:ImageVisible="false"
-            app:Text="Show note in tray"
-            app:Title="Tray"
+            app:Text="@string/show_in_tray"
+            app:Title="@string/tray"
             app:isChecked="true">
 
         </com.kara4k.traynotify.MyView>
@@ -95,8 +95,8 @@
             android:layout_height="wrap_content"
             app:CheckVisible="true"
             app:ImageVisible="false"
-            app:Text="Dont delete on slide"
-            app:Title="Ongoing"
+            app:Text="@string/dont_delete_slide"
+            app:Title="@string/ongoing"
             app:isChecked="true">
 
         </com.kara4k.traynotify.MyView>

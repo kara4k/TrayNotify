@@ -34,4 +34,13 @@
     <string name="sec">" sec."</string>
     <string name="times">" times."</string>
     <string name="notes">Quick Notes</string>
+    <string name="show_in_tray">Show note in tray</string>
+    <string name="tray">Tray</string>
+    <string name="ongoing">Ongoing</string>
+    <string name="dont_delete_slide">Dont delete on slide</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="sound">Sound</string>
+    <string name="vibration">Vibration</string>
+    <string name="notification">Notification</string>
 </resources>

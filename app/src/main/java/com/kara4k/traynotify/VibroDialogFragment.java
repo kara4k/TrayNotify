@@ -52,6 +52,10 @@ public class VibroDialogFragment extends DialogFragment implements DialogInterfa
             vibrate.setProgress(getArguments().getInt("vibrate", 0));
             pause.setProgress(getArguments().getInt("pause", 0));
             repeat.setProgress(getArguments().getInt("repeat", 1) - 1);
+        } else {
+            vibrateText.setText("0.0" + getString(R.string.sec));
+            pauseText.setText("0.0" + getString(R.string.sec));
+            repeatText.setText("1" + getString(R.string.times));
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

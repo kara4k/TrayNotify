@@ -82,8 +82,8 @@
                 app:CheckVisible="false"
                 app:Image="@drawable/ic_event_black_24dp"
                 app:ImageVisible="true"
-                app:Text="09.01.2016"
-                app:Title="Date" />
+                app:Text=""
+                app:Title="@string/date" />
 
             <com.kara4k.traynotify.MyView
                 android:id="@+id/setTime"
@@ -94,7 +94,7 @@
                 app:Image="@drawable/ic_access_time_black_24dp"
                 app:ImageVisible="true"
                 app:Text="18:21"
-                app:Title="Time" />
+                app:Title="@string/time" />
 
 
         </LinearLayout>
@@ -106,8 +106,8 @@
             app:CheckVisible="true"
             app:Image="@drawable/ic_repeat_grey_24dp"
             app:ImageVisible="false"
-            app:Text="No"
-            app:Title="Repeat"
+            app:Text=""
+            app:Title="@string/repeat"
             app:isChecked="false" />
 
 
@@ -117,8 +117,8 @@
             android:layout_height="wrap_content"
             app:Image="@drawable/ic_phonelink_ring_black_24dp"
             app:ImageVisible="true"
-            app:Text="Default"
-            app:Title="Sound" />
+            app:Text="@string/text_default"
+            app:Title="@string/sound" />
 
         <com.kara4k.traynotify.MyView
             android:id="@+id/vibrate"
@@ -126,8 +126,8 @@
             android:layout_height="wrap_content"
             app:Image="@drawable/ic_vibration_black_24dp"
             app:ImageVisible="true"
-            app:Text="Default"
-            app:Title="Vibration" />
+            app:Text="@string/text_default"
+            app:Title="@string/vibration" />
 
         <Button
             android:layout_width="match_parent"
