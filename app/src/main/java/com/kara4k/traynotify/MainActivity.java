@@ -22,8 +22,8 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    final private int DELAYED = 1;
-    final private int QUICK = 2;
+    final private int QUICK = 1;
+    final private int DELAYED = 2;
     private DrawerLayout mDrawerLayout;
     private NotificationManager nm;
     private int pagerItem = 0;
@@ -227,10 +227,10 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case QUICK:
-                pagerItem = 1;
+                pagerItem = 0;
                 break;
             case DELAYED:
-                pagerItem = 0;
+                pagerItem = 1;
                 break;
         }
     }

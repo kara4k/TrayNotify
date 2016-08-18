@@ -187,6 +187,16 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
                     }
                 }
             });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    try {
+                        DelayedAdapter.getInstance().remove(getAdapterPosition());
+                    } catch (Exception e) {
+                    }
+                    return false;
+                }
+            });
         }
 
     }

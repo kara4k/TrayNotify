@@ -2,7 +2,9 @@ package com.kara4k.traynotify;
 
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -62,10 +64,10 @@ public class BirthdayFragment extends Fragment {
                 requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, 1);
                 return;
             } else {
-                new GetInfo().execute();
+                new GetInfo(getContext()).execute();
             }
         } else {
-            new GetInfo().execute();
+            new GetInfo(getContext()).execute();
         }
     }
 
@@ -73,6 +75,7 @@ public class BirthdayFragment extends Fragment {
         try {
             getContactsInfo();
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -83,7 +86,7 @@ public class BirthdayFragment extends Fragment {
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     Toast.makeText(getContext(), R.string.contacts_access_denied, Toast.LENGTH_SHORT).show();
                 } else {
-                    new GetInfo().execute();
+                    new GetInfo(getContext()).execute();
                 }
                 break;
 
@@ -110,6 +113,7 @@ public class BirthdayFragment extends Fragment {
                     String birthday = bdc.getString(0);
                     list.add(new Birthday(id, name, getStringDate(birthday), id, daysLeft(birthday), getAge(birthday), getZodiacSign(birthday), getNotificationTime(birthday)));
                 }
+                bdc.close();
             } while (cur.moveToNext());
         }
         cur.close();
@@ -322,6 +326,17 @@ public class BirthdayFragment extends Fragment {
 
     private class GetInfo extends AsyncTask<Void, Void, Void> {
 
+        private ProgressDialog dialog;
+
+        GetInfo(Context context) {
+            dialog = new ProgressDialog(context);
+            dialog.setMessage(context.getString(R.string.loading));
+        }
+        @Override
+        protected void onPreExecute() {
+            dialog.show();
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
             try {
@@ -336,6 +351,9 @@ public class BirthdayFragment extends Fragment {
         protected void onPostExecute(Void aVoid) {
             try {
                 adapter.notifyDataSetChanged();
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
             } catch (Exception e) {
             }
             super.onPostExecute(aVoid);

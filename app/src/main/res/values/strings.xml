@@ -43,4 +43,9 @@
     <string name="sound">Sound</string>
     <string name="vibration">Vibration</string>
     <string name="notification">Notification</string>
+    <string name="loading">Loading</string>
+    <string name="first_message">To remove from the tray attached particular record, go to the editing screen by touching it, and use the rightmost icon.</string>
+    <string name="second_message">To clear all notifications in the system tray use the rightmost icon in the main window.</string>
+    <string name="third_message_title">Use long tap on note\notification to delete it</string>
+    <string name="third_message_text">Try to delete this note.</string>
 </resources>

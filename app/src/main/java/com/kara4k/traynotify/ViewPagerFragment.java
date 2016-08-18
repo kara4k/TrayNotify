@@ -30,8 +30,8 @@ public class ViewPagerFragment extends Fragment  {
         Adapter adapter = new Adapter(getFragmentManager());
         QuickNotesFragment quickNotes = new QuickNotesFragment();
         DelayedNotesFragment delayedNotes = new DelayedNotesFragment();
-        adapter.addFragment(delayedNotes, getString(R.string.notifications));
         adapter.addFragment(quickNotes, getString(R.string.notes));
+        adapter.addFragment(delayedNotes, getString(R.string.notifications));
         viewPager.setAdapter(adapter);
         tabs = (TabLayout) getActivity().findViewById(R.id.tabs);
         tabs.setVisibility(View.VISIBLE);
