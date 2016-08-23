@@ -4,9 +4,10 @@ package com.kara4k.traynotify;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,39 +15,28 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuickNotesFragment extends Fragment {
-
+public class NotesDialogFragment extends DialogFragment implements QuickAdapter.GetNoteId {
     private List<Note> notes;
     private QuickAdapter adapter;
+    private GetNoteWidget getNoteWidget;
 
-
+    public interface GetNoteWidget {
+        void getNoteData(int i, String title, String text);
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        inflater.inflate(R.layout.quick_notes_fragment, container);
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
         adapter = QuickAdapter.getInstance();
-        adapter.setGetNoteId(null);
         getAllNotesFromDB();
         adapter.setList(notes);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        ItemTouchHelper.Callback callback = new QuickTouchHelper(adapter);
-//        ItemTouchHelper helper = new ItemTouchHelper(callback);
-//        helper.attachToRecyclerView(recyclerView);
+        adapter.setGetNoteId(this);
+        this.getDialog().setTitle("Choose note");
         return recyclerView;
     }
-
-    @Override
-    public void onStart() {
-        getAllNotesFromDB();
-        adapter.setGetNoteId(null); // TODO: 23.08.2016  
-        adapter.notifyDataSetChanged();
-        super.onStart();
-    }
-
-
 
 
     private void getAllNotesFromDB() {
@@ -63,4 +53,16 @@ public class QuickNotesFragment extends Fragment {
         notes = allnotes;
     }
 
+    public void setGetNoteWidget(GetNoteWidget getNoteWidget) {
+        this.getNoteWidget = getNoteWidget;
+    }
+
+    @Override
+    public void getId(int i, String title, String text) {
+        Log.e("TAG", String.valueOf(i));
+        Log.e("TAG", title);
+        Log.e("TAG", text);
+        getNoteWidget.getNoteData(i, title, text);
+        this.getDialog().dismiss();
+    }
 }

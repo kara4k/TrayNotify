@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHolder>{
+public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHolder> {
 
     private static QuickAdapter quickAdapter;
 
@@ -23,6 +23,7 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
 
     private List<Note> notes;
     private Context context;
+    private GetNoteId getNoteId;
 
     private QuickAdapter() {
     }
@@ -34,8 +35,13 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
         return quickAdapter;
     }
 
+    public interface GetNoteId {
+        void getId(int i, String title, String text);
+    }
 
-
+    public void setGetNoteId(GetNoteId getNoteId) {
+        this.getNoteId = getNoteId;
+    }
 
     public void setList(List<Note> notes) {
         this.notes = notes;
@@ -61,7 +67,6 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
         notesViewHolder.numid.setText("#" + String.valueOf(notes.get(i).getNumid()).substring(1));
 
     }
-
 
 
     @Override
@@ -99,13 +104,21 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
                 @Override
                 public void onClick(View view) {
                     try {
-                        Context context = view.getContext();
-                        Note note = QuickAdapter.getInstance().getNotes().get(getAdapterPosition());
-                        Intent intent = new Intent(context, QuickNote.class);
-                        intent.putExtra(Intent.EXTRA_SUBJECT, note.getTitle());
-                        intent.putExtra(Intent.EXTRA_TEXT, note.getText());
-                        intent.putExtra("id", note.getNumid());
-                        context.startActivity(intent);
+                        if (QuickAdapter.getInstance().getNoteId != null) {
+                            int numid = QuickAdapter.getInstance().getNotes().get(getAdapterPosition()).getNumid();
+                            String title = QuickAdapter.getInstance().getNotes().get(getAdapterPosition()).getTitle();
+                            String text = QuickAdapter.getInstance().getNotes().get(getAdapterPosition()).getText();
+                            QuickAdapter.getInstance().getNoteId.getId(numid, title, text);
+                        } else {
+
+                            Context context = view.getContext();
+                            Note note = QuickAdapter.getInstance().getNotes().get(getAdapterPosition());
+                            Intent intent = new Intent(context, QuickNote.class);
+                            intent.putExtra(Intent.EXTRA_SUBJECT, note.getTitle());
+                            intent.putExtra(Intent.EXTRA_TEXT, note.getText());
+                            intent.putExtra("id", note.getNumid());
+                            context.startActivity(intent);
+                        }
                     } catch (Exception e) {
                     }
                 }
@@ -114,7 +127,9 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
                 @Override
                 public boolean onLongClick(View view) {
                     try {
-                        QuickAdapter.getInstance().remove(getAdapterPosition());
+                        if (QuickAdapter.getInstance().getNoteId == null) {
+                            QuickAdapter.getInstance().remove(getAdapterPosition());
+                        }
                     } catch (Exception e) {
                     }
                     return false;

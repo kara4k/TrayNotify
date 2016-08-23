@@ -73,6 +73,7 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.Birthd
             holder.daysLeftView.setTextColor(Color.RED);
         } else {
             holder.daysLeftView.setText(context.getString(R.string.left) + birthdays.get(position).getDaysLeft() + context.getString(R.string.days));
+            holder.daysLeftView.setTextColor(Color.BLACK);
         }
     }
 

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 
 class DBQuick {
@@ -108,19 +107,17 @@ class DBQuick {
             cv.put(KEY_TITLE, context.getString(R.string.first_message));
             cv.put(KEY_NUMID, -1);
             db.insert(TABLE_NAME, null, cv);
-            Log.e("TAG", "1"  );
+
             ContentValues cv2 = new ContentValues();
             cv2.put(KEY_TITLE, context.getString(R.string.second_message));
             cv2.put(KEY_NUMID, -2);
             db.insert(TABLE_NAME, null, cv2);
-            Log.e("TAG", "22"  );
 
             ContentValues cv3 = new ContentValues();
             cv3.put(KEY_TITLE, context.getString(R.string.third_message_title));
             cv3.put(KEY_TEXT, context.getString(R.string.third_message_text));
             cv3.put(KEY_NUMID, -3);
             db.insert(TABLE_NAME, null, cv3);
-            Log.e("TAG", "33"  );
         }
 
 

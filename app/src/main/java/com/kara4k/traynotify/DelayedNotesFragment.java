@@ -22,7 +22,7 @@ public class DelayedNotesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         inflater.inflate(R.layout.quick_notes_fragment, container);
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
+        final RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
         DelayedAdapter adapter = DelayedAdapter.getInstance();
         getAllNotesFromDB();
         adapter.setList(notes);
