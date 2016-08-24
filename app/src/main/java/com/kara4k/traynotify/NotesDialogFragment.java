@@ -21,7 +21,7 @@ public class NotesDialogFragment extends DialogFragment implements QuickAdapter.
     private GetNoteWidget getNoteWidget;
 
     public interface GetNoteWidget {
-        void getNoteData(int i, String title, String text);
+        void getNoteData(int i, String title);
     }
 
     @Nullable
@@ -58,11 +58,9 @@ public class NotesDialogFragment extends DialogFragment implements QuickAdapter.
     }
 
     @Override
-    public void getId(int i, String title, String text) {
+    public void getId(int i, String title) {
         Log.e("TAG", String.valueOf(i));
-        Log.e("TAG", title);
-        Log.e("TAG", text);
-        getNoteWidget.getNoteData(i, title, text);
+        getNoteWidget.getNoteData(i, title);
         this.getDialog().dismiss();
     }
 }

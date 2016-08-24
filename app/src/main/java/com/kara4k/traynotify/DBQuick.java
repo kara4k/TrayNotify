@@ -105,11 +105,13 @@ class DBQuick {
 
             ContentValues cv = new ContentValues();
             cv.put(KEY_TITLE, context.getString(R.string.first_message));
+            cv.put(KEY_TEXT, "");
             cv.put(KEY_NUMID, -1);
             db.insert(TABLE_NAME, null, cv);
 
             ContentValues cv2 = new ContentValues();
             cv2.put(KEY_TITLE, context.getString(R.string.second_message));
+            cv2.put(KEY_TEXT, "");
             cv2.put(KEY_NUMID, -2);
             db.insert(TABLE_NAME, null, cv2);
 

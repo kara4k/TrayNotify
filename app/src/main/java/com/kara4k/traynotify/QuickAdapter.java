@@ -1,9 +1,12 @@
 package com.kara4k.traynotify;
 
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +39,7 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
     }
 
     public interface GetNoteId {
-        void getId(int i, String title, String text);
+        void getId(int i, String title);
     }
 
     public void setGetNoteId(GetNoteId getNoteId) {
@@ -78,11 +81,27 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
         DBQuick db = new DBQuick(context);
         db.open();
         int id = notes.get(position).getId();
+        int numID = notes.get(position).getNumid();
         db.removeNote(id);
         db.close();
         notes.remove(position);
         notifyItemRemoved(position);
+        Log.e("TAG", String.valueOf(numID));
+        updateWidget(numID);
 
+    }
+
+    private void updateWidget(int numID) {
+        SharedPreferences sp = context.getSharedPreferences(WidgetConfig.WIDGET_CONF, Context.MODE_PRIVATE);
+        int widgetID = sp.getInt("#" + numID, -1);
+        if (widgetID != -1) {
+            SharedPreferences.Editor edit = sp.edit();
+            edit.putInt(WidgetConfig.WIDGET_NOTE_ID + widgetID, 0);
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            Widget.updateWidget(context, appWidgetManager, sp, widgetID);
+            Log.e("TAG", String.valueOf(numID));
+            Log.e("TAG", String.valueOf(widgetID));
+        }
     }
 
     public static class NotesViewHolder extends RecyclerView.ViewHolder {
@@ -107,8 +126,7 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
                         if (QuickAdapter.getInstance().getNoteId != null) {
                             int numid = QuickAdapter.getInstance().getNotes().get(getAdapterPosition()).getNumid();
                             String title = QuickAdapter.getInstance().getNotes().get(getAdapterPosition()).getTitle();
-                            String text = QuickAdapter.getInstance().getNotes().get(getAdapterPosition()).getText();
-                            QuickAdapter.getInstance().getNoteId.getId(numid, title, text);
+                            QuickAdapter.getInstance().getNoteId.getId(numid, title);
                         } else {
 
                             Context context = view.getContext();

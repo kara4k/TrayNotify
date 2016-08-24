@@ -3,7 +3,10 @@ package com.kara4k.traynotify;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -138,8 +141,17 @@ public class QuickNote extends AppCompatActivity {
             writeToDB();
         } else {
             writeToDB();
-            finish();
         }
+
+        SharedPreferences sp = getSharedPreferences(WidgetConfig.WIDGET_CONF, Context.MODE_PRIVATE);
+        int widgetID = sp.getInt("#" + id, -1);
+        if (widgetID != -1) {
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+            Widget.updateWidget(this, appWidgetManager, sp, widgetID);
+        }
+
+
+        finish();
 
     }
 
@@ -160,7 +172,7 @@ public class QuickNote extends AppCompatActivity {
 
         mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.user1 ));
         nm.notify(id, mBuilder.build());
-        finish();
+
 
 
     }
