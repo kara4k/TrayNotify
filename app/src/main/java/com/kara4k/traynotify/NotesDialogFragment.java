@@ -1,6 +1,8 @@
 package com.kara4k.traynotify;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class NotesDialogFragment extends DialogFragment implements QuickAdapter.GetNoteId {
@@ -31,6 +34,7 @@ public class NotesDialogFragment extends DialogFragment implements QuickAdapter.
         adapter = QuickAdapter.getInstance();
         getAllNotesFromDB();
         adapter.setList(notes);
+        makeSingleInstance();
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter.setGetNoteId(this);
@@ -62,5 +66,24 @@ public class NotesDialogFragment extends DialogFragment implements QuickAdapter.
         Log.e("TAG", String.valueOf(i));
         getNoteWidget.getNoteData(i, title);
         this.getDialog().dismiss();
+    }
+
+    void makeSingleInstance() {
+        SharedPreferences sp = getActivity().getSharedPreferences(WidgetConfig.WIDGET_CONF, Context.MODE_PRIVATE);
+        try {
+            removeExistedNotes(sp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void removeExistedNotes(SharedPreferences sp) {
+        Iterator<Note> iter = notes.listIterator();
+        while (iter.hasNext()) {
+            Note x = iter.next();
+            if (sp.getInt("#" + x.getNumid(), 0) != 0) {
+                iter.remove();
+            }
+        }
     }
 }

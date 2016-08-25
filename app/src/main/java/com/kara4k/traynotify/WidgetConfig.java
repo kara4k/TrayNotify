@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -34,6 +35,7 @@ public class WidgetConfig extends AppCompatActivity {
     public final static String WIDGET_BACKGROUND = "background_";
     public final static String WIDGET_NOTE_ID = "note_";
     private SharedPreferences sp;
+    private MyView noteView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,14 +49,14 @@ public class WidgetConfig extends AppCompatActivity {
         final MyView textColorView = (MyView) findViewById(R.id.text_color);
         final MyView textSizeView = (MyView) findViewById(R.id.text_size);
         final MyView backgroundView = (MyView) findViewById(R.id.backkground);
-        final MyView noteView = (MyView) findViewById(R.id.choose_note);
+        noteView = (MyView) findViewById(R.id.choose_note);
         Button createBtn = (Button) findViewById(R.id.create);
+        Button editBtn = (Button) findViewById(R.id.edit);
 
 
         setNoteLabel(noteView);
         setColorLabel(textColorView, textColor);
         setColorLabel(backgroundView, backgroundColor);
-
         textSizeView.setText(String.valueOf(textSize));
 
         final AmbilWarnaDialog.OnAmbilWarnaListener textColorListener = new AmbilWarnaDialog.OnAmbilWarnaListener() {
@@ -151,16 +153,41 @@ public class WidgetConfig extends AppCompatActivity {
                 finish();
             }
         });
+
+        editBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(WidgetConfig.this, MainActivity.class);
+                WidgetConfig.this.startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+        Widget.updateWidget(this, appWidgetManager, sp, widgetID);
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onStart() {
+        Log.e("TAG", "Here");
+        numId = sp.getInt(WidgetConfig.WIDGET_NOTE_ID + widgetID, 0);
+        setNoteLabel(noteView);
+        super.onStart();
     }
 
     private void setNoteLabel(MyView noteView) {
-        if (numId!=0) {
+        if (numId != 0) {
             try {
                 getNote(getApplicationContext(), numId);
                 noteView.setText(wTitle);
             } catch (Exception e) {
 
             }
+        } else {
+            noteView.setText("");
         }
     }
 
@@ -210,6 +237,8 @@ public class WidgetConfig extends AppCompatActivity {
         Cursor note = dbQuick.getCurrentNote(noteId);
         if (note.moveToFirst()) {
             wTitle = note.getString(1);
+        } else {
+            wTitle = "";
         }
         note.close();
         dbQuick.close();

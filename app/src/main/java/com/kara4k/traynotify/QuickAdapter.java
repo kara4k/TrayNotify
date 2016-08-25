@@ -97,10 +97,13 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
         if (widgetID != -1) {
             SharedPreferences.Editor edit = sp.edit();
             edit.putInt(WidgetConfig.WIDGET_NOTE_ID + widgetID, 0);
+            edit.remove("#" + numID);
+            edit.apply();
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             Widget.updateWidget(context, appWidgetManager, sp, widgetID);
             Log.e("TAG", String.valueOf(numID));
             Log.e("TAG", String.valueOf(widgetID));
+            Log.e("Deleted", String.valueOf(sp.getInt(WidgetConfig.WIDGET_NOTE_ID + widgetID, 0)));
         }
     }
 

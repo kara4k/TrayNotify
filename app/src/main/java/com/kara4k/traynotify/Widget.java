@@ -33,14 +33,17 @@ public class Widget extends AppWidgetProvider {
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         super.onDeleted(context, appWidgetIds);
-        SharedPreferences.Editor editor = context.getSharedPreferences(
-                WidgetConfig.WIDGET_CONF, Context.MODE_PRIVATE).edit();
+        SharedPreferences sp = context.getSharedPreferences(WidgetConfig.WIDGET_CONF, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+
+
         for (int widgetID : appWidgetIds) {
+            int noteNum = sp.getInt(WidgetConfig.WIDGET_NOTE_ID + widgetID, 0);
             editor.remove(WidgetConfig.WIDGET_TEXT_COLOR + widgetID);
             editor.remove(WidgetConfig.WIDGET_TEXT_SIZE + widgetID);
             editor.remove(WidgetConfig.WIDGET_BACKGROUND + widgetID);
             editor.remove(WidgetConfig.WIDGET_NOTE_ID + widgetID);
-            editor.remove("#" + noteId);
+            editor.remove("#" + noteNum);
         }
         editor.apply();
     }
