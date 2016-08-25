@@ -48,4 +48,11 @@
     <string name="second_message">To clear all notifications in the system tray use the rightmost icon in the main window.</string>
     <string name="third_message_title">Use long tap on note\notification to delete it</string>
     <string name="third_message_text">Try to delete this note.</string>
+    <string name="text_color">Text color</string>
+    <string name="text_size">Text size</string>
+    <string name="backround">Background</string>
+    <string name="note">Note</string>
+    <string name="edit">Edit</string>
+    <string name="ok">Apply</string>
+    <string name="deselect">Deselect</string>
 </resources>

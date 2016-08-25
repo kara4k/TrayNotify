@@ -129,24 +129,6 @@
             app:Text="@string/text_default"
             app:Title="@string/vibration" />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimen_default"
-            android:layout_marginRight="@dimen/dimen_default"
-            android:layout_marginTop="@dimen/dimen_default"
-            android:background="@color/colorPrimary"
-            android:checked="false"
-            android:drawableLeft="@drawable/ic_vibration_white_24dp"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
-            android:padding="4dp"
-            android:text="@string/text_default"
-            android:textColor="@android:color/white"
-            android:textOff="HIDE"
-            android:textOn="SHOW"
-            android:visibility="gone" />
-
         <View style="@style/Divider" />
 
         <LinearLayout

@@ -49,4 +49,11 @@
     <string name="second_message">Для очистки всех уведомлений в трее используйте крайнюю правую пиктограмму в главном окне.</string>
     <string name="third_message_title">Длительное касание записи/напоминания удаляет ее.</string>
     <string name="third_message_text">Попробуйте удалить эту запись</string>
+    <string name="backround">Фон</string>
+    <string name="edit">Правка</string>
+    <string name="note">Заметка</string>
+    <string name="ok">Применить</string>
+    <string name="text_color">Цвет текста</string>
+    <string name="text_size">Размер текста</string>
+    <string name="deselect">Убрать</string>
 </resources>

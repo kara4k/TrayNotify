@@ -3,6 +3,7 @@ package com.kara4k.traynotify;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -17,17 +18,17 @@ import android.widget.Button;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 
-public class WidgetConfig extends AppCompatActivity {
+public class WidgetConfig extends AppCompatActivity implements DialogInterface.OnClickListener{
 
-    int textColor = Color.BLACK;
-    int textSize = 14;
-    int backgroundColor = Color.WHITE;
-    String wTitle;
+    private int textColor = Color.BLACK;
+    private int textSize = 14;
+    private int backgroundColor = Color.WHITE;
+    private String wTitle;
     String wText;
-    int numId = 0;
+    private int numId = 0;
 
-    int widgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
-    Intent resultValue;
+    private int widgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
+    private Intent resultValue;
 
     public final static String WIDGET_CONF = "widget_conf";
     public final static String WIDGET_TEXT_COLOR = "text_color_";
@@ -172,9 +173,7 @@ public class WidgetConfig extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        Log.e("TAG", "Here");
-        numId = sp.getInt(WidgetConfig.WIDGET_NOTE_ID + widgetID, 0);
-        setNoteLabel(noteView);
+        refreshNoteLabel();
         super.onStart();
     }
 
@@ -205,7 +204,7 @@ public class WidgetConfig extends AppCompatActivity {
         editor.putInt(WIDGET_BACKGROUND + widgetID, backgroundColor);
         editor.putInt(WIDGET_NOTE_ID + widgetID, numId);
         editor.putInt("#" + numId, widgetID);
-        editor.commit();
+        editor.apply();
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
         Widget.updateWidget(this, appWidgetManager, sp, widgetID);
     }
@@ -216,7 +215,7 @@ public class WidgetConfig extends AppCompatActivity {
         if (extras != null) {
             widgetID = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID);
-            textColor = extras.getInt(WIDGET_TEXT_COLOR, Color.BLACK);  // TODO: 24.08.2016 degaults
+            textColor = extras.getInt(WIDGET_TEXT_COLOR, Color.BLACK);
             textSize = extras.getInt(WIDGET_TEXT_SIZE, 14);
             backgroundColor = extras.getInt(WIDGET_BACKGROUND, Color.WHITE);
             numId = extras.getInt(WIDGET_NOTE_ID, 0);
@@ -244,5 +243,22 @@ public class WidgetConfig extends AppCompatActivity {
         dbQuick.close();
     }
 
+    @Override
+    public void onClick(DialogInterface dialogInterface, int i) {
+        switch (i) {
+            case DialogInterface.BUTTON_NEUTRAL:
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putInt(WIDGET_NOTE_ID + widgetID, 0);
+                editor.putInt("#" + numId, 0);
+                editor.apply();
+                refreshNoteLabel();
+                break;
+        }
+    }
+
+    private void refreshNoteLabel() {
+        numId = sp.getInt(WidgetConfig.WIDGET_NOTE_ID + widgetID, 0);
+        setNoteLabel(noteView);
+    }
 }
 

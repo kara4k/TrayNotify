@@ -41,7 +41,7 @@ public class QuickNotesFragment extends Fragment {
     @Override
     public void onStart() {
         getAllNotesFromDB();
-        adapter.setGetNoteId(null); // TODO: 23.08.2016  
+        adapter.setGetNoteId(null);
         adapter.notifyDataSetChanged();
         super.onStart();
     }

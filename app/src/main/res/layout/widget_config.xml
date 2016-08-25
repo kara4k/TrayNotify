@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             app:Image="@drawable/colorz"
             app:ImageVisible="true"
-            app:Title="Text color" />
+            app:Title="@string/text_color" />
 
         <com.kara4k.traynotify.MyView
             android:id="@+id/text_size"
@@ -25,7 +25,7 @@
             app:Image="@drawable/ic_format_size_black_24dp"
             app:ImageVisible="true"
             app:Text="14"
-            app:Title="Text size" />
+            app:Title="@string/text_size" />
 
         <com.kara4k.traynotify.MyView
             android:id="@+id/backkground"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             app:Image="@drawable/colorz"
             app:ImageVisible="true"
-            app:Title="Background" />
+            app:Title="@string/backround" />
 
         <com.kara4k.traynotify.MyView
             android:id="@+id/choose_note"
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             app:Image="@drawable/ic_note_black_24dp"
             app:ImageVisible="true"
-            app:Title="Note" />
+            app:Title="@string/note" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -62,7 +62,7 @@
                 android:layout_weight="1"
                 android:paddingBottom="7dp"
                 android:paddingTop="7dp"
-                android:text="Edit"
+                android:text="@string/edit"
                 android:textColor="@android:color/white" />
 
             <Button
@@ -77,7 +77,7 @@
                 android:minWidth="0dp"
                 android:paddingBottom="7dp"
                 android:paddingTop="7dp"
-                android:text="@string/create"
+                android:text="@string/ok"
                 android:textColor="@android:color/white" />
         </LinearLayout>
 

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,7 +85,6 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
         db.close();
         notes.remove(position);
         notifyItemRemoved(position);
-        Log.e("TAG", String.valueOf(numID));
         updateWidget(numID);
 
     }
@@ -101,9 +99,6 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
             edit.apply();
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             Widget.updateWidget(context, appWidgetManager, sp, widgetID);
-            Log.e("TAG", String.valueOf(numID));
-            Log.e("TAG", String.valueOf(widgetID));
-            Log.e("Deleted", String.valueOf(sp.getInt(WidgetConfig.WIDGET_NOTE_ID + widgetID, 0)));
         }
     }
 

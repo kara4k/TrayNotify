@@ -13,8 +13,6 @@ import android.widget.RemoteViews;
 public class Widget extends AppWidgetProvider {
 
 
-    private static int noteId;
-
     @Override
     public void onEnabled(Context context) {
         super.onEnabled(context);
@@ -60,7 +58,7 @@ public class Widget extends AppWidgetProvider {
         int textColor = sp.getInt(WidgetConfig.WIDGET_TEXT_COLOR + widgetID, 0);
         int textSize = sp.getInt(WidgetConfig.WIDGET_TEXT_SIZE + widgetID, 14);
         int backgroundColor = sp.getInt(WidgetConfig.WIDGET_BACKGROUND + widgetID, 0);
-        noteId = sp.getInt(WidgetConfig.WIDGET_NOTE_ID + widgetID, 0);
+        int noteId = sp.getInt(WidgetConfig.WIDGET_NOTE_ID + widgetID, 0);
 
         RemoteViews widgetView = new RemoteViews(context.getPackageName(), R.layout.widget);
         widgetView.setInt(R.id.text, "setBackgroundColor", backgroundColor);
