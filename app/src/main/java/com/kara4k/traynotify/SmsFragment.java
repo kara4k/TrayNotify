@@ -31,6 +31,7 @@ public class SMSFragment extends Fragment {
 
     private SMSAdapter adapter;
     private List<SMS> smsList;
+    private List<SMS> smsListAll = new ArrayList<>();
     private Map<Integer, String> names;
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -73,6 +74,18 @@ public class SMSFragment extends Fragment {
         }
     }
 
+    public void setSmsListAll(List<SMS> smsListAll) {
+        this.smsListAll = smsListAll;
+    }
+
+    public List<SMS> getSmsListAll() {
+        return smsListAll;
+    }
+
+    public void setSmsList(List<SMS> smsList) {
+        this.smsList = smsList;
+    }
+
     private void getSMS() {
         String[] reqCols = new String[]{"_id", "person", "address", "body", "date"};
         Cursor cursor = getContext().getContentResolver().query(Uri.parse("content://sms/inbox"), reqCols, null, null, null);
@@ -92,6 +105,7 @@ public class SMSFragment extends Fragment {
         cursor.close();
         smsList = allSms;
         adapter.setSmsList(smsList);
+        smsListAll.addAll(smsList);
 
 
     }
@@ -159,6 +173,10 @@ public class SMSFragment extends Fragment {
             tryGetSMS();
             adapter.notifyDataSetChanged();
         }
+    }
+
+    public List<SMS> getSmsList() {
+        return smsList;
     }
 
     @Override

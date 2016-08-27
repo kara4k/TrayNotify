@@ -34,6 +34,7 @@ public class BirthdayFragment extends Fragment {
 
     private BirthdayAdapter adapter;
     private List<Birthday> birthdaysList;
+    private List<Birthday> birthdaysListAll;
 
     @Nullable
     @Override
@@ -42,6 +43,7 @@ public class BirthdayFragment extends Fragment {
         hideVPTabs();
         adapter = BirthdayAdapter.getInstance();
         birthdaysList = new ArrayList<>();
+        birthdaysListAll = new ArrayList<>();
         adapter.setBirthdays(birthdaysList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -121,6 +123,7 @@ public class BirthdayFragment extends Fragment {
         Collections.sort(list);
         birthdaysList = list;
         adapter.setBirthdays(birthdaysList);
+        birthdaysListAll.addAll(birthdaysList);
 
     }
 
@@ -393,6 +396,21 @@ public class BirthdayFragment extends Fragment {
         }
     }
 
+    public List<Birthday> getBirthdaysList() {
+        return birthdaysList;
+    }
+
+    public void setBirthdaysList(List<Birthday> birthdaysList) {
+        this.birthdaysList = birthdaysList;
+    }
+
+    public List<Birthday> getBirthdaysListAll() {
+        return birthdaysListAll;
+    }
+
+    public void setBirthdaysListAll(List<Birthday> birthdaysListAll) {
+        this.birthdaysListAll = birthdaysListAll;
+    }
 
     private class GetInfo extends AsyncTask<Void, Void, Void> {
 

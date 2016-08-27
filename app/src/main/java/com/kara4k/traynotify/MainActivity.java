@@ -15,12 +15,15 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     final private int QUICK = 1;
     final private int DELAYED = 2;
@@ -32,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fab;
     private BirthdayFragment birthdayFragment;
     private Menu mainMenu;
+    private SMSFragment smsFragment;
 
 
     @Override
@@ -69,7 +73,8 @@ public class MainActivity extends AppCompatActivity {
                                 mainMenu.findItem(R.id.sort).setVisible(false);
                                 break;
                             case R.id.messages:
-                                showSecondaryFragment(new SMSFragment());
+                                smsFragment = new SMSFragment();
+                                showSecondaryFragment(smsFragment);
                                 setBarTitle(supportActionBar, getString(R.string.messages));
                                 mainMenu.findItem(R.id.sort).setVisible(false);
                                 break;
@@ -173,6 +178,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchItemView = (SearchView) searchItem.getActionView();
+        searchItemView.setOnQueryTextListener(this);
         return true;
     }
 
@@ -228,28 +236,47 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.sortDaysLeft) {
-            birthdayFragment.sortByDaysLeft();
-            item.setChecked(true);
+        if (id == R.id.action_search) {
+
+            return true;
+        } else if (id == R.id.sortDaysLeft) {
+            sortByDaysLeft(item);
             return true;
         } else if (id == R.id.sortNames) {
-            birthdayFragment.sortByNames();
-            item.setChecked(true);
+            sortByNames(item);
             return true;
         } else if (id == R.id.sortAge) {
-            birthdayFragment.sortByAge();
-            item.setChecked(true);
+            sortByAge(item);
             return true;
         } else if (id == R.id.action_clear_all) {
             clear();
             return true;
         } else if (id == R.id.quick_note) {
-            Intent quick = new Intent(this, QuickNote.class);
-            startActivityForResult(quick, QUICK);
+            callQuickNoteActivity();
         } else if (id == android.R.id.home) {
             mDrawerLayout.openDrawer(GravityCompat.START);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void callQuickNoteActivity() {
+        Intent quick = new Intent(this, QuickNote.class);
+        startActivityForResult(quick, QUICK);
+    }
+
+    private void sortByAge(MenuItem item) {
+        birthdayFragment.sortByAge();
+        item.setChecked(true);
+    }
+
+    private void sortByNames(MenuItem item) {
+        birthdayFragment.sortByNames();
+        item.setChecked(true);
+    }
+
+    private void sortByDaysLeft(MenuItem item) {
+        birthdayFragment.sortByDaysLeft();
+        item.setChecked(true);
     }
 
     @Override
@@ -269,5 +296,67 @@ public class MainActivity extends AppCompatActivity {
         nm.cancelAll();
     }
 
+    private Fragment getCurrentFragment() {
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
+        if (currentFragment != null) {
+            return currentFragment;
+        }
+        return null;
+    }
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        Fragment fragment = getCurrentFragment();
+        if ((fragment != null) && (fragment instanceof SMSFragment)) {
+            return smsFragmentSearch(newText);
+        } else if ((fragment != null) && (fragment instanceof BirthdayFragment)) {
+            return birthdayFragmentSearch(newText);
+        }
+        return true;
+    }
+
+    private boolean birthdayFragmentSearch(String newText) {
+        List<Birthday> birthdaysListAll = birthdayFragment.getBirthdaysListAll();
+        List<Birthday> birthdaysListFiltered = birthdayFragment.getBirthdaysList();
+        birthdaysListFiltered.clear();
+        if (newText.length() == 0) {
+            birthdaysListFiltered.addAll(birthdaysListAll);
+        } else {
+            for (Birthday x : birthdaysListAll) {
+                if (x.getName().toLowerCase().contains(newText.toLowerCase())) {   // TODO: 03.07.2016 gettext!=null
+                    birthdaysListFiltered.add(x);
+                }
+            }
+        }
+        birthdayFragment.setBirthdaysList(birthdaysListFiltered);
+        BirthdayAdapter.getInstance().notifyDataSetChanged();
+        return true;
+    }
+
+    private boolean smsFragmentSearch(String newText) {
+        try {
+            List<SMS> smsListAll = smsFragment.getSmsListAll();
+            List<SMS> smsListFiltered = smsFragment.getSmsList();
+            smsListFiltered.clear();
+            if (newText.length() == 0) {
+                smsListFiltered.addAll(smsListAll);
+            } else {
+                for (SMS x : smsListAll) {
+                    if (x.getAddress().toLowerCase().contains(newText.toLowerCase()) || (x.getBody().toLowerCase().contains(newText.toLowerCase()))) {   // TODO: 03.07.2016 gettext!=null
+                        smsListFiltered.add(x);
+                    }
+                }
+            }
+            smsFragment.setSmsList(smsListFiltered);
+            SMSAdapter.getInstance().notifyDataSetChanged();
+            return true;
+        } catch (Exception e) {
+            return true;
+        }
+    }
 }
