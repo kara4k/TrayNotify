@@ -55,4 +55,8 @@
     <string name="edit">Edit</string>
     <string name="ok">Apply</string>
     <string name="deselect">Deselect</string>
+    <string name="sort">Sort</string>
+    <string name="days_sort">Days</string>
+    <string name="name_sort">Name</string>
+    <string name="age_sort">Age</string>
 </resources>

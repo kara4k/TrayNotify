@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private ViewPagerFragment vp;
     private NavigationView navigationView;
     private FloatingActionButton fab;
+    private BirthdayFragment birthdayFragment;
+    private Menu mainMenu;
 
 
     @Override
@@ -64,14 +66,18 @@ public class MainActivity extends AppCompatActivity {
                         switch (menuItem.getItemId()) {
                             case R.id.add_note:
                                 showFirstFragment();
+                                mainMenu.findItem(R.id.sort).setVisible(false);
                                 break;
                             case R.id.messages:
                                 showSecondaryFragment(new SMSFragment());
-                                setBarTitle(supportActionBar,getString(R.string.messages));
+                                setBarTitle(supportActionBar, getString(R.string.messages));
+                                mainMenu.findItem(R.id.sort).setVisible(false);
                                 break;
                             case R.id.birthdays:
-                                showSecondaryFragment(new BirthdayFragment());
+                                birthdayFragment = new BirthdayFragment();
+                                showSecondaryFragment(birthdayFragment);
                                 setBarTitle(supportActionBar, getString(R.string.birthdays));
+                                mainMenu.findItem(R.id.sort).setVisible(true);
                                 break;
                             case R.id.rate:
                                 rateApp();
@@ -171,12 +177,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        mainMenu = menu;
+        menu.findItem(R.id.sort).setVisible(false);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public void onBackPressed() {
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
         if (currentFragment instanceof SMSFragment) {
             showFirstFragment();
+            mainMenu.findItem(R.id.sort).setVisible(false);
         } else if (currentFragment instanceof BirthdayFragment) {
             showFirstFragment();
+            mainMenu.findItem(R.id.sort).setVisible(false);
         } else if (currentFragment instanceof ViewPagerFragment) {
             super.onBackPressed();
         }
@@ -187,7 +202,11 @@ public class MainActivity extends AppCompatActivity {
         firstFragmentTransaction();
         fab.setVisibility(View.VISIBLE);
         navigationView.getMenu().getItem(0).setChecked(true);
-        getSupportActionBar().setTitle(getString(R.string.app_name));
+        try {
+            getSupportActionBar().setTitle(getString(R.string.app_name));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void firstFragmentTransaction() {
@@ -209,8 +228,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        if (id == R.id.action_clear_all) {
+        if (id == R.id.sortDaysLeft) {
+            birthdayFragment.sortByDaysLeft();
+            item.setChecked(true);
+            return true;
+        } else if (id == R.id.sortNames) {
+            birthdayFragment.sortByNames();
+            item.setChecked(true);
+            return true;
+        } else if (id == R.id.sortAge) {
+            birthdayFragment.sortByAge();
+            item.setChecked(true);
+            return true;
+        } else if (id == R.id.action_clear_all) {
             clear();
             return true;
         } else if (id == R.id.quick_note) {

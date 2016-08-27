@@ -56,4 +56,8 @@
     <string name="text_color">Цвет текста</string>
     <string name="text_size">Размер текста</string>
     <string name="deselect">Убрать</string>
+    <string name="age_sort">Возраст</string>
+    <string name="name_sort">Имя</string>
+    <string name="days_sort">Дни</string>
+    <string name="sort">Сортировать</string>
 </resources>

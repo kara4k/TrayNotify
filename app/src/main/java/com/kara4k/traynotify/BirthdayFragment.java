@@ -26,6 +26,7 @@ import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -323,6 +324,75 @@ public class BirthdayFragment extends Fragment {
 
         return birthdayDate.getTimeInMillis();
     }
+
+    public  void sortByAge() {
+        trySortByAge();
+        adapter.notifyDataSetChanged();
+    }
+
+    private void trySortByAge() {
+        if ((birthdaysList != null) && (birthdaysList.size() != 0)) {
+            try {
+                Collections.sort(birthdaysList, new Comparator<Birthday>() {
+                    @Override
+                    public int compare(Birthday birthday, Birthday t1) {
+                        if(birthday.getAge() > t1.getAge())
+                            return 1;
+                        if(birthday.getAge() < t1.getAge())
+                            return -1;
+                        return 0;
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public  void sortByDaysLeft() {
+        trySortByDaysLeft();
+        adapter.notifyDataSetChanged();
+    }
+
+    private void trySortByDaysLeft() {
+        if ((birthdaysList != null) && (birthdaysList.size() != 0)) {
+            try {
+                Collections.sort(birthdaysList, new Comparator<Birthday>() {
+                    @Override
+                    public int compare(Birthday birthday, Birthday t1) {
+                        if(birthday.getDaysLeft() > t1.getDaysLeft())
+                            return 1;
+                        if(birthday.getDaysLeft() < t1.getDaysLeft())
+                            return -1;
+                        return 0;
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public  void sortByNames() {
+        trySortByNames();
+        adapter.notifyDataSetChanged();
+    }
+
+    private void trySortByNames() {
+        if ((birthdaysList != null) && (birthdaysList.size() != 0)) {
+            try {
+                Collections.sort(birthdaysList, new Comparator<Birthday>() {
+                    @Override
+                    public int compare(Birthday birthday, Birthday t1) {
+                        return birthday.getName().compareToIgnoreCase(t1.getName());
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     private class GetInfo extends AsyncTask<Void, Void, Void> {
 
