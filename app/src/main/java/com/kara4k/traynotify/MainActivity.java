@@ -30,12 +30,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private DrawerLayout mDrawerLayout;
     private NotificationManager nm;
     private int pagerItem = 0;
-    private ViewPagerFragment vp;
+    private ViewPagerFragment vpFragment;
     private NavigationView navigationView;
     private FloatingActionButton fab;
     private BirthdayFragment birthdayFragment;
     private Menu mainMenu;
     private SMSFragment smsFragment;
+
 
 
     @Override
@@ -70,19 +71,19 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                         switch (menuItem.getItemId()) {
                             case R.id.add_note:
                                 showFirstFragment();
-                                mainMenu.findItem(R.id.sort).setVisible(false);
+                                setVPFragmentMenu();
                                 break;
                             case R.id.messages:
                                 smsFragment = new SMSFragment();
                                 showSecondaryFragment(smsFragment);
                                 setBarTitle(supportActionBar, getString(R.string.messages));
-                                mainMenu.findItem(R.id.sort).setVisible(false);
+                                setVPFragmentMenu();
                                 break;
                             case R.id.birthdays:
                                 birthdayFragment = new BirthdayFragment();
                                 showSecondaryFragment(birthdayFragment);
                                 setBarTitle(supportActionBar, getString(R.string.birthdays));
-                                mainMenu.findItem(R.id.sort).setVisible(true);
+                                setBirthdaysMenu();
                                 break;
                             case R.id.rate:
                                 rateApp();
@@ -107,6 +108,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         });
 
         showFirstFragment();
+    }
+
+    private void setBirthdaysMenu() {
+        mainMenu.findItem(R.id.sort).setVisible(true);
+        mainMenu.findItem(R.id.sortDaysLeft).setChecked(true);
+        mainMenu.findItem(R.id.quick_note).setVisible(false);
+        mainMenu.findItem(R.id.action_clear_all).setVisible(false);
     }
 
     private void sendEmail(String[] addresses) {
@@ -154,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        int item = vp.getViewPager().getCurrentItem();
+        int item = vpFragment.getViewPager().getCurrentItem();
         outState.putInt("item", item);
     }
 
@@ -193,17 +201,26 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public void onBackPressed() {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
-        if (currentFragment instanceof SMSFragment) {
-            showFirstFragment();
-            mainMenu.findItem(R.id.sort).setVisible(false);
-        } else if (currentFragment instanceof BirthdayFragment) {
-            showFirstFragment();
-            mainMenu.findItem(R.id.sort).setVisible(false);
-        } else if (currentFragment instanceof ViewPagerFragment) {
-            super.onBackPressed();
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawers();
+        } else {
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
+            if (currentFragment instanceof SMSFragment) {
+                showFirstFragment();
+                setVPFragmentMenu();
+            } else if (currentFragment instanceof BirthdayFragment) {
+                showFirstFragment();
+                setVPFragmentMenu();
+            } else if (currentFragment instanceof ViewPagerFragment) {
+                super.onBackPressed();
+            }
         }
+    }
 
+    private void setVPFragmentMenu() {
+        mainMenu.findItem(R.id.sort).setVisible(false);
+        mainMenu.findItem(R.id.quick_note).setVisible(true);
+        mainMenu.findItem(R.id.action_clear_all).setVisible(true);
     }
 
     private void showFirstFragment() {
@@ -219,10 +236,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     private void firstFragmentTransaction() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        vp = new ViewPagerFragment();
+        vpFragment = new ViewPagerFragment();
         Bundle bundle = createFragmentBundle();
-        vp.setArguments(bundle);
-        ft.replace(R.id.container, vp);
+        vpFragment.setArguments(bundle);
+        ft.replace(R.id.container, vpFragment);
         ft.commitAllowingStateLoss();
     }
 
@@ -316,26 +333,79 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             return smsFragmentSearch(newText);
         } else if ((fragment != null) && (fragment instanceof BirthdayFragment)) {
             return birthdayFragmentSearch(newText);
+        } else if ((fragment != null) && (fragment instanceof ViewPagerFragment)) {
+            int pagerItem = vpFragment.getViewPager().getCurrentItem();
+            if (pagerItem == 0) {
+                return quickNotesSearch(newText);
+            } else if (pagerItem == 1) {
+                return delayedNotesSearch(newText);
+            }
         }
         return true;
     }
 
-    private boolean birthdayFragmentSearch(String newText) {
-        List<Birthday> birthdaysListAll = birthdayFragment.getBirthdaysListAll();
-        List<Birthday> birthdaysListFiltered = birthdayFragment.getBirthdaysList();
-        birthdaysListFiltered.clear();
-        if (newText.length() == 0) {
-            birthdaysListFiltered.addAll(birthdaysListAll);
-        } else {
-            for (Birthday x : birthdaysListAll) {
-                if (x.getName().toLowerCase().contains(newText.toLowerCase())) {   // TODO: 03.07.2016 gettext!=null
-                    birthdaysListFiltered.add(x);
+    private boolean delayedNotesSearch(String newText) {
+        try {
+            List<DelayedNote> notesAll = vpFragment.getDelayedNotes().getAllNotesFromDB();
+            List<DelayedNote> notesFiltered = vpFragment.getDelayedNotes().getNotes();
+            notesFiltered.clear();
+            if (newText.length() == 0) {
+                notesFiltered.addAll(notesAll);
+            } else {
+                for (DelayedNote x : notesAll) {
+                    if (x.getTitle().toLowerCase().contains(newText.toLowerCase()) || (x.getText().toLowerCase().contains(newText.toLowerCase()))) {
+                        notesFiltered.add(x);
+                    }
                 }
             }
+            vpFragment.updateDelayed();
+            return true;
+        } catch (Exception e) {
+            return true;
         }
-        birthdayFragment.setBirthdaysList(birthdaysListFiltered);
-        BirthdayAdapter.getInstance().notifyDataSetChanged();
-        return true;
+    }
+
+    private boolean quickNotesSearch(String newText) {
+        try {
+            List<Note> notesAll = vpFragment.getQuickNotes().getAllNotesFromDB();
+            List<Note> notesFiltered = vpFragment.getQuickNotes().getNotes();
+            notesFiltered.clear();
+            if (newText.length() == 0) {
+                notesFiltered.addAll(notesAll);
+            } else {
+                for (Note x : notesAll) {
+                    if (x.getTitle().toLowerCase().contains(newText.toLowerCase()) || (x.getText().toLowerCase().contains(newText.toLowerCase()))) {
+                        notesFiltered.add(x);
+                    }
+                }
+            }
+            vpFragment.updateQuick();
+            return true;
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
+    private boolean birthdayFragmentSearch(String newText) {
+        try {
+            List<Birthday> birthdaysListAll = birthdayFragment.getBirthdaysListAll();
+            List<Birthday> birthdaysListFiltered = birthdayFragment.getBirthdaysList();
+            birthdaysListFiltered.clear();
+            if (newText.length() == 0) {
+                birthdaysListFiltered.addAll(birthdaysListAll);
+            } else {
+                for (Birthday x : birthdaysListAll) {
+                    if (x.getName().toLowerCase().contains(newText.toLowerCase())) {   // TODO: 03.07.2016 gettext!=null
+                        birthdaysListFiltered.add(x);
+                    }
+                }
+            }
+            birthdayFragment.setBirthdaysList(birthdaysListFiltered);
+            BirthdayAdapter.getInstance().notifyDataSetChanged();
+            return true;
+        } catch (Exception e) {
+            return true;
+        }
     }
 
     private boolean smsFragmentSearch(String newText) {

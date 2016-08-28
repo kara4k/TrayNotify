@@ -59,4 +59,5 @@
     <string name="days_sort">Days</string>
     <string name="name_sort">Name</string>
     <string name="age_sort">Age</string>
+    <string name="search">Search</string>
 </resources>

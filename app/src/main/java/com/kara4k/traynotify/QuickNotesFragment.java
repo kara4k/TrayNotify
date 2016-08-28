@@ -18,8 +18,17 @@ public class QuickNotesFragment extends Fragment {
 
     private List<Note> notes;
     private QuickAdapter adapter;
+    private static QuickNotesFragment quickNotesFragment;
 
 
+    public static QuickNotesFragment getInstance() {
+        if (quickNotesFragment != null) {
+            return quickNotesFragment;
+        } else {
+            quickNotesFragment = new QuickNotesFragment();
+            return quickNotesFragment;
+        }
+    }
 
     @Nullable
     @Override
@@ -28,7 +37,17 @@ public class QuickNotesFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
         adapter = QuickAdapter.getInstance();
         adapter.setGetNoteId(null);
-        getAllNotesFromDB();
+        try {
+            if (getArguments() != null) {
+                SendObj sendObj = (SendObj) getArguments().getSerializable("notes");
+                notes = sendObj.getNotes();
+            } else {
+                notes = getAllNotesFromDB();
+            }
+        } catch (Exception e) {
+           notes = getAllNotesFromDB();
+        }
+
         adapter.setList(notes);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -38,18 +57,16 @@ public class QuickNotesFragment extends Fragment {
         return recyclerView;
     }
 
-    @Override
-    public void onStart() {
-        getAllNotesFromDB();
-        adapter.setGetNoteId(null);
-        adapter.notifyDataSetChanged();
-        super.onStart();
-    }
+//    @Override
+//    public void onStart() {
+//        getAllNotesFromDB();
+//        adapter.setGetNoteId(null);
+//        adapter.notifyDataSetChanged();
+//        super.onStart();
+//    }
 
 
-
-
-    private void getAllNotesFromDB() {
+    public List<Note> getAllNotesFromDB() {
         DBQuick db = new DBQuick(getActivity());
         db.open();
         List<Note> allnotes = new ArrayList<>();
@@ -60,7 +77,15 @@ public class QuickNotesFragment extends Fragment {
             } while (allData.moveToNext());
         }
         db.close();
-        notes = allnotes;
+        return allnotes;
+    }
+
+    public List<Note> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
     }
 
 }

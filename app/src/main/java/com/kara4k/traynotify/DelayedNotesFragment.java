@@ -24,7 +24,16 @@ public class DelayedNotesFragment extends Fragment {
         inflater.inflate(R.layout.quick_notes_fragment, container);
         final RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
         DelayedAdapter adapter = DelayedAdapter.getInstance();
-        getAllNotesFromDB();
+        try {
+            if (getArguments() != null) {
+                SendObj sendObj = (SendObj) getArguments().getSerializable("delayed_notes");
+                notes = sendObj.getDelayedNotes();
+            } else {
+                notes = getAllNotesFromDB();
+            }
+        } catch (Exception e) {
+            notes = getAllNotesFromDB();
+        }
         adapter.setList(notes);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -34,7 +43,11 @@ public class DelayedNotesFragment extends Fragment {
         return recyclerView;
     }
 
-    private void getAllNotesFromDB() {
+    public List<DelayedNote> getNotes() {
+        return notes;
+    }
+
+    public List<DelayedNote> getAllNotesFromDB() {
         DBDelay db = new DBDelay(getActivity());
         db.open();
         List<DelayedNote> allnotes = new ArrayList<>();
@@ -56,6 +69,6 @@ public class DelayedNotesFragment extends Fragment {
             } while (allData.moveToNext());
         }
         db.close();
-        notes = allnotes;
+        return allnotes;
     }
 }

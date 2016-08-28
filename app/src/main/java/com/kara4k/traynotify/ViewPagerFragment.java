@@ -20,6 +20,9 @@ public class ViewPagerFragment extends Fragment  {
 
     private TabLayout tabs;
     private ViewPager viewPager;
+    private QuickNotesFragment quickNotes;
+    private DelayedNotesFragment delayedNotes;
+    private Adapter adapter;
 
 
     @Nullable
@@ -27,9 +30,9 @@ public class ViewPagerFragment extends Fragment  {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.viewpager_fragment, container, false);
         viewPager = (ViewPager) linearLayout.findViewById(R.id.viewpager);
-        Adapter adapter = new Adapter(getFragmentManager());
-        QuickNotesFragment quickNotes = new QuickNotesFragment();
-        DelayedNotesFragment delayedNotes = new DelayedNotesFragment();
+        adapter = new Adapter(getFragmentManager());
+        quickNotes = new QuickNotesFragment();
+        delayedNotes = new DelayedNotesFragment();
         adapter.addFragment(quickNotes, getString(R.string.notes));
         adapter.addFragment(delayedNotes, getString(R.string.notifications));
         viewPager.setAdapter(adapter);
@@ -48,6 +51,54 @@ public class ViewPagerFragment extends Fragment  {
 
     public ViewPager getViewPager() {
         return viewPager;
+    }
+
+    public void updateQuick() {
+        try {
+            adapter = new Adapter(getFragmentManager());
+            Bundle quickNotesBundle = new Bundle();
+            SendObj sendObj = new SendObj(quickNotes.getNotes());
+            quickNotesBundle.putSerializable("notes", sendObj);
+            quickNotes = new QuickNotesFragment();
+            quickNotes.setArguments(quickNotesBundle);
+            adapter.addFragment(quickNotes, getString(R.string.notes));
+            adapter.addFragment(delayedNotes, getString(R.string.notifications));
+            viewPager.setAdapter(adapter);
+            viewPager.setCurrentItem(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateDelayed () {
+        try {
+            adapter = new Adapter(getFragmentManager());
+            Bundle delayedNotesBundle = new Bundle();
+            SendObj sendObj = new SendObj(delayedNotes.getNotes(), 0);
+            delayedNotesBundle.putSerializable("delayed_notes", sendObj);
+
+            delayedNotes = new DelayedNotesFragment();
+            delayedNotes.setArguments(delayedNotesBundle);
+
+            adapter.addFragment(quickNotes, getString(R.string.notes));
+            adapter.addFragment(delayedNotes, getString(R.string.notifications));
+            viewPager.setAdapter(adapter);
+            viewPager.setCurrentItem(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Adapter getAdapter() {
+        return adapter;
+    }
+
+    public QuickNotesFragment getQuickNotes() {
+        return quickNotes;
+    }
+
+    public DelayedNotesFragment getDelayedNotes() {
+        return delayedNotes;
     }
 
     @Override
@@ -79,6 +130,13 @@ public class ViewPagerFragment extends Fragment  {
         public void addFragment(Fragment fragment, String title) {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
+        }
+
+
+
+        @Override
+        public int getItemPosition(Object object){
+            return POSITION_NONE;
         }
 
         @Override

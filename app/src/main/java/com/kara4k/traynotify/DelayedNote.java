@@ -1,7 +1,9 @@
 package com.kara4k.traynotify;
 
 
-class DelayedNote {
+import java.io.Serializable;
+
+class DelayedNote implements Serializable{
 
     private int id;
     private String text;
