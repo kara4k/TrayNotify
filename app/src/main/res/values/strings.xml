@@ -36,8 +36,6 @@
     <string name="notes">Quick Notes</string>
     <string name="show_in_tray">Show note in tray</string>
     <string name="tray">Tray</string>
-    <string name="ongoing">Ongoing</string>
-    <string name="dont_delete_slide">Dont delete on slide</string>
     <string name="date">Date</string>
     <string name="time">Time</string>
     <string name="sound">Sound</string>
@@ -46,7 +44,7 @@
     <string name="loading">Loading</string>
     <string name="first_message">To remove from the tray attached particular record, go to the editing screen by touching it, and use the rightmost icon.</string>
     <string name="second_message">To clear all notifications in the system tray use the rightmost icon in the main window.</string>
-    <string name="third_message_title">Use long tap on note\notification to delete it</string>
+    <string name="third_message_title">Use long tap on notification to delete it</string>
     <string name="third_message_text">Try to delete this note.</string>
     <string name="text_color">Text color</string>
     <string name="text_size">Text size</string>
@@ -60,4 +58,5 @@
     <string name="name_sort">Name</string>
     <string name="age_sort">Age</string>
     <string name="search">Search</string>
+    <string name="first_message_text">Or click on the icon below the text to the left of the time</string>
 </resources>

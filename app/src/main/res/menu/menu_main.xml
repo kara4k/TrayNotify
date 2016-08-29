@@ -31,9 +31,7 @@
         android:title="@string/sort"
         app:showAsAction="always">
         <menu>
-            <group
-                android:id="@+id/group2"
-                android:checkableBehavior="single">
+            <group android:checkableBehavior="single">
                 <item
                     android:id="@+id/sortDaysLeft"
                     android:checked="true"

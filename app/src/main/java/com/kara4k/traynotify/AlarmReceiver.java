@@ -37,8 +37,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         fillNote(intent, db);
 
 
-
-
         if (isNotify()) {
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
             mBuilder.setContentText(note.getText());
@@ -52,15 +50,15 @@ public class AlarmReceiver extends BroadcastReceiver {
             mBuilder.setOngoing(true);
             mBuilder.setSmallIcon(R.drawable.notify);
 
-            if(note.getBirthday()!=0) {
+            if (note.getBirthday() != 0) {
                 try {
-                    Bitmap mBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse("content://com.android.contacts/contacts/"+ note.getBirthday() + "/display_photo"));
+                    Bitmap mBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse("content://com.android.contacts/contacts/" + note.getBirthday() + "/display_photo"));
                     mBuilder.setLargeIcon(mBitmap);
                 } catch (IOException e) {
                     mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.user1));
                 }
             } else {
-                mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(),R.drawable.user1 ));
+                mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.user1));
             }
 
 
@@ -68,7 +66,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if ((note.getRepeat() == 1) && (!note.getDays().equals("0;0;0;0;0;0;0;"))){
+            if ((note.getRepeat() == 1) && (!note.getDays().equals("0;0;0;0;0;0;0;"))) {
                 AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                 Intent alarmIntent = new Intent(context, AlarmReceiver.class);
                 Bundle bundle = new Bundle();
@@ -80,7 +78,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 Calendar now = Calendar.getInstance();
                 now.add(Calendar.DAY_OF_MONTH, 1);
                 settedCal.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
-                settedCal.set(Calendar.MILLISECOND,0000);
+                settedCal.set(Calendar.MILLISECOND, 0000);
 
 
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(context, note.getCheckId(), alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -90,9 +88,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
 
     }
-
-
-
 
 
     private void setVibroSound(NotificationCompat.Builder mBuilder) {
@@ -212,7 +207,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         } else {
             long now = Calendar.getInstance().getTimeInMillis();
             long set = note.getSetTime();
-            if (now - 60000 < set) {
+            if (now - 12 * 60 * 60 * 1000 < set) {
                 return true;
             } else {
                 return false;

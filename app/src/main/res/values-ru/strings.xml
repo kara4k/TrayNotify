@@ -36,8 +36,6 @@
     <string name="times">" раз."</string>
     <string name="notes">Заметки</string>
     <string name="date">Дата</string>
-    <string name="dont_delete_slide">Не удалять скольжением</string>
-    <string name="ongoing">Закрепить</string>
     <string name="show_in_tray">Показать в трее</string>
     <string name="sound">Мелодия</string>
     <string name="time">Время</string>
@@ -61,4 +59,5 @@
     <string name="days_sort">Дни</string>
     <string name="sort">Сортировать</string>
     <string name="search">Поиск</string>
+    <string name="first_message_text">Или нажмите на иконку под этим текстом, слева от времени</string>
 </resources>

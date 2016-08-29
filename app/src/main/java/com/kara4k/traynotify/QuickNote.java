@@ -119,7 +119,7 @@ public class QuickNote extends AppCompatActivity {
     private void clearTrayCurrent() {
         try {
             nm.cancel(id);
-            Log.e("TAG", "onOptionsItemSelected:" + id );
+            Log.e("TAG", "onOptionsItemSelected:" + id);
             DBQuick db = new DBQuick(getApplicationContext());
             db.open();
             db.setQuickTrayInDB(id, 0);
@@ -154,6 +154,7 @@ public class QuickNote extends AppCompatActivity {
             writeToDB();
         } else {
             writeToDB();
+            nm.cancel(id);
         }
 
         SharedPreferences sp = getSharedPreferences(WidgetConfig.WIDGET_CONF, Context.MODE_PRIVATE);
@@ -206,9 +207,9 @@ public class QuickNote extends AppCompatActivity {
         dbQuick.open();
         Cursor currentNote = dbQuick.getCurrentNote(id);
         if (currentNote.moveToFirst()) {
-            dbQuick.updateRec(getTitleText(), text.getText().toString(),getTray(), calendar.getTimeInMillis(), id);
+            dbQuick.updateRec(getTitleText(), text.getText().toString(), getTray(), calendar.getTimeInMillis(), id);
         } else {
-            dbQuick.addNote(getTitleText(), text.getText().toString(),getTray(), calendar.getTimeInMillis(), id);
+            dbQuick.addNote(getTitleText(), text.getText().toString(), getTray(), calendar.getTimeInMillis(), id);
             dbQuick.close();
         }
 
