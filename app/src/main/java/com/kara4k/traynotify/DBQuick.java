@@ -60,22 +60,36 @@ class DBQuick {
         return mDB.query(TABLE_NAME, new String[]{KEY_TEXT, KEY_TITLE, KEY_DATE, KEY_NUMID}, KEY_NUMID + "= ?", new String[]{String.valueOf(id)}, null, null, null);
     }
 
-    public void addNote(String title, String text, long date, int numid) {
+    public void addNote(String title, String text,int inTray, long date, int numid) {
         ContentValues cv = new ContentValues();
         cv.put(KEY_TITLE, title);
         cv.put(KEY_TEXT, text);
+        cv.put(KEY_ICON, inTray);
         cv.put(KEY_DATE, date);
         cv.put(KEY_NUMID, numid);
         mDB.insert(TABLE_NAME, null, cv);
     }
 
-    public void updateRec(String title, String text, long date, int numid) {
+    public void updateRec(String title, String text, int inTray, long date, int numid) {
         ContentValues cv = new ContentValues();
         cv.put(KEY_TITLE, title);
         cv.put(KEY_TEXT, text);
+        cv.put(KEY_ICON, inTray);
         cv.put(KEY_DATE, date);
         cv.put(KEY_NUMID, numid);
         mDB.update(TABLE_NAME, cv, KEY_NUMID + " = ?", new String[]{String.valueOf(numid)});
+    }
+
+    public void clearQuickTrayAll() {
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_ICON, 0);
+        mDB.update(TABLE_NAME, cv, null, null);
+    }
+
+    public void setQuickTrayInDB(int numId, int tray) {
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_ICON, tray);
+        mDB.update(TABLE_NAME, cv, KEY_NUMID + " = ?", new String[]{String.valueOf(numId)});
     }
 
     public void close() {
@@ -106,18 +120,21 @@ class DBQuick {
             ContentValues cv = new ContentValues();
             cv.put(KEY_TITLE, context.getString(R.string.first_message));
             cv.put(KEY_TEXT, "");
+            cv.put(KEY_ICON, 0);
             cv.put(KEY_NUMID, -1);
             db.insert(TABLE_NAME, null, cv);
 
             ContentValues cv2 = new ContentValues();
             cv2.put(KEY_TITLE, context.getString(R.string.second_message));
             cv2.put(KEY_TEXT, "");
+            cv.put(KEY_ICON, 0);
             cv2.put(KEY_NUMID, -2);
             db.insert(TABLE_NAME, null, cv2);
 
             ContentValues cv3 = new ContentValues();
             cv3.put(KEY_TITLE, context.getString(R.string.third_message_title));
             cv3.put(KEY_TEXT, context.getString(R.string.third_message_text));
+            cv.put(KEY_ICON, 0);
             cv3.put(KEY_NUMID, -3);
             db.insert(TABLE_NAME, null, cv3);
         }

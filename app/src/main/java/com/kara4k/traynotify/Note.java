@@ -41,4 +41,11 @@ class Note implements Serializable{
         return numid;
     }
 
+    public int getIcon() {
+        return icon;
+    }
+
+    public void setIcon(int icon) {
+        this.icon = icon;
+    }
 }

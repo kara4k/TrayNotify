@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private SMSFragment smsFragment;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -266,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             sortByAge(item);
             return true;
         } else if (id == R.id.action_clear_all) {
-            clear();
+            clearTray();
             return true;
         } else if (id == R.id.quick_note) {
             callQuickNoteActivity();
@@ -309,8 +308,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
     }
 
-    private void clear() {
+    private void clearTray() {
         nm.cancelAll();
+
+        DBQuick db = new DBQuick(this);
+        db.open();
+        db.clearQuickTrayAll();
+        db.close();
+        vpFragment.updateTrayRemoved();
     }
 
     private Fragment getCurrentFragment() {
@@ -367,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     private boolean quickNotesSearch(String newText) {
         try {
-            List<Note> notesAll = vpFragment.getQuickNotes().getAllNotesFromDB();
+            List<Note> notesAll = QuickNotesFragment.getAllNotesFromDB(getApplicationContext());
             List<Note> notesFiltered = vpFragment.getQuickNotes().getNotes();
             notesFiltered.clear();
             if (newText.length() == 0) {
@@ -395,7 +400,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 birthdaysListFiltered.addAll(birthdaysListAll);
             } else {
                 for (Birthday x : birthdaysListAll) {
-                    if (x.getName().toLowerCase().contains(newText.toLowerCase())) {   // TODO: 03.07.2016 gettext!=null
+                    if (x.getName().toLowerCase().contains(newText.toLowerCase())) {
                         birthdaysListFiltered.add(x);
                     }
                 }

@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,7 +28,7 @@ public class QuickNote extends AppCompatActivity {
     private NotificationManager nm;
 
     private MyView tray;
-    private MyView ongoing;
+//    private MyView ongoing;
 
     private int id;
     private DBQuick dbQuick;
@@ -44,7 +45,7 @@ public class QuickNote extends AppCompatActivity {
         title = (EditText) findViewById(R.id.editTitle);
         text = (EditText) findViewById(R.id.textedit);
         tray = (MyView) findViewById(R.id.tray);
-        ongoing = (MyView) findViewById(R.id.ongoing);
+//        ongoing = (MyView) findViewById(R.id.ongoing);
         Button create = (Button) findViewById(R.id.create);
 
         dbQuick = new DBQuick(getApplicationContext());
@@ -53,17 +54,17 @@ public class QuickNote extends AppCompatActivity {
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         calendar = Calendar.getInstance();
         intentChecks();
-        tray.setSecondOnClickListener(new MyView.SecondOnClickListener() {
-            @Override
-            public void onClick() {
-                if (!tray.getCheckbox().isChecked()) {
-                    ongoing.getCheckbox().setChecked(false);
-                    ongoing.getCheckbox().setEnabled(false);
-                } else {
-                    ongoing.getCheckbox().setEnabled(true);
-                }
-            }
-        });
+//        tray.setSecondOnClickListener(new MyView.SecondOnClickListener() {
+//            @Override
+//            public void onClick() {
+//                if (!tray.getCheckbox().isChecked()) {
+//                    ongoing.getCheckbox().setChecked(false);
+//                    ongoing.getCheckbox().setEnabled(false);
+//                } else {
+//                    ongoing.getCheckbox().setEnabled(true);
+//                }
+//            }
+//        });
 
         create.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,7 +88,7 @@ public class QuickNote extends AppCompatActivity {
         if (getIntent().getExtras() != null) {
             title.setText(getIntent().getStringExtra(Intent.EXTRA_SUBJECT));
             text.setText(getIntent().getStringExtra(Intent.EXTRA_TEXT));
-            ongoing.getCheckbox().setChecked((getIntent().getBooleanExtra("ongoing", true)));
+//            ongoing.getCheckbox().setChecked((getIntent().getBooleanExtra("ongoing", true)));
             id = getIntent().getIntExtra("id", id);
         }
     }
@@ -109,10 +110,22 @@ public class QuickNote extends AppCompatActivity {
                 clearForms();
                 break;
             case R.id.action_clear_note:
-                nm.cancel(id);
+                clearTrayCurrent();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void clearTrayCurrent() {
+        try {
+            nm.cancel(id);
+            Log.e("TAG", "onOptionsItemSelected:" + id );
+            DBQuick db = new DBQuick(getApplicationContext());
+            db.open();
+            db.setQuickTrayInDB(id, 0);
+            db.close();
+        } catch (Exception e) {
+        }
     }
 
 
@@ -129,8 +142,8 @@ public class QuickNote extends AppCompatActivity {
         title.setText("");
         text.setText("");
         tray.getCheckbox().setChecked(true);
-        ongoing.getCheckbox().setChecked(true);
-        ongoing.getCheckbox().setEnabled(true);
+//        ongoing.getCheckbox().setChecked(true);
+//        ongoing.getCheckbox().setEnabled(true);
 
     }
 
@@ -165,14 +178,13 @@ public class QuickNote extends AppCompatActivity {
         mBuilder.setContentText(text.getText().toString());
         mBuilder.setContentInfo("#" + String.valueOf(id).substring(1));
         mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(text.getText().toString()));
-        mBuilder.setOngoing(ongoing.getCheckbox().isChecked());
+        mBuilder.setOngoing(true);
         mBuilder.setContentIntent(PendingIntent.getActivities(getApplicationContext(), id, makeIntent(), PendingIntent.FLAG_UPDATE_CURRENT));
         mBuilder.setSmallIcon(R.drawable.notify);
 
 
-        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.user1 ));
+        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.user1));
         nm.notify(id, mBuilder.build());
-
 
 
     }
@@ -185,7 +197,7 @@ public class QuickNote extends AppCompatActivity {
 
         quick.putExtra(Intent.EXTRA_SUBJECT, title.getText().toString());
         quick.putExtra(Intent.EXTRA_TEXT, text.getText().toString());
-        quick.putExtra("ongoing", ongoing.getCheckbox().isChecked());
+//        quick.putExtra("ongoing", ongoing.getCheckbox().isChecked());
         quick.putExtra("id", id);
         return new Intent[]{main, quick};
     }
@@ -194,19 +206,27 @@ public class QuickNote extends AppCompatActivity {
         dbQuick.open();
         Cursor currentNote = dbQuick.getCurrentNote(id);
         if (currentNote.moveToFirst()) {
-            if (title.getText().toString().equals("")) {
-                dbQuick.updateRec(getString(R.string.app_name), text.getText().toString(), calendar.getTimeInMillis(), id);
-            } else {
-                dbQuick.updateRec(title.getText().toString(), text.getText().toString(), calendar.getTimeInMillis(), id);
-            }
+            dbQuick.updateRec(getTitleText(), text.getText().toString(),getTray(), calendar.getTimeInMillis(), id);
         } else {
-
-            if (title.getText().toString().equals("")) {
-                dbQuick.addNote(getString(R.string.app_name), text.getText().toString(), calendar.getTimeInMillis(), id);
-            } else {
-                dbQuick.addNote(title.getText().toString(), text.getText().toString(), calendar.getTimeInMillis(), id);
-            }
+            dbQuick.addNote(getTitleText(), text.getText().toString(),getTray(), calendar.getTimeInMillis(), id);
             dbQuick.close();
+        }
+
+    }
+
+    private String getTitleText() {
+        if (title.getText().toString().equals("")) {
+            return getString(R.string.app_name);
+        } else {
+            return title.getText().toString();
+        }
+    }
+
+    private int getTray() {
+        if (tray.getCheckbox().isChecked()) {
+            return 1;
+        } else {
+            return 0;
         }
     }
 

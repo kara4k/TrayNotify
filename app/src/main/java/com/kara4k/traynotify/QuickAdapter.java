@@ -1,14 +1,21 @@
 package com.kara4k.traynotify;
 
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -67,7 +74,16 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
         notesViewHolder.date.setText(date);
         notesViewHolder.time.setText(timeFormat.format(new Date(notes.get(i).getDate())));
         notesViewHolder.numid.setText("#" + String.valueOf(notes.get(i).getNumid()).substring(1));
+        setTray(notesViewHolder, i);
 
+    }
+
+    private void setTray(NotesViewHolder notesViewHolder, int i) {
+        if (notes.get(i).getIcon() == 1) {
+            notesViewHolder.tray.setImageResource(R.drawable.ic_speaker_notes_red_24dp);
+        } else {
+            notesViewHolder.tray.setImageResource(R.drawable.ic_speaker_notes_off_grey_24dp);
+        }
     }
 
 
@@ -86,7 +102,13 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
         notes.remove(position);
         notifyItemRemoved(position);
         updateWidget(numID);
+        removeTray(numID);
 
+    }
+
+    private void removeTray(int numID) {
+        NotificationManager nm = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        nm.cancel(numID);
     }
 
     private void updateWidget(int numID) {
@@ -109,6 +131,8 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
         private final TextView date;
         private final TextView time;
         private final TextView numid;
+        private final ImageView tray;
+        private final LinearLayout dateLayout;
 
         NotesViewHolder(final View itemView) {
             super(itemView);
@@ -117,6 +141,16 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
             date = (TextView) itemView.findViewById(R.id.date);
             time = (TextView) itemView.findViewById(R.id.day_of_week);
             numid = (TextView) itemView.findViewById(R.id.numid);
+            tray = (ImageView) itemView.findViewById(R.id.isShown);
+            dateLayout = (LinearLayout) itemView.findViewById(R.id.date_layout);
+
+            dateLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onTrayImageClick(view);
+                }
+            });
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -152,6 +186,62 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
                 }
             });
         }
+
+        private void onTrayImageClick(View view) {
+            try {
+                Context context = view.getContext();
+                Note note = QuickAdapter.getInstance().getNotes().get(getAdapterPosition());
+                NotificationManager nm = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+                if (note.getIcon() != 1) {
+                    nm.notify(note.getNumid(), createNotification(context, note));
+                    tray.setImageResource(R.drawable.ic_speaker_notes_red_24dp);
+                    writeTrayToDB(context, note, 1);
+                    note.setIcon(1);
+                } else {
+                    nm.cancel(note.getNumid());
+                    tray.setImageResource(R.drawable.ic_speaker_notes_off_grey_24dp);
+                    writeTrayToDB(context, note, 0);
+                    note.setIcon(0);
+                }
+            } catch (Exception e) {
+
+            }
+        }
+
+        private void writeTrayToDB(Context context, Note note, int tray) {
+            DBQuick db = new DBQuick(context);
+            db.open();
+            db.setQuickTrayInDB(note.getNumid(), tray);
+            db.close();
+        }
+
+        private  Notification createNotification(Context context, Note note) {
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
+            mBuilder.setContentTitle(note.getTitle());
+            mBuilder.setContentText(note.getText());
+            mBuilder.setContentInfo("#" + String.valueOf(note.getNumid()).substring(1));
+            mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(note.getText()));
+            mBuilder.setOngoing(true);
+            mBuilder.setContentIntent(PendingIntent.getActivities(context, note.getNumid(), makeIntent(context, note), PendingIntent.FLAG_UPDATE_CURRENT));
+            mBuilder.setSmallIcon(R.drawable.notify);
+            mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.user1));
+            return mBuilder.build();
+
+
+        }
+
+        private Intent[] makeIntent(Context context, Note note) {
+            Intent main = new Intent(context, MainActivity.class);
+            main.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            Intent quick = new Intent(context, QuickNote.class);
+
+            quick.putExtra(Intent.EXTRA_SUBJECT, note.getTitle());
+            quick.putExtra(Intent.EXTRA_TEXT, note.getText());
+            quick.putExtra("id", note.getNumid());
+            return new Intent[]{main, quick};
+        }
+
 
     }
 

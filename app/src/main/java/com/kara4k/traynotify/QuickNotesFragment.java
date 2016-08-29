@@ -1,6 +1,7 @@
 package com.kara4k.traynotify;
 
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -42,10 +43,10 @@ public class QuickNotesFragment extends Fragment {
                 SendObj sendObj = (SendObj) getArguments().getSerializable("notes");
                 notes = sendObj.getNotes();
             } else {
-                notes = getAllNotesFromDB();
+                notes = getAllNotesFromDB(getContext());
             }
         } catch (Exception e) {
-           notes = getAllNotesFromDB();
+           notes = getAllNotesFromDB(getContext());
         }
 
         adapter.setList(notes);
@@ -66,8 +67,8 @@ public class QuickNotesFragment extends Fragment {
 //    }
 
 
-    public List<Note> getAllNotesFromDB() {
-        DBQuick db = new DBQuick(getActivity());
+    public static List<Note> getAllNotesFromDB(Context context) {
+        DBQuick db = new DBQuick(context);
         db.open();
         List<Note> allnotes = new ArrayList<>();
         Cursor allData = db.getAllData();

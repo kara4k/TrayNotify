@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -52,6 +53,7 @@ public class SMSAdapter extends RecyclerView.Adapter<SMSAdapter.SMSViewHolder>{
         holder.date.setText(dateFormat.format(smsList.get(position).getDate()));
         holder.time.setText(timeFormat.format(new Date(smsList.get(position).getDate())));
         holder.numid.setVisibility(View.INVISIBLE);
+        holder.tray.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -66,6 +68,7 @@ public class SMSAdapter extends RecyclerView.Adapter<SMSAdapter.SMSViewHolder>{
         private final TextView date;
         private final TextView time;
         private final TextView numid;
+        private final ImageView tray;
 
         public SMSViewHolder(View itemView) {
             super(itemView);
@@ -75,6 +78,7 @@ public class SMSAdapter extends RecyclerView.Adapter<SMSAdapter.SMSViewHolder>{
             date = (TextView) itemView.findViewById(R.id.date);
             time = (TextView) itemView.findViewById(R.id.day_of_week);
             numid = (TextView) itemView.findViewById(R.id.numid);
+            tray = (ImageView) itemView.findViewById(R.id.isShown);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
