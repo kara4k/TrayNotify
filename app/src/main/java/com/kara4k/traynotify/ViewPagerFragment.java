@@ -70,12 +70,17 @@ public class ViewPagerFragment extends Fragment  {
         }
     }
 
-    public void updateTrayRemoved() {
-        adapter = new Adapter(getFragmentManager());
-        quickNotes = new QuickNotesFragment();
-        adapter.addFragment(quickNotes, getString(R.string.notes));
-        adapter.addFragment(delayedNotes, getString(R.string.notifications));
-        viewPager.setAdapter(adapter);
+    public void updateTrayRemoved(int item) {
+        try {
+            adapter = new Adapter(getFragmentManager());
+            quickNotes = new QuickNotesFragment();
+            adapter.addFragment(quickNotes, getString(R.string.notes));
+            adapter.addFragment(delayedNotes, getString(R.string.notifications));
+            viewPager.setAdapter(adapter);
+            viewPager.setCurrentItem(item);
+        } catch (Exception e) {
+
+        }
     }
 
     public void updateDelayed () {

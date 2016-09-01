@@ -19,17 +19,7 @@ public class QuickNotesFragment extends Fragment {
 
     private List<Note> notes;
     private QuickAdapter adapter;
-    private static QuickNotesFragment quickNotesFragment;
 
-
-    public static QuickNotesFragment getInstance() {
-        if (quickNotesFragment != null) {
-            return quickNotesFragment;
-        } else {
-            quickNotesFragment = new QuickNotesFragment();
-            return quickNotesFragment;
-        }
-    }
 
     @Nullable
     @Override
@@ -52,19 +42,14 @@ public class QuickNotesFragment extends Fragment {
         adapter.setList(notes);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
 //        ItemTouchHelper.Callback callback = new QuickTouchHelper(adapter);
 //        ItemTouchHelper helper = new ItemTouchHelper(callback);
 //        helper.attachToRecyclerView(recyclerView);
         return recyclerView;
     }
 
-//    @Override
-//    public void onStart() {
-//        getAllNotesFromDB();
-//        adapter.setGetNoteId(null);
-//        adapter.notifyDataSetChanged();
-//        super.onStart();
-//    }
+
 
 
     public static List<Note> getAllNotesFromDB(Context context) {

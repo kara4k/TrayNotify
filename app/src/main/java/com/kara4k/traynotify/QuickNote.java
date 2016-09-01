@@ -28,7 +28,6 @@ public class QuickNote extends AppCompatActivity {
     private NotificationManager nm;
 
     private MyView tray;
-//    private MyView ongoing;
 
     private int id;
     private DBQuick dbQuick;
@@ -88,7 +87,6 @@ public class QuickNote extends AppCompatActivity {
         if (getIntent().getExtras() != null) {
             title.setText(getIntent().getStringExtra(Intent.EXTRA_SUBJECT));
             text.setText(getIntent().getStringExtra(Intent.EXTRA_TEXT));
-//            ongoing.getCheckbox().setChecked((getIntent().getBooleanExtra("ongoing", true)));
             id = getIntent().getIntExtra("id", id);
         }
     }
@@ -142,8 +140,6 @@ public class QuickNote extends AppCompatActivity {
         title.setText("");
         text.setText("");
         tray.getCheckbox().setChecked(true);
-//        ongoing.getCheckbox().setChecked(true);
-//        ongoing.getCheckbox().setEnabled(true);
 
     }
 
@@ -198,7 +194,6 @@ public class QuickNote extends AppCompatActivity {
 
         quick.putExtra(Intent.EXTRA_SUBJECT, title.getText().toString());
         quick.putExtra(Intent.EXTRA_TEXT, text.getText().toString());
-//        quick.putExtra("ongoing", ongoing.getCheckbox().isChecked());
         quick.putExtra("id", id);
         return new Intent[]{main, quick};
     }

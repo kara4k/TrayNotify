@@ -315,7 +315,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         db.open();
         db.clearQuickTrayAll();
         db.close();
-        vpFragment.updateTrayRemoved();
+        pagerItem = vpFragment.getViewPager().getCurrentItem();
+        vpFragment.updateTrayRemoved(pagerItem);
     }
 
     private Fragment getCurrentFragment() {
