@@ -17,12 +17,13 @@ import java.util.List;
 public class DelayedNotesFragment extends Fragment {
 
     private List<DelayedNote> notes;
+    private RecyclerView recyclerView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        inflater.inflate(R.layout.quick_notes_fragment, container);
-        final RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
+//        inflater.inflate(R.layout.quick_notes_fragment, container);
+        recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
         DelayedAdapter adapter = DelayedAdapter.getInstance();
         try {
             if (getArguments() != null) {
@@ -37,6 +38,9 @@ public class DelayedNotesFragment extends Fragment {
         adapter.setList(notes);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        SelectionMode selectionMode = (SelectionMode) getActivity();
+        adapter.setSelectionMode(selectionMode);
 //        ItemTouchHelper.Callback callback = new DelayedTouchHelper(adapter);
 //        ItemTouchHelper helper = new ItemTouchHelper(callback);
 //        helper.attachToRecyclerView(recyclerView);
@@ -45,6 +49,23 @@ public class DelayedNotesFragment extends Fragment {
 
     public List<DelayedNote> getNotes() {
         return notes;
+    }
+
+    public int getRecyclerPosition() {
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        return layoutManager.findFirstVisibleItemPosition();
+    }
+
+    public int getPadding() {
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        View v = layoutManager.getChildAt(0);
+        int top = (v == null) ? 0 : (v.getTop() - layoutManager.getPaddingTop());
+        return top;
+    }
+
+    public void scrollTo(int index, int top){
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        layoutManager.scrollToPositionWithOffset(index, top);
     }
 
     public List<DelayedNote> getAllNotesFromDB() {

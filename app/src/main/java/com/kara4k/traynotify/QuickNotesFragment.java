@@ -19,13 +19,13 @@ public class QuickNotesFragment extends Fragment {
 
     private List<Note> notes;
     private QuickAdapter adapter;
-
+    private RecyclerView recyclerView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         inflater.inflate(R.layout.quick_notes_fragment, container);
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
+        recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
         adapter = QuickAdapter.getInstance();
         adapter.setGetNoteId(null);
         try {
@@ -36,20 +36,24 @@ public class QuickNotesFragment extends Fragment {
                 notes = getAllNotesFromDB(getContext());
             }
         } catch (Exception e) {
-           notes = getAllNotesFromDB(getContext());
+            notes = getAllNotesFromDB(getContext());
         }
 
         adapter.setList(notes);
         recyclerView.setAdapter(adapter);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+
+        SelectionMode selectionMode = (SelectionMode) getActivity();
+        adapter.setSelectionMode(selectionMode);
+
 
 //        ItemTouchHelper.Callback callback = new QuickTouchHelper(adapter);
 //        ItemTouchHelper helper = new ItemTouchHelper(callback);
 //        helper.attachToRecyclerView(recyclerView);
         return recyclerView;
     }
-
-
 
 
     public static List<Note> getAllNotesFromDB(Context context) {
@@ -69,6 +73,24 @@ public class QuickNotesFragment extends Fragment {
     public List<Note> getNotes() {
         return notes;
     }
+
+    public int getRecyclerPosition() {
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        return layoutManager.findFirstVisibleItemPosition();
+    }
+
+    public int getPadding() {
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        View v = layoutManager.getChildAt(0);
+        int top = (v == null) ? 0 : (v.getTop() - layoutManager.getPaddingTop());
+        return top;
+    }
+
+    public void scrollTo(int index, int top){
+    LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        layoutManager.scrollToPositionWithOffset(index, top);
+    }
+
 
     public void setNotes(List<Note> notes) {
         this.notes = notes;

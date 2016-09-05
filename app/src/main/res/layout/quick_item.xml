@@ -2,8 +2,25 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
+    android:background="@drawable/selection"
+    android:clickable="true"
     android:padding="@dimen/dimen_default">
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/checkbox_select"
+        android:layout_marginRight="@dimen/dimen_default"
+        android:visibility="gone"
+        android:layout_centerVertical="true"/>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_toRightOf="@id/checkbox_select">
+
+
 
     <LinearLayout
         android:id="@+id/title_layout"
@@ -79,6 +96,6 @@
 
 
     </LinearLayout>
-
+</LinearLayout>
 
 </RelativeLayout>

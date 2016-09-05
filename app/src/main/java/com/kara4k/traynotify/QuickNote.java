@@ -160,7 +160,7 @@ public class QuickNote extends AppCompatActivity {
             Widget.updateWidget(this, appWidgetManager, sp, widgetID);
         }
 
-
+        setResult(RESULT_OK);
         finish();
 
     }
@@ -226,9 +226,11 @@ public class QuickNote extends AppCompatActivity {
         }
     }
 
+
+
     @Override
-    protected void onStop() {
-        super.onStop();
-        setResult(RESULT_OK);
+    public void onBackPressed() {
+        super.onBackPressed();
+        setResult(RESULT_CANCELED);
     }
 }

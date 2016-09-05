@@ -89,17 +89,7 @@
 
         </com.kara4k.traynotify.MyView>
 
-        <!--<com.kara4k.traynotify.MyView-->
-            <!--android:id="@+id/ongoing"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--app:CheckVisible="true"-->
-            <!--app:ImageVisible="false"-->
-            <!--app:Text="@string/dont_delete_slide"-->
-            <!--app:Title="@string/ongoing"-->
-            <!--app:isChecked="true">-->
 
-        <!--</com.kara4k.traynotify.MyView>-->
 
         <View
             style="@style/Divider"

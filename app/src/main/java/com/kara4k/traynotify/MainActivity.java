@@ -1,7 +1,9 @@
 package com.kara4k.traynotify;
 
+import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -15,6 +17,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -23,10 +26,10 @@ import android.view.View;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SelectionMode {
 
-    final private int QUICK = 1;
-    final private int DELAYED = 2;
+    final public static int QUICK = 1;
+    final public static int DELAYED = 2;
     private DrawerLayout mDrawerLayout;
     private NotificationManager nm;
     private int pagerItem = 0;
@@ -36,6 +39,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private BirthdayFragment birthdayFragment;
     private Menu mainMenu;
     private SMSFragment smsFragment;
+    private ActionMode actionMode;
+    private Toolbar toolbar;
+    int selectionFrag;
 
 
     @Override
@@ -43,8 +49,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         final ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
@@ -298,13 +305,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case QUICK:
-                pagerItem = 0;
-                break;
-            case DELAYED:
-                pagerItem = 1;
-                break;
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case QUICK:
+                    pagerItem = 0;
+                    break;
+                case DELAYED:
+                    pagerItem = 1;
+                    break;
+            }
         }
     }
 
@@ -435,4 +444,116 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             return true;
         }
     }
+
+    private ActionMode.Callback callback = new ActionMode.Callback() {
+
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mode.getMenuInflater().inflate(R.menu.action_mode, menu);
+            return true;
+        }
+
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.action_delete:
+                    DialogInterface.OnClickListener deleteDialog = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            if (pagerItem == 0) {
+                                QuickAdapter.getInstance().deleteSelected();
+                                actionMode.finish();
+                            } else if (pagerItem ==1 ) {
+                                DelayedAdapter.getInstance().deleteSelected();
+                                actionMode.finish();
+                            }
+                        }
+                    };
+
+                    new AlertDialog.Builder(MainActivity.this).setTitle("Delete?")
+                            .setPositiveButton("Delete", deleteDialog)
+                            .setNegativeButton("Cancel", null)
+                            .create().show();
+                    break;
+                case R.id.action_selectAll:
+                    if (pagerItem == 0) {
+                        QuickAdapter.getInstance().selectAll();
+                    } else if (pagerItem == 1) {
+                        DelayedAdapter.getInstance().selectAll();
+                    }
+                    break;
+
+
+            }
+            return false;
+        }
+
+        public void onDestroyActionMode(ActionMode mode) {
+           if (pagerItem == 0) {
+               QuickAdapter.getInstance().endSelectionMode();
+           }
+           else if (pagerItem == 1) {
+               DelayedAdapter.getInstance().endSelectionMode();
+           }
+            showFirstFragment();
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED);
+            actionMode = null;
+
+        }
+
+    };
+
+    @Override
+    public void startSelection(int i) {
+        pagerItem = i;
+        if (pagerItem == 0) {
+            quickSelection();
+        } else if (pagerItem == 1) {
+            if (actionMode == null) {
+                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                int index = vpFragment.getDelayedNotes().getRecyclerPosition();
+                int top = vpFragment.getDelayedNotes().getPadding();
+                DelayedAdapter.getInstance().setSelect(true);
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                DelayedNotesFragment delayedNotesFragment = new DelayedNotesFragment();
+                ft.replace(R.id.container, delayedNotesFragment);
+                ft.commitNowAllowingStateLoss();
+                actionMode = startSupportActionMode(callback);
+                actionMode.setTitle("1");
+                delayedNotesFragment.scrollTo(index, top);
+            } else {
+                actionMode.finish();
+            }
+        }
+
+    }
+
+    private void quickSelection() {
+        if (actionMode == null) {
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            int index = vpFragment.getQuickNotes().getRecyclerPosition();
+            int top = vpFragment.getQuickNotes().getPadding();
+            QuickAdapter.getInstance().setSelect(true);
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            QuickNotesFragment quickNotesFragment = new QuickNotesFragment();
+            ft.replace(R.id.container, quickNotesFragment);
+            ft.commitNowAllowingStateLoss();
+            actionMode = startSupportActionMode(callback);
+            actionMode.setTitle("1");
+            quickNotesFragment.scrollTo(index, top);
+        } else {
+            actionMode.finish();
+        }
+    }
+
+    @Override
+    public void selectedItemsCount(int i) {
+        if (actionMode != null) {
+            actionMode.setTitle(String.valueOf(i));
+        }
+    }
+
+
 }

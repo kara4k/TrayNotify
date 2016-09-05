@@ -39,8 +39,8 @@ class DBQuick {
         return mDB.query(TABLE_NAME, null, null, null, null, null, KEY_ID + " DESC");
     }
 
-    public void removeNote(int id) {
-        mDB.delete(TABLE_NAME,KEY_ID + "=?",new String[]{String.valueOf(id)});
+    public void removeNote(int numId) {
+        mDB.delete(TABLE_NAME,KEY_NUMID + "=?",new String[]{String.valueOf(numId)});
     }
 
     public int getNoteCheckID() {

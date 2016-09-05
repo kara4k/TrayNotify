@@ -41,6 +41,7 @@ public class NotesDialogFragment extends DialogFragment implements QuickAdapter.
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter.setGetNoteId(this);
+        adapter.setSelectionMode(null);
         DialogInterface.OnClickListener neutralListener = (DialogInterface.OnClickListener) getActivity();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         return builder.setView(recyclerView).setNeutralButton(R.string.deselect, neutralListener)

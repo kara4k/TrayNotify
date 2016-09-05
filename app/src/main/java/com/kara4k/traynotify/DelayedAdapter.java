@@ -7,13 +7,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +33,12 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
     private List<DelayedNote> notes;
     private Context context;
 
+
+    SparseBooleanArray selectedItems = new SparseBooleanArray();
+    boolean select;
+    SelectionMode selectionMode;
+    int selectedCount = 0;
+
     private DelayedAdapter() {
     }
 
@@ -39,6 +49,13 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
         return quickAdapter;
     }
 
+    public void setSelectionMode(SelectionMode selectionMode) {
+        this.selectionMode = selectionMode;
+    }
+
+    public void setSelect(boolean select) {
+        this.select = select;
+    }
 
     public void setList(List<DelayedNote> notes) {
         this.notes = notes;
@@ -56,14 +73,19 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
         notesViewHolder.title.setText(notes.get(i).getTitle());
         notesViewHolder.text.setText(notes.get(i).getText());
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-
-
         notesViewHolder.time.setText(timeFormat.format(new Date(notes.get(i).getSetTime())));
         notesViewHolder.numid.setText("#" + String.valueOf(notes.get(i).getCheckId()));
-
         highlightFinishedNotes(notesViewHolder, i);
-
         setRepeatOnceView(notesViewHolder, i);
+
+        notesViewHolder.itemView.setSelected(selectedItems.get(i, false));
+
+        if (select) {
+            notesViewHolder.checkBox.setVisibility(View.VISIBLE);
+            notesViewHolder.checkBox.setChecked(selectedItems.get(i, false));
+        } else {
+            notesViewHolder.checkBox.setVisibility(View.GONE);
+        }
 
 
     }
@@ -85,12 +107,12 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
             notesViewHolder.date.setText(date);
 
             for (int k = 0; k < notesViewHolder.days.length; k++) {
-                notesViewHolder.days[k].setVisibility(View.INVISIBLE);
+                notesViewHolder.days[k].setVisibility(View.GONE);
             }
 
         } else {
             notesViewHolder.date.setText("");
-            notesViewHolder.date.setVisibility(View.INVISIBLE);
+            notesViewHolder.date.setVisibility(View.GONE);
             setRepeatDaysView(notesViewHolder, i);
         }
     }
@@ -109,6 +131,7 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
 
         for (int k = 0; k < notesViewHolder.days.length; k++) {
             notesViewHolder.days[k].setText(shortDays[k]);
+            notesViewHolder.days[k].setVisibility(View.VISIBLE);
         }
 
         String stringDays = notes.get(i).getDays();
@@ -132,6 +155,32 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
         return notes.size();
     }
 
+    public void endSelectionMode() {
+        select = false;
+        selectedItems = new SparseBooleanArray();
+
+        for (int i = 0; i < notes.size(); i++) {
+            notifyItemChanged(i);
+        }
+        selectedCount = 0;
+
+    }
+
+    public void refreshAll() {
+        for (int i = 0; i < notes.size(); i++) {
+            notifyItemChanged(i);
+        }
+    }
+
+    public void selectAll() {
+        for (int i = 0; i < notes.size(); i++) {
+            selectedItems.put(i, true);
+        }
+        refreshAll();
+        selectedCount = notes.size();
+        selectionMode.selectedItemsCount(notes.size());
+    }
+
     public void remove(int position) {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent alarmIntent = new Intent(context, AlarmReceiver.class);
@@ -147,7 +196,39 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
 
     }
 
-    public static class DelayedNotesViewHolder extends RecyclerView.ViewHolder {
+    public void deleteSelected() {
+        ArrayList<Integer> list = new ArrayList<>();
+        for (int i = 0; i < selectedItems.size(); i++) {
+            if (selectedItems.valueAt(i)) {
+                DelayedNote note = notes.get(selectedItems.keyAt(i));
+                list.add(note.getCheckId());
+                Log.e("TAG", "deleteSelected: " + note.getCheckId());
+            }
+        }
+
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+
+        for (int i = 0; i < list.size(); i++) {
+            removeFromDB(list.get(i));   //
+            cancelAlarmEvent(am, alarmIntent, list.get(i));
+            notifyDataSetChanged();
+        }
+    }
+
+    private void removeFromDB(int checkId) {
+        DBDelay db = new DBDelay(context);
+        db.open();
+        db.removeNote(checkId);
+        db.close();
+    }
+
+    private void cancelAlarmEvent(AlarmManager am, Intent alarmIntent, int checkId) {
+        PendingIntent pi = PendingIntent.getBroadcast(context, checkId, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        am.cancel(pi);
+    }
+
+    public class DelayedNotesViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView title;
         private final TextView text;
@@ -155,6 +236,7 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
         private final TextView time;
         private final TextView numid;
         private final TextView[] days;
+        private final CheckBox checkBox;
 
 
         DelayedNotesViewHolder(final View itemView) {
@@ -164,6 +246,7 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
             date = (TextView) itemView.findViewById(R.id.date);
             time = (TextView) itemView.findViewById(R.id.day_of_week);
             numid = (TextView) itemView.findViewById(R.id.numid);
+            checkBox = (CheckBox) itemView.findViewById(R.id.checkbox_select_d);
             TextView mon = (TextView) itemView.findViewById(R.id.mon);
             TextView tue = (TextView) itemView.findViewById(R.id.tue);
             TextView wed = (TextView) itemView.findViewById(R.id.wed);
@@ -176,13 +259,14 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
                 @Override
                 public void onClick(View view) {
                     try {
-                        Context context = view.getContext();
-                        DelayedNote note = DelayedAdapter.getInstance().getNotes().get(getAdapterPosition());
-                        Intent intent = new Intent(context, CreateDelayedNote.class);
-                        intent.putExtra(Intent.EXTRA_SUBJECT, note.getTitle());
-                        intent.putExtra(Intent.EXTRA_TEXT, note.getText());
-                        intent.putExtra("id", note.getCheckId());
-                        context.startActivity(intent);
+                        if (select) {
+                           selectionModeClick(itemView);
+                            checkForEndSelect();
+                        }
+                        else {
+                            goToEditActivity(view);
+                        }
+
                     } catch (Exception e) {
                     }
                 }
@@ -190,13 +274,50 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    try {
-                        DelayedAdapter.getInstance().remove(getAdapterPosition());
-                    } catch (Exception e) {
+                    if (selectionMode != null) {
+                        selectionMode.startSelection(1);
+                        if (select) {
+                            itemView.setSelected(true);
+                            selectedItems.put(getAdapterPosition(), true);
+                            selectedCount++;
+                            notifyItemChanged(getAdapterPosition());
+                        }
                     }
-                    return false;
+                    return true;
                 }
             });
+        }
+
+        private void selectionModeClick(View itemView) {
+            if (!selectedItems.get(getAdapterPosition(), false)) {
+                selectedItems.put(getAdapterPosition(), true);
+                itemView.setSelected(true);
+                checkBox.setChecked(true);
+                selectedCount++;
+                selectionMode.selectedItemsCount(selectedCount);
+            } else {
+                selectedItems.put(getAdapterPosition(), false);
+                itemView.setSelected(false);
+                checkBox.setChecked(false);
+                selectedCount--;
+                selectionMode.selectedItemsCount(selectedCount);
+            }
+        }
+
+        private void checkForEndSelect() {
+            if (selectedCount == 0) {
+                selectionMode.startSelection(1);
+            }
+        }
+
+        private void goToEditActivity(View view) {
+            Context context = view.getContext();
+            DelayedNote note = DelayedAdapter.getInstance().getNotes().get(getAdapterPosition());
+            Intent intent = new Intent(context, CreateDelayedNote.class);
+            intent.putExtra(Intent.EXTRA_SUBJECT, note.getTitle());
+            intent.putExtra(Intent.EXTRA_TEXT, note.getText());
+            intent.putExtra("id", note.getCheckId());
+            context.startActivity(intent);
         }
 
     }

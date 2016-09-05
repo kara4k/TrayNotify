@@ -72,12 +72,15 @@ public class ViewPagerFragment extends Fragment  {
 
     public void updateTrayRemoved(int item) {
         try {
+            int index = quickNotes.getRecyclerPosition();
+            int top = quickNotes.getPadding();
             adapter = new Adapter(getFragmentManager());
             quickNotes = new QuickNotesFragment();
             adapter.addFragment(quickNotes, getString(R.string.notes));
             adapter.addFragment(delayedNotes, getString(R.string.notifications));
             viewPager.setAdapter(adapter);
             viewPager.setCurrentItem(item);
+            quickNotes.scrollTo(index, top);
         } catch (Exception e) {
 
         }
@@ -119,6 +122,10 @@ public class ViewPagerFragment extends Fragment  {
         super.onDetach();
         tabs.setVisibility(View.GONE);
 
+    }
+
+    public TabLayout getTabs() {
+        return tabs;
     }
 
     static class Adapter extends FragmentStatePagerAdapter {
