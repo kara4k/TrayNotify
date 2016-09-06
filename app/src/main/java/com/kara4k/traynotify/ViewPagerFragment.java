@@ -105,10 +105,6 @@ public class ViewPagerFragment extends Fragment  {
         }
     }
 
-    public Adapter getAdapter() {
-        return adapter;
-    }
-
     public QuickNotesFragment getQuickNotes() {
         return quickNotes;
     }
@@ -122,10 +118,6 @@ public class ViewPagerFragment extends Fragment  {
         super.onDetach();
         tabs.setVisibility(View.GONE);
 
-    }
-
-    public TabLayout getTabs() {
-        return tabs;
     }
 
     static class Adapter extends FragmentStatePagerAdapter {

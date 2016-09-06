@@ -5,7 +5,6 @@ import android.Manifest;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
@@ -21,6 +20,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -52,7 +52,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     private MyView setDate;
     private MyView setTime;
     private long[] vibration;
-    private NotificationManager nm;
+    private NotificationManagerCompat nm;
     private EditText textEdit;
     private EditText titleEdit;
     private AlarmManager alarmManager;
@@ -117,7 +117,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         };
 
 
-        nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nm = NotificationManagerCompat.from(this);
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
 
@@ -479,8 +479,6 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         }
 
 
-
-
         Intent alarmIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
         Bundle bundle = new Bundle();
         bundle.putInt("id", note.getCheckId());
@@ -493,7 +491,6 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         mainCal.set(Calendar.MILLISECOND, 0000);
 
         SimpleDateFormat sdf = new SimpleDateFormat("EEE SSSS, dd.MM.yyyy; HH:mm:ss:SSSSS ");
-
 
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), checkThis, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -566,7 +563,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
         if (titleEdit.getText().toString().equals("")) {
-            mBuilder.setContentTitle(titleEdit.getHint());
+            mBuilder.setContentTitle(getString(R.string.app_name));
         } else {
             mBuilder.setContentTitle(titleEdit.getText().toString());
         }
@@ -589,9 +586,9 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
         mBuilder.setSmallIcon(R.drawable.notify);
 
-        if(birthday!=0) {
+        if (birthday != 0) {
             try {
-                Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), Uri.parse("content://com.android.contacts/contacts/"+ birthday + "/display_photo"));
+                Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), Uri.parse("content://com.android.contacts/contacts/" + birthday + "/display_photo"));
                 mBuilder.setLargeIcon(mBitmap);
             } catch (IOException e) {
                 mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.user1));
@@ -691,11 +688,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         }
     }
 
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        setResult(RESULT_OK);
-//    }
+
 
 
     @Override

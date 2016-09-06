@@ -92,8 +92,4 @@ public class QuickNotesFragment extends Fragment {
     }
 
 
-    public void setNotes(List<Note> notes) {
-        this.notes = notes;
-    }
-
 }

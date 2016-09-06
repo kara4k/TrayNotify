@@ -3,7 +3,6 @@ package com.kara4k.traynotify;
 
 import android.app.AlarmManager;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManagerCompat nm = NotificationManagerCompat.from(context);
 
         DBDelay db = new DBDelay(context);
         db.open();

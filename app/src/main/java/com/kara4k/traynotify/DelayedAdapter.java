@@ -6,8 +6,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,10 +34,10 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
     private Context context;
 
 
-    SparseBooleanArray selectedItems = new SparseBooleanArray();
-    boolean select;
-    SelectionMode selectionMode;
-    int selectedCount = 0;
+    private SparseBooleanArray selectedItems = new SparseBooleanArray();
+    private boolean select;
+    private SelectionMode selectionMode;
+    private int selectedCount = 0;
 
     private DelayedAdapter() {
     }
@@ -166,7 +166,7 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
 
     }
 
-    public void refreshAll() {
+    private void refreshAll() {
         for (int i = 0; i < notes.size(); i++) {
             notifyItemChanged(i);
         }
@@ -181,39 +181,32 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
         selectionMode.selectedItemsCount(notes.size());
     }
 
-    public void remove(int position) {
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent alarmIntent = new Intent(context, AlarmReceiver.class);
-        PendingIntent pi = PendingIntent.getBroadcast(context, notes.get(position).getCheckId(), alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        am.cancel(pi);
-        DBDelay db = new DBDelay(context);
-        db.open();
-        int id = notes.get(position).getCheckId();
-        db.removeNote(id);
-        db.close();
-        notes.remove(position);
-        notifyItemRemoved(position);
 
-    }
 
     public void deleteSelected() {
+        try {
+            ArrayList<Integer> list = getSelectedId();
+            AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+            for (int i = 0; i < list.size(); i++) {
+                removeFromDB(list.get(i));
+                cancelAlarmEvent(am, alarmIntent, list.get(i));
+                notifyDataSetChanged();
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    @NonNull
+    private ArrayList<Integer> getSelectedId() {
         ArrayList<Integer> list = new ArrayList<>();
         for (int i = 0; i < selectedItems.size(); i++) {
             if (selectedItems.valueAt(i)) {
                 DelayedNote note = notes.get(selectedItems.keyAt(i));
                 list.add(note.getCheckId());
-                Log.e("TAG", "deleteSelected: " + note.getCheckId());
             }
         }
-
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent alarmIntent = new Intent(context, AlarmReceiver.class);
-
-        for (int i = 0; i < list.size(); i++) {
-            removeFromDB(list.get(i));   //
-            cancelAlarmEvent(am, alarmIntent, list.get(i));
-            notifyDataSetChanged();
-        }
+        return list;
     }
 
     private void removeFromDB(int checkId) {
@@ -271,21 +264,40 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
                     }
                 }
             });
+
+            checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (select) {
+                        selectionModeClick(itemView);
+                        checkForEndSelect();
+                    }
+                }
+            });
+
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    if (selectionMode != null) {
-                        selectionMode.startSelection(1);
-                        if (select) {
-                            itemView.setSelected(true);
-                            selectedItems.put(getAdapterPosition(), true);
-                            selectedCount++;
-                            notifyItemChanged(getAdapterPosition());
-                        }
+                    try {
+                        startSelection(itemView);
+                    } catch (Exception e) {
+                        return false;
                     }
                     return true;
                 }
             });
+        }
+
+        private void startSelection(View itemView) {
+            if (selectionMode != null) {
+                selectionMode.startSelection(1);
+                if (select) {
+                    itemView.setSelected(true);
+                    selectedItems.put(getAdapterPosition(), true);
+                    selectedCount++;
+                    notifyItemChanged(getAdapterPosition());
+                }
+            }
         }
 
         private void selectionModeClick(View itemView) {

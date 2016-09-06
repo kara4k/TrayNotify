@@ -3,7 +3,6 @@ package com.kara4k.traynotify;
 
 import android.app.AlarmManager;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,6 +11,7 @@ import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class RebootReceiver extends BroadcastReceiver {
     }
 
     private void showNotes(Context context) {
-        NotificationManager nm = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        NotificationManagerCompat nm = NotificationManagerCompat.from(context);
         List<Note> notes = QuickNotesFragment.getAllNotesFromDB(context);
         for (Note x : notes) {
             if (x.getIcon() == 1) {

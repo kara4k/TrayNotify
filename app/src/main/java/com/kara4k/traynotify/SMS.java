@@ -3,11 +3,11 @@ package com.kara4k.traynotify;
 
 class SMS {
 
-    private int id;
-    private int person;
-    private String address;
-    private String body;
-    private long date;
+    private final int id;
+    private final int person;
+    private final String address;
+    private final String body;
+    private final long date;
 
     public SMS(int id, int person, String address, String body, long date) {
         this.id = id;

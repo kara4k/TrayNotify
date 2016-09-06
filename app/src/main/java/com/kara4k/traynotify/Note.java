@@ -5,12 +5,12 @@ import java.io.Serializable;
 
 class Note implements Serializable{
 
-    private int id;
-    private String title;
-    private String text;
+    private final int id;
+    private final String title;
+    private final String text;
     private int icon;
-    private long date;
-    private int numid;
+    private final long date;
+    private final int numid;
 
     public Note(int id, String title, String text, int icon, long date, int numid) {
         this.id = id;

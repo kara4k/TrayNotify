@@ -408,13 +408,9 @@ public class BirthdayFragment extends Fragment {
         return birthdaysListAll;
     }
 
-    public void setBirthdaysListAll(List<Birthday> birthdaysListAll) {
-        this.birthdaysListAll = birthdaysListAll;
-    }
-
     private class GetInfo extends AsyncTask<Void, Void, Void> {
 
-        private ProgressDialog dialog;
+        private final ProgressDialog dialog;
 
         GetInfo(Context context) {
             dialog = new ProgressDialog(context);

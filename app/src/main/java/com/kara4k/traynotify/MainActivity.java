@@ -28,8 +28,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SelectionMode {
 
-    final public static int QUICK = 1;
-    final public static int DELAYED = 2;
+    private final static int QUICK = 1;
+    private final static int DELAYED = 2;
     private DrawerLayout mDrawerLayout;
     private NotificationManager nm;
     private int pagerItem = 0;
@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private SMSFragment smsFragment;
     private ActionMode actionMode;
     private Toolbar toolbar;
-    int selectionFrag;
 
 
     @Override
@@ -236,7 +235,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         try {
             getSupportActionBar().setTitle(getString(R.string.app_name));
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -445,7 +443,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
     }
 
-    private ActionMode.Callback callback = new ActionMode.Callback() {
+    private final ActionMode.Callback callback = new ActionMode.Callback() {
 
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             mode.getMenuInflater().inflate(R.menu.action_mode, menu);
@@ -459,30 +457,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.action_delete:
-                    DialogInterface.OnClickListener deleteDialog = new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            if (pagerItem == 0) {
-                                QuickAdapter.getInstance().deleteSelected();
-                                actionMode.finish();
-                            } else if (pagerItem ==1 ) {
-                                DelayedAdapter.getInstance().deleteSelected();
-                                actionMode.finish();
-                            }
-                        }
-                    };
-
-                    new AlertDialog.Builder(MainActivity.this).setTitle("Delete?")
-                            .setPositiveButton("Delete", deleteDialog)
-                            .setNegativeButton("Cancel", null)
-                            .create().show();
+                    showConfirmDeleteDialog();
                     break;
                 case R.id.action_selectAll:
-                    if (pagerItem == 0) {
-                        QuickAdapter.getInstance().selectAll();
-                    } else if (pagerItem == 1) {
-                        DelayedAdapter.getInstance().selectAll();
-                    }
+                    selectAll();
                     break;
 
 
@@ -491,48 +469,107 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
 
         public void onDestroyActionMode(ActionMode mode) {
-           if (pagerItem == 0) {
-               QuickAdapter.getInstance().endSelectionMode();
-           }
-           else if (pagerItem == 1) {
-               DelayedAdapter.getInstance().endSelectionMode();
-           }
-            showFirstFragment();
-            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED);
-            actionMode = null;
-
+            endActionMode();
         }
 
     };
 
+    private void showConfirmDeleteDialog() {
+        try {
+            DialogInterface.OnClickListener deleteDialog = getOnDeleteDialogClickListener();
+            new AlertDialog.Builder(MainActivity.this).setTitle(R.string.delete_ask)
+                    .setPositiveButton(R.string.delete, deleteDialog)
+                    .setNegativeButton(R.string.cancel, null)
+                    .create().show();
+        } catch (Exception e) {
+        }
+    }
+
+    @NonNull
+    private DialogInterface.OnClickListener getOnDeleteDialogClickListener() {
+        return new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                try {
+                                    deleteSelectedOnConfirm();
+                                } catch (Exception e) {
+                                }
+                            }
+                        };
+    }
+
+    private void deleteSelectedOnConfirm() {
+        if (pagerItem == 0) {
+            QuickAdapter.getInstance().deleteSelected();
+            actionMode.finish();
+        } else if (pagerItem ==1 ) {
+            DelayedAdapter.getInstance().deleteSelected();
+            actionMode.finish();
+        }
+    }
+
+    private void endActionMode() {
+        endSelectionForCurrent();
+        showFirstFragment();
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED);
+        actionMode = null;
+    }
+
+    private void endSelectionForCurrent() {
+        if (pagerItem == 0) {
+            QuickAdapter.getInstance().endSelectionMode();
+        }
+        else if (pagerItem == 1) {
+            DelayedAdapter.getInstance().endSelectionMode();
+        }
+    }
+
+    private void selectAll() {
+        if (pagerItem == 0) {
+            QuickAdapter.getInstance().selectAll();
+        } else if (pagerItem == 1) {
+            DelayedAdapter.getInstance().selectAll();
+        }
+    }
+
     @Override
     public void startSelection(int i) {
-        pagerItem = i;
-        if (pagerItem == 0) {
-            quickSelection();
-        } else if (pagerItem == 1) {
-            if (actionMode == null) {
-                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                int index = vpFragment.getDelayedNotes().getRecyclerPosition();
-                int top = vpFragment.getDelayedNotes().getPadding();
-                DelayedAdapter.getInstance().setSelect(true);
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                DelayedNotesFragment delayedNotesFragment = new DelayedNotesFragment();
-                ft.replace(R.id.container, delayedNotesFragment);
-                ft.commitNowAllowingStateLoss();
-                actionMode = startSupportActionMode(callback);
-                actionMode.setTitle("1");
-                delayedNotesFragment.scrollTo(index, top);
-            } else {
-                actionMode.finish();
-            }
+        try {
+            selection(i);
+        } catch (Exception e) {
         }
 
     }
 
+    private void selection(int i) {
+        pagerItem = i;
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        if (pagerItem == 0) {
+            quickSelection();
+        } else if (pagerItem == 1) {
+            delayedSelection();
+        }
+    }
+
+    private void delayedSelection() {
+        if (actionMode == null) {
+            int index = vpFragment.getDelayedNotes().getRecyclerPosition();
+            int top = vpFragment.getDelayedNotes().getPadding();
+            DelayedAdapter.getInstance().setSelect(true);
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            DelayedNotesFragment delayedNotesFragment = new DelayedNotesFragment();
+            ft.replace(R.id.container, delayedNotesFragment);
+            ft.commitNowAllowingStateLoss();
+            actionMode = startSupportActionMode(callback);
+            actionMode.setTitle("1");
+            delayedNotesFragment.scrollTo(index, top);
+        } else {
+            actionMode.finish();
+        }
+    }
+
     private void quickSelection() {
         if (actionMode == null) {
-            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             int index = vpFragment.getQuickNotes().getRecyclerPosition();
             int top = vpFragment.getQuickNotes().getPadding();
             QuickAdapter.getInstance().setSelect(true);

@@ -4,10 +4,10 @@ package com.kara4k.traynotify;
 import java.io.Serializable;
 import java.util.List;
 
-public class SendObj implements Serializable{
+class SendObj implements Serializable{
 
-    List<Note> notes;
-    List<DelayedNote> delayedNotes;
+    private List<Note> notes;
+    private List<DelayedNote> delayedNotes;
 
     SendObj() {
 

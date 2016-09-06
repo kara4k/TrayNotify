@@ -23,7 +23,6 @@
 
 
     <LinearLayout
-        android:id="@+id/title_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -53,7 +52,6 @@
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title_layout"
         android:text="Medium Text"
         android:textAppearance="?attr/textAppearanceListItem"
         android:textColor="?attr/colorPrimary"
@@ -64,7 +62,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/text"
         android:id="@+id/date_layout"
         android:layout_marginTop="5dp"
         android:orientation="horizontal">
@@ -80,10 +77,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/isShown"
-            android:layout_below="@+id/title_layout"
             android:src="@drawable/ic_speaker_notes_red_24dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="7dp"
             android:paddingLeft="@dimen/dimen_default"
             />
 

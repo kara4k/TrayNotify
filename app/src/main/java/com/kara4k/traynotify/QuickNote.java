@@ -1,7 +1,6 @@
 package com.kara4k.traynotify;
 
 
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
@@ -10,6 +9,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
@@ -25,7 +25,7 @@ public class QuickNote extends AppCompatActivity {
 
     private EditText title;
     private EditText text;
-    private NotificationManager nm;
+    private NotificationManagerCompat nm;
 
     private MyView tray;
 
@@ -44,26 +44,16 @@ public class QuickNote extends AppCompatActivity {
         title = (EditText) findViewById(R.id.editTitle);
         text = (EditText) findViewById(R.id.textedit);
         tray = (MyView) findViewById(R.id.tray);
-//        ongoing = (MyView) findViewById(R.id.ongoing);
         Button create = (Button) findViewById(R.id.create);
 
         dbQuick = new DBQuick(getApplicationContext());
         id = dbQuick.getNoteCheckID();
 
-        nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nm = NotificationManagerCompat.from(this);
+
         calendar = Calendar.getInstance();
         intentChecks();
-//        tray.setSecondOnClickListener(new MyView.SecondOnClickListener() {
-//            @Override
-//            public void onClick() {
-//                if (!tray.getCheckbox().isChecked()) {
-//                    ongoing.getCheckbox().setChecked(false);
-//                    ongoing.getCheckbox().setEnabled(false);
-//                } else {
-//                    ongoing.getCheckbox().setEnabled(true);
-//                }
-//            }
-//        });
+
 
         create.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,7 +173,6 @@ public class QuickNote extends AppCompatActivity {
         mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.user1));
         nm.notify(id, mBuilder.build());
 
-
     }
 
     private Intent[] makeIntent() {
@@ -225,7 +214,6 @@ public class QuickNote extends AppCompatActivity {
             return 0;
         }
     }
-
 
 
     @Override

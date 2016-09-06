@@ -19,7 +19,6 @@ class QuickTouchHelper extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-        quickAdapter.remove(viewHolder.getAdapterPosition());
 
     }
 

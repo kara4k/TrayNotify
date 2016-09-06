@@ -2,16 +2,16 @@ package com.kara4k.traynotify;
 
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,10 +38,10 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
     private Context context;
     private GetNoteId getNoteId;
 
-    SparseBooleanArray selectedItems = new SparseBooleanArray();
-    boolean select;
-    SelectionMode selectionMode;
-    int selectedCount = 0;
+    private SparseBooleanArray selectedItems = new SparseBooleanArray();
+    private boolean select;
+    private SelectionMode selectionMode;
+    private int selectedCount = 0;
 
 
     private QuickAdapter() {
@@ -58,11 +58,7 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
         void getId(int i, String title);
     }
 
-//    public interface SelectionMode {
-//        public void startSelection();
-//
-//        public void selectedItemsCount(int i);
-//    }
+
 
     public void setSelectionMode(SelectionMode selectionMode) {
         this.selectionMode = selectionMode;
@@ -97,13 +93,22 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
         setTray(notesViewHolder, i);
         notesViewHolder.itemView.setSelected(selectedItems.get(i, false));
 
+        setIsChecked(notesViewHolder, i);
+
+        if ((select) || (selectionMode == null)) {
+            notesViewHolder.dateLayout.setOnClickListener(null);
+            notesViewHolder.tray.setVisibility(View.GONE);
+        }
+
+    }
+
+    private void setIsChecked(NotesViewHolder notesViewHolder, int i) {
         if (select) {
             notesViewHolder.checkBox.setVisibility(View.VISIBLE);
             notesViewHolder.checkBox.setChecked(selectedItems.get(i, false));
         } else {
             notesViewHolder.checkBox.setVisibility(View.GONE);
         }
-
     }
 
     private void setTray(NotesViewHolder notesViewHolder, int i) {
@@ -114,24 +119,8 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
         }
     }
 
-    public SparseBooleanArray getSelectedItems() {
-        return selectedItems;
-    }
-
-    public void setSelectedItems(SparseBooleanArray selectedItems) {
-        this.selectedItems = selectedItems;
-    }
-
-    public boolean isSelect() {
-        return select;
-    }
-
     public void setSelect(boolean select) {
         this.select = select;
-    }
-
-    public SelectionMode getSelectionMode() {
-        return selectionMode;
     }
 
     @Override
@@ -139,26 +128,7 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
         return notes.size();
     }
 
-    public void remove(int numID) {
-        DBQuick db = new DBQuick(context);
-        db.open();
-//        int id = notes.get(position).getId();
-//        int numID = notes.get(position).getNumid();
-        db.removeNote(numID);
-        db.close();
-//        notes.remove(position);
-        for (Note x : notes) {
-            if (x.getNumid() == numID) ;
-            notes.remove(x);
-        }
-//        notifyItemRemoved(position);
-        notifyDataSetChanged();
-        updateWidget(numID);
-        removeTray(numID);
-
-    }
-
-    public void refreshAll() {
+    private void refreshAll() {
         for (int i = 0; i < notes.size(); i++) {
             notifyItemChanged(i);
         }
@@ -185,22 +155,30 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
     }
 
     public void deleteSelected() {
+        try {
+            ArrayList<Integer> list = getSelectedId();
+            for (int i = 0; i < list.size(); i++) {
+                removeFromDB(list.get(i));
+                updateWidget(list.get(i));
+                removeTray(list.get(i));
+
+            }
+            notifyDataSetChanged();
+        } catch (Exception e) {
+        }
+
+    }
+
+    @NonNull
+    private ArrayList<Integer> getSelectedId() {
         ArrayList<Integer> list = new ArrayList<>();
         for (int i = 0; i < selectedItems.size(); i++) {
             if (selectedItems.valueAt(i)) {
                 Note note = notes.get(selectedItems.keyAt(i));
                 list.add(note.getNumid());
-                Log.e("TAG", "deleteSelected: " + note.getNumid());
             }
         }
-        for (int i = 0; i < list.size(); i++) {
-            removeFromDB(list.get(i));
-            updateWidget(list.get(i));
-            removeTray(list.get(i));
-            notifyDataSetChanged();
-        }
-
-
+        return list;
     }
 
     private void removeFromDB(int numId) {
@@ -211,7 +189,7 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
     }
 
     private void removeTray(int numID) {
-        NotificationManager nm = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        NotificationManagerCompat nm = NotificationManagerCompat.from(context);
         nm.cancel(numID);
     }
 
@@ -267,6 +245,16 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
                             nonSelectionMode(view);
                         }
                     } catch (Exception e) {
+                    }
+                }
+            });
+
+            checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (select) {
+                        selectionModeClick(itemView);
+                        checkForEndSelect();
                     }
                 }
             });
@@ -330,7 +318,7 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
             try {
                 Context context = view.getContext();
                 Note note = QuickAdapter.getInstance().getNotes().get(getAdapterPosition());
-                NotificationManager nm = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+                NotificationManagerCompat nm = NotificationManagerCompat.from(context);
                 if (note.getIcon() != 1) {
                     nm.notify(note.getNumid(), createNotification(context, note));
                     tray.setImageResource(R.drawable.ic_speaker_notes_red_24dp);

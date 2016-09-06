@@ -20,7 +20,6 @@ class DelayedTouchHelper extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-        delayedAdapter.remove(viewHolder.getAdapterPosition());
     }
 
 

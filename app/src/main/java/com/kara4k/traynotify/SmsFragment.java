@@ -74,10 +74,6 @@ public class SMSFragment extends Fragment {
         }
     }
 
-    public void setSmsListAll(List<SMS> smsListAll) {
-        this.smsListAll = smsListAll;
-    }
-
     public List<SMS> getSmsListAll() {
         return smsListAll;
     }

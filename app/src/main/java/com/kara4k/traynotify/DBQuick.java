@@ -99,7 +99,7 @@ class DBQuick {
 
     private class DBManager extends SQLiteOpenHelper {
 
-        Context context;
+        final Context context;
 
         public DBManager(Context context) {
             super(context, DBQuick.DB_NAME, null, DBQuick.DB_VERSION);
@@ -130,13 +130,6 @@ class DBQuick {
             cv.put(KEY_ICON, 0);
             cv2.put(KEY_NUMID, -2);
             db.insert(TABLE_NAME, null, cv2);
-
-            ContentValues cv3 = new ContentValues();
-            cv3.put(KEY_TITLE, context.getString(R.string.third_message_title));
-            cv3.put(KEY_TEXT, context.getString(R.string.third_message_text));
-            cv.put(KEY_ICON, 0);
-            cv3.put(KEY_NUMID, -3);
-            db.insert(TABLE_NAME, null, cv3);
         }
 
 

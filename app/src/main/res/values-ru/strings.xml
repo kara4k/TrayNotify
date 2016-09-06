@@ -45,8 +45,6 @@
     <string name="loading">Загрузка</string>
     <string name="first_message">Для удаления из трея конкретной закрепленной записи, перейдите в экран редактирования, коснувшись ее, и используйте крайнюю правую пиктограмму.</string>
     <string name="second_message">Для очистки всех уведомлений в трее используйте крайнюю правую пиктограмму в главном окне.</string>
-    <string name="third_message_title">Длительное касание записи/напоминания удаляет ее.</string>
-    <string name="third_message_text">Попробуйте удалить эту запись</string>
     <string name="backround">Фон</string>
     <string name="edit">Правка</string>
     <string name="note">Заметка</string>
@@ -60,4 +58,7 @@
     <string name="sort">Сортировать</string>
     <string name="search">Поиск</string>
     <string name="first_message_text">Или нажмите на иконку под этим текстом, слева от времени</string>
+    <string name="delete">Удалить</string>
+    <string name="delete_ask">Удалить?</string>
+    <string name="select_all">Выбрать все</string>
 </resources>
