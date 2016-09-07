@@ -68,7 +68,7 @@ public class RebootReceiver extends BroadcastReceiver {
         mBuilder.setOngoing(true);
         mBuilder.setContentIntent(PendingIntent.getActivities(context, note.getNumid(), makeIntent(context, note), PendingIntent.FLAG_UPDATE_CURRENT));
         mBuilder.setSmallIcon(R.drawable.notify);
-        mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.user1));
+        mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.main_icon));
         return mBuilder.build();
     }
 

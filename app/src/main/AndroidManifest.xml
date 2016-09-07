@@ -92,6 +92,9 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
         </activity>
+        <!--<activity android:name=".SettingsFragment">-->
+
+        <!--</activity>-->
     </application>
 
 </manifest>

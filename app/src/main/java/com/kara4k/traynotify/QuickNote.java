@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
@@ -16,7 +17,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
 import java.util.Calendar;
@@ -44,7 +44,7 @@ public class QuickNote extends AppCompatActivity {
         title = (EditText) findViewById(R.id.editTitle);
         text = (EditText) findViewById(R.id.textedit);
         tray = (MyView) findViewById(R.id.tray);
-        Button create = (Button) findViewById(R.id.create);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         dbQuick = new DBQuick(getApplicationContext());
         id = dbQuick.getNoteCheckID();
@@ -55,7 +55,7 @@ public class QuickNote extends AppCompatActivity {
         intentChecks();
 
 
-        create.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 create();
@@ -78,6 +78,8 @@ public class QuickNote extends AppCompatActivity {
             title.setText(getIntent().getStringExtra(Intent.EXTRA_SUBJECT));
             text.setText(getIntent().getStringExtra(Intent.EXTRA_TEXT));
             id = getIntent().getIntExtra("id", id);
+            tray.getCheckbox().setChecked(getIntent().getBooleanExtra("tray", false));
+            Log.e("quick", "intentChecks: " + String.valueOf(getIntent().getBooleanExtra("tray", false)) );
         }
     }
 
@@ -129,7 +131,7 @@ public class QuickNote extends AppCompatActivity {
     private void clearForms() {
         title.setText("");
         text.setText("");
-        tray.getCheckbox().setChecked(true);
+        tray.getCheckbox().setChecked(false);
 
     }
 
@@ -170,7 +172,7 @@ public class QuickNote extends AppCompatActivity {
         mBuilder.setSmallIcon(R.drawable.notify);
 
 
-        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.user1));
+        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_icon));
         nm.notify(id, mBuilder.build());
 
     }

@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -28,7 +29,6 @@ import android.support.v7.app.NotificationCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
@@ -69,7 +69,8 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_notification);
+//        setContentView(R.layout.create_notification);
+        setContentView(R.layout.test);
 
         note = new DelayedNote();
 
@@ -162,13 +163,13 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
             }
         });
 
-        Button test = (Button) findViewById(R.id.test);
-        test.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                makeTest();
-            }
-        });
+//        Button test = (Button) findViewById(R.id.test);
+//        test.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                makeTest();
+//            }
+//        });
 
 
         sound = (MyView) findViewById(R.id.sound);
@@ -180,8 +181,8 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
             }
         });
 
-        Button create = (Button) findViewById(R.id.create);
-        create.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 createNotification();
@@ -585,19 +586,30 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         }
 
         mBuilder.setSmallIcon(R.drawable.notify);
+        setLargeIcon(mBuilder);
 
+        nm.notify(0, mBuilder.build());
+    }
+
+    private void setLargeIcon(NotificationCompat.Builder mBuilder) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_icon));
+        } else {
+            tryBirthdayPhoto(mBuilder);
+        }
+    }
+
+    private void tryBirthdayPhoto(NotificationCompat.Builder mBuilder) {
         if (birthday != 0) {
             try {
                 Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), Uri.parse("content://com.android.contacts/contacts/" + birthday + "/display_photo"));
                 mBuilder.setLargeIcon(mBitmap);
             } catch (IOException e) {
-                mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.user1));
+                mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_icon));
             }
         } else {
-            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.user1));
+            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_icon));
         }
-
-        nm.notify(0, mBuilder.build());
     }
 
     private void chooseSoundIntent() {

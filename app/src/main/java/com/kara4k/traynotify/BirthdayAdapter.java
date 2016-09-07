@@ -82,7 +82,7 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.Birthd
             Bitmap mBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(birthdays.get(position).getPhotoUri()));
             imageView.setImageBitmap(mBitmap);
         } catch (IOException e) {
-            imageView.setImageResource(R.drawable.user1);
+            imageView.setImageResource(R.drawable.main_icon);
 
         }
     }

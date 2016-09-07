@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="main">
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="main_tray"
+        android:title="Tray Icon"
+        android:summary="Fast access from statusbar"/>
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="track_clipboard"
+        android:title="Track Clipboard"
+        android:summary="Write all changes of clipboard"/>
+    <PreferenceScreen android:key="test"
+        android:title="Reminders">
+<SwitchPreference android:title="tyty"
+    android:key="yuyu"
+    android:defaultValue="true"
+    />
+    </PreferenceScreen>
+</PreferenceScreen>

@@ -36,6 +36,8 @@ public class ViewPagerFragment extends Fragment  {
         adapter.addFragment(quickNotes, getString(R.string.notes));
         adapter.addFragment(delayedNotes, getString(R.string.notifications));
         viewPager.setAdapter(adapter);
+        ViewPager.OnPageChangeListener pageChangeListener = (ViewPager.OnPageChangeListener) getActivity();
+        viewPager.addOnPageChangeListener(pageChangeListener);
         tabs = (TabLayout) getActivity().findViewById(R.id.tabs);
         tabs.setVisibility(View.VISIBLE);
         tabs.setupWithViewPager(viewPager);

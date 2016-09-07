@@ -50,17 +50,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             mBuilder.setOngoing(true);
             mBuilder.setSmallIcon(R.drawable.notify);
 
-            if (note.getBirthday() != 0) {
-                try {
-                    Bitmap mBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse("content://com.android.contacts/contacts/" + note.getBirthday() + "/display_photo"));
-                    mBuilder.setLargeIcon(mBitmap);
-                } catch (IOException e) {
-                    mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.user1));
-                }
-            } else {
-                mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.user1));
-            }
-
+            setLargeIcon(context, mBuilder);
 
             nm.notify(note.getCheckId(), mBuilder.build());
         }
@@ -87,6 +77,27 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         }
 
+    }
+
+    private void setLargeIcon(Context context, NotificationCompat.Builder mBuilder) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.main_icon));
+        } else {
+            tryBirthdayPhoto(context, mBuilder);
+        }
+    }
+
+    private void tryBirthdayPhoto(Context context, NotificationCompat.Builder mBuilder) {
+        if (note.getBirthday() != 0) {
+            try {
+                Bitmap mBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse("content://com.android.contacts/contacts/" + note.getBirthday() + "/display_photo"));
+                mBuilder.setLargeIcon(mBitmap);
+            } catch (IOException e) {
+                mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.main_icon));
+            }
+        } else {
+            mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.main_icon));
+        }
     }
 
 

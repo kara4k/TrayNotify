@@ -309,6 +309,8 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
                 Intent intent = new Intent(context, QuickNote.class);
                 intent.putExtra(Intent.EXTRA_SUBJECT, note.getTitle());
                 intent.putExtra(Intent.EXTRA_TEXT, note.getText());
+                boolean tray = note.getIcon() == 1 ? true : false;
+                intent.putExtra("tray", tray);
                 intent.putExtra("id", note.getNumid());
                 context.startActivity(intent);
             }
@@ -352,7 +354,7 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
             mBuilder.setOngoing(true);
             mBuilder.setContentIntent(PendingIntent.getActivities(context, note.getNumid(), makeIntent(context, note), PendingIntent.FLAG_UPDATE_CURRENT));
             mBuilder.setSmallIcon(R.drawable.notify);
-            mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.user1));
+            mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.main_icon));
             return mBuilder.build();
 
 
@@ -367,6 +369,7 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
             quick.putExtra(Intent.EXTRA_SUBJECT, note.getTitle());
             quick.putExtra(Intent.EXTRA_TEXT, note.getText());
             quick.putExtra("id", note.getNumid());
+            quick.putExtra("tray", true);
             return new Intent[]{main, quick};
         }
 

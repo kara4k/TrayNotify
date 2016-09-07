@@ -14,6 +14,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -26,7 +27,7 @@ import android.view.View;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SelectionMode {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SelectionMode, ViewPager.OnPageChangeListener {
 
     private final static int QUICK = 1;
     private final static int DELAYED = 2;
@@ -90,6 +91,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 setBarTitle(supportActionBar, getString(R.string.birthdays));
                                 setBirthdaysMenu();
                                 break;
+                            case R.id.settings:
+                                SettingsFragment settingsFragment = new SettingsFragment();
+                                showSecondaryFragment(settingsFragment);
+                                toolbar.setVisibility(View.GONE);
+                                break;
                             case R.id.rate:
                                 rateApp();
                                 break;
@@ -104,6 +110,26 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
+
+
+        setFabNotes();
+        showFirstFragment();
+
+    }
+
+    private void setFabNotes() {
+        fab.setImageResource(R.drawable.ic_note_add_white_24dp);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent notes = new Intent(getApplicationContext(), QuickNote.class);
+                startActivityForResult(notes, QUICK);
+            }
+        });
+    }
+
+    private void setFabReminders() {
+        fab.setImageResource(R.drawable.ic_alarm_add_white_24dp);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,8 +137,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 startActivityForResult(notification, DELAYED);
             }
         });
-
-        showFirstFragment();
     }
 
     private void setBirthdaysMenu() {
@@ -307,9 +331,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             switch (requestCode) {
                 case QUICK:
                     pagerItem = 0;
+                    setFabNotes();
                     break;
                 case DELAYED:
                     pagerItem = 1;
+                    setFabReminders();
                     break;
             }
         }
@@ -488,21 +514,21 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @NonNull
     private DialogInterface.OnClickListener getOnDeleteDialogClickListener() {
         return new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                try {
-                                    deleteSelectedOnConfirm();
-                                } catch (Exception e) {
-                                }
-                            }
-                        };
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                try {
+                    deleteSelectedOnConfirm();
+                } catch (Exception e) {
+                }
+            }
+        };
     }
 
     private void deleteSelectedOnConfirm() {
         if (pagerItem == 0) {
             QuickAdapter.getInstance().deleteSelected();
             actionMode.finish();
-        } else if (pagerItem ==1 ) {
+        } else if (pagerItem == 1) {
             DelayedAdapter.getInstance().deleteSelected();
             actionMode.finish();
         }
@@ -512,14 +538,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         endSelectionForCurrent();
         showFirstFragment();
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED);
+        fab.setVisibility(View.VISIBLE);
         actionMode = null;
     }
 
     private void endSelectionForCurrent() {
         if (pagerItem == 0) {
             QuickAdapter.getInstance().endSelectionMode();
-        }
-        else if (pagerItem == 1) {
+        } else if (pagerItem == 1) {
             DelayedAdapter.getInstance().endSelectionMode();
         }
     }
@@ -544,6 +570,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private void selection(int i) {
         pagerItem = i;
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        fab.setVisibility(View.GONE);
         if (pagerItem == 0) {
             quickSelection();
         } else if (pagerItem == 1) {
@@ -593,4 +620,26 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
 
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        pagerItem = position;
+        switch (position) {
+            case 0:
+                setFabNotes();
+                break;
+            case 1:
+                setFabReminders();
+                break;
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
 }
