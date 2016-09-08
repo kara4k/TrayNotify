@@ -27,10 +27,9 @@ import android.view.View;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SelectionMode, ViewPager.OnPageChangeListener {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener,
+        SelectionMode, ViewPager.OnPageChangeListener {
 
-    private final static int QUICK = 1;
-    private final static int DELAYED = 2;
     private DrawerLayout mDrawerLayout;
     private NotificationManager nm;
     private int pagerItem = 0;
@@ -122,8 +121,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent notes = new Intent(getApplicationContext(), QuickNote.class);
-                startActivityForResult(notes, QUICK);
+                callQuickNoteActivity();
             }
         });
     }
@@ -134,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onClick(View view) {
                 Intent notification = new Intent(getApplicationContext(), CreateDelayedNote.class);
-                startActivityForResult(notification, DELAYED);
+                startActivity(notification);
             }
         });
     }
@@ -142,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private void setBirthdaysMenu() {
         mainMenu.findItem(R.id.sort).setVisible(true);
         mainMenu.findItem(R.id.sortDaysLeft).setChecked(true);
-        mainMenu.findItem(R.id.quick_note).setVisible(false);
+//        mainMenu.findItem(R.id.quick_note).setVisible(false);
         mainMenu.findItem(R.id.action_clear_all).setVisible(false);
     }
 
@@ -248,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     private void setVPFragmentMenu() {
         mainMenu.findItem(R.id.sort).setVisible(false);
-        mainMenu.findItem(R.id.quick_note).setVisible(true);
+//        mainMenu.findItem(R.id.quick_note).setVisible(true);
         mainMenu.findItem(R.id.action_clear_all).setVisible(true);
     }
 
@@ -296,8 +294,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         } else if (id == R.id.action_clear_all) {
             clearTray();
             return true;
-        } else if (id == R.id.quick_note) {
-            callQuickNoteActivity();
+//        } else if (id == R.id.quick_note) {
+////            callQuickNoteActivity();
+//            vpFragment.getQuickNotes().trySortByNum();
         } else if (id == android.R.id.home) {
             mDrawerLayout.openDrawer(GravityCompat.START);
         }
@@ -306,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     private void callQuickNoteActivity() {
         Intent quick = new Intent(this, QuickNote.class);
-        startActivityForResult(quick, QUICK);
+        startActivity(quick);
     }
 
     private void sortByAge(MenuItem item) {
@@ -324,22 +323,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         item.setChecked(true);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case QUICK:
-                    pagerItem = 0;
-                    setFabNotes();
-                    break;
-                case DELAYED:
-                    pagerItem = 1;
-                    setFabReminders();
-                    break;
-            }
-        }
-    }
 
     private void clearTray() {
         nm.cancelAll();
@@ -348,8 +331,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         db.open();
         db.clearQuickTrayAll();
         db.close();
-        pagerItem = vpFragment.getViewPager().getCurrentItem();
-        vpFragment.updateTrayRemoved(pagerItem);
+        QuickAdapter.getInstance().clearTrayAll();
+
     }
 
     private Fragment getCurrentFragment() {
@@ -397,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     }
                 }
             }
-            vpFragment.updateDelayed();
+            vpFragment.refreshDelayed(notesFiltered);
             return true;
         } catch (Exception e) {
             return true;
@@ -418,7 +401,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     }
                 }
             }
-            vpFragment.updateQuick();
+            vpFragment.refreshQuick(notesFiltered);
             return true;
         } catch (Exception e) {
             return true;
@@ -642,4 +625,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public void onPageScrollStateChanged(int state) {
 
     }
+
+
 }

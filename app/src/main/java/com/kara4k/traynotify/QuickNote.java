@@ -13,7 +13,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -79,7 +78,6 @@ public class QuickNote extends AppCompatActivity {
             text.setText(getIntent().getStringExtra(Intent.EXTRA_TEXT));
             id = getIntent().getIntExtra("id", id);
             tray.getCheckbox().setChecked(getIntent().getBooleanExtra("tray", false));
-            Log.e("quick", "intentChecks: " + String.valueOf(getIntent().getBooleanExtra("tray", false)) );
         }
     }
 
@@ -109,7 +107,6 @@ public class QuickNote extends AppCompatActivity {
     private void clearTrayCurrent() {
         try {
             nm.cancel(id);
-            Log.e("TAG", "onOptionsItemSelected:" + id);
             DBQuick db = new DBQuick(getApplicationContext());
             db.open();
             db.setQuickTrayInDB(id, 0);
@@ -152,7 +149,6 @@ public class QuickNote extends AppCompatActivity {
             Widget.updateWidget(this, appWidgetManager, sp, widgetID);
         }
 
-        setResult(RESULT_OK);
         finish();
 
     }
@@ -217,10 +213,4 @@ public class QuickNote extends AppCompatActivity {
         }
     }
 
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        setResult(RESULT_CANCELED);
-    }
 }

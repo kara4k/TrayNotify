@@ -503,7 +503,6 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, mainCal.getTimeInMillis(), 24 * 60 * 60 * 1000, pendingIntent);
         }
 
-        setResult(RESULT_OK);
         finish();
     }
 
@@ -700,13 +699,5 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         }
     }
 
-
-
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        setResult(RESULT_CANCELED);
-    }
 }
 

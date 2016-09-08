@@ -16,7 +16,7 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewPagerFragment extends Fragment  {
+public class ViewPagerFragment extends Fragment {
 
     private TabLayout tabs;
     private ViewPager viewPager;
@@ -42,7 +42,7 @@ public class ViewPagerFragment extends Fragment  {
         tabs.setVisibility(View.VISIBLE);
         tabs.setupWithViewPager(viewPager);
 
-        if (getArguments()!= null) {
+        if (getArguments() != null) {
             int item = getArguments().getInt("item", 0);
             viewPager.setCurrentItem(item);
         }
@@ -55,57 +55,25 @@ public class ViewPagerFragment extends Fragment  {
         return viewPager;
     }
 
-    public void updateQuick() {
+
+    public void refreshQuick(List<Note> notes) {
         try {
-            adapter = new Adapter(getFragmentManager());
-            Bundle quickNotesBundle = new Bundle();
-            SendObj sendObj = new SendObj(quickNotes.getNotes());
-            quickNotesBundle.putSerializable("notes", sendObj);
-            quickNotes = new QuickNotesFragment();
-            quickNotes.setArguments(quickNotesBundle);
-            adapter.addFragment(quickNotes, getString(R.string.notes));
-            adapter.addFragment(delayedNotes, getString(R.string.notifications));
-            viewPager.setAdapter(adapter);
-            viewPager.setCurrentItem(0);
+            quickNotes.setNotes(notes);
+            QuickAdapter.getInstance().notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void updateTrayRemoved(int item) {
+    public void refreshDelayed(List<DelayedNote> notes) {
         try {
-            int index = quickNotes.getRecyclerPosition();
-            int top = quickNotes.getPadding();
-            adapter = new Adapter(getFragmentManager());
-            quickNotes = new QuickNotesFragment();
-            adapter.addFragment(quickNotes, getString(R.string.notes));
-            adapter.addFragment(delayedNotes, getString(R.string.notifications));
-            viewPager.setAdapter(adapter);
-            viewPager.setCurrentItem(item);
-            quickNotes.scrollTo(index, top);
-        } catch (Exception e) {
-
-        }
-    }
-
-    public void updateDelayed () {
-        try {
-            adapter = new Adapter(getFragmentManager());
-            Bundle delayedNotesBundle = new Bundle();
-            SendObj sendObj = new SendObj(delayedNotes.getNotes(), 0);
-            delayedNotesBundle.putSerializable("delayed_notes", sendObj);
-
-            delayedNotes = new DelayedNotesFragment();
-            delayedNotes.setArguments(delayedNotesBundle);
-
-            adapter.addFragment(quickNotes, getString(R.string.notes));
-            adapter.addFragment(delayedNotes, getString(R.string.notifications));
-            viewPager.setAdapter(adapter);
-            viewPager.setCurrentItem(1);
+            delayedNotes.setNotes(notes);
+            DelayedAdapter.getInstance().notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     public QuickNotesFragment getQuickNotes() {
         return quickNotes;
@@ -147,9 +115,8 @@ public class ViewPagerFragment extends Fragment  {
         }
 
 
-
         @Override
-        public int getItemPosition(Object object){
+        public int getItemPosition(Object object) {
             return POSITION_NONE;
         }
 

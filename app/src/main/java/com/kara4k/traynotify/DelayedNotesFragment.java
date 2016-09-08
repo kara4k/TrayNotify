@@ -22,25 +22,26 @@ public class DelayedNotesFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-//        inflater.inflate(R.layout.quick_notes_fragment, container);
         recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
         DelayedAdapter adapter = DelayedAdapter.getInstance();
-        try {
-            if (getArguments() != null) {
-                SendObj sendObj = (SendObj) getArguments().getSerializable("delayed_notes");
-                notes = sendObj.getDelayedNotes();
-            } else {
-                notes = getAllNotesFromDB();
-            }
-        } catch (Exception e) {
-            notes = getAllNotesFromDB();
-        }
+//        try {
+//            if (getArguments() != null) {
+//                SendObj sendObj = (SendObj) getArguments().getSerializable("delayed_notes");
+//                notes = sendObj.getDelayedNotes();
+//            } else {
+//                notes = getAllNotesFromDB();
+//            }
+//        } catch (Exception e) {
+        notes = getAllNotesFromDB();
+//        }
         adapter.setList(notes);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         SelectionMode selectionMode = (SelectionMode) getActivity();
         adapter.setSelectionMode(selectionMode);
+
+
 //        ItemTouchHelper.Callback callback = new DelayedTouchHelper(adapter);
 //        ItemTouchHelper helper = new ItemTouchHelper(callback);
 //        helper.attachToRecyclerView(recyclerView);
@@ -49,6 +50,10 @@ public class DelayedNotesFragment extends Fragment {
 
     public List<DelayedNote> getNotes() {
         return notes;
+    }
+
+    public void setNotes(List<DelayedNote> notes) {
+        this.notes = notes;
     }
 
     public int getRecyclerPosition() {
@@ -63,7 +68,7 @@ public class DelayedNotesFragment extends Fragment {
         return top;
     }
 
-    public void scrollTo(int index, int top){
+    public void scrollTo(int index, int top) {
         LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         layoutManager.scrollToPositionWithOffset(index, top);
     }

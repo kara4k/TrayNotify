@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class QuickNotesFragment extends Fragment {
@@ -28,16 +30,16 @@ public class QuickNotesFragment extends Fragment {
         recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
         adapter = QuickAdapter.getInstance();
         adapter.setGetNoteId(null);
-        try {
-            if (getArguments() != null) {
-                SendObj sendObj = (SendObj) getArguments().getSerializable("notes");
-                notes = sendObj.getNotes();
-            } else {
-                notes = getAllNotesFromDB(getContext());
-            }
-        } catch (Exception e) {
-            notes = getAllNotesFromDB(getContext());
-        }
+//        try { // TODO: 07.09.2016
+//            if (getArguments() != null) {
+//                SendObj sendObj = (SendObj) getArguments().getSerializable("notes");
+//                notes = sendObj.getNotes();
+//            } else {
+//                notes = getAllNotesFromDB(getContext());
+//            }
+//        } catch (Exception e) {
+        notes = getAllNotesFromDB(getContext());
+//        }
 
         adapter.setList(notes);
         recyclerView.setAdapter(adapter);
@@ -47,7 +49,6 @@ public class QuickNotesFragment extends Fragment {
 
         SelectionMode selectionMode = (SelectionMode) getActivity();
         adapter.setSelectionMode(selectionMode);
-
 
 //        ItemTouchHelper.Callback callback = new QuickTouchHelper(adapter);
 //        ItemTouchHelper helper = new ItemTouchHelper(callback);
@@ -74,6 +75,10 @@ public class QuickNotesFragment extends Fragment {
         return notes;
     }
 
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
+    }
+
     public int getRecyclerPosition() {
         LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         return layoutManager.findFirstVisibleItemPosition();
@@ -86,9 +91,30 @@ public class QuickNotesFragment extends Fragment {
         return top;
     }
 
-    public void scrollTo(int index, int top){
-    LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+    public void scrollTo(int index, int top) {
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         layoutManager.scrollToPositionWithOffset(index, top);
+    }
+
+    public void trySortByNum() {
+        if ((notes != null) && (notes.size() != 0)) {
+            try {
+                Collections.sort(notes, new Comparator<Note>() {
+
+                    @Override
+                    public int compare(Note note, Note t1) {
+                        if (note.getDate() > t1.getDate())
+                            return 1;
+                        if (note.getDate() < t1.getDate())
+                            return -1;
+                        return 0;
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 
 

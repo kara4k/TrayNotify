@@ -134,6 +134,13 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
         }
     }
 
+    public void clearTrayAll() {
+        for (Note x : notes) {
+            x.setIcon(0);
+        }
+        refreshAll();
+    }
+
     public void endSelectionMode() {
         select = false;
         selectedItems = new SparseBooleanArray();

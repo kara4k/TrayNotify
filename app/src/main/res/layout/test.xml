@@ -112,7 +112,27 @@
             app:Image="@drawable/ic_repeat_grey_24dp"
             app:ImageVisible="false"
             app:Text=""
-            app:Title="@string/repeat"
+            app:Title="Неделя"
+            app:isChecked="false" />
+        <com.kara4k.traynotify.MyView
+            android:id="@+id/repeat_month"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:CheckVisible="true"
+            app:Image="@drawable/ic_repeat_grey_24dp"
+            app:ImageVisible="false"
+            app:Text=""
+            app:Title="Месяц"
+            app:isChecked="false" />
+        <com.kara4k.traynotify.MyView
+            android:id="@+id/repeat_year"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:CheckVisible="true"
+            app:Image="@drawable/ic_repeat_grey_24dp"
+            app:ImageVisible="false"
+            app:Text=""
+            app:Title="Год"
             app:isChecked="false" />
 
 
