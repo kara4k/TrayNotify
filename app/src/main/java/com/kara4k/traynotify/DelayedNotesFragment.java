@@ -24,16 +24,8 @@ public class DelayedNotesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
         DelayedAdapter adapter = DelayedAdapter.getInstance();
-//        try {
-//            if (getArguments() != null) {
-//                SendObj sendObj = (SendObj) getArguments().getSerializable("delayed_notes");
-//                notes = sendObj.getDelayedNotes();
-//            } else {
-//                notes = getAllNotesFromDB();
-//            }
-//        } catch (Exception e) {
+
         notes = getAllNotesFromDB();
-//        }
         adapter.setList(notes);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -74,27 +66,31 @@ public class DelayedNotesFragment extends Fragment {
     }
 
     public List<DelayedNote> getAllNotesFromDB() {
-        DBDelay db = new DBDelay(getActivity());
-        db.open();
-        List<DelayedNote> allnotes = new ArrayList<>();
-        Cursor allData = db.getAllData();
-        if (allData.moveToFirst()) {
-            do {
-                allnotes.add(new DelayedNote(allData.getInt(0),
-                        allData.getString(1),
-                        allData.getString(2),
-                        allData.getLong(3),
-                        allData.getLong(4),
-                        allData.getInt(5),
-                        allData.getString(6),
-                        allData.getString(7),
-                        allData.getString(8),
-                        allData.getInt(9),
-                        allData.getInt(10)
-                ));
-            } while (allData.moveToNext());
+        try {
+            DBDelay db = new DBDelay(getActivity());
+            db.open();
+            List<DelayedNote> allnotes = new ArrayList<>();
+            Cursor allData = db.getAllData();
+            if (allData.moveToFirst()) {
+                do {
+                    allnotes.add(new DelayedNote(allData.getInt(0),
+                            allData.getString(1),
+                            allData.getString(2),
+                            allData.getLong(3),
+                            allData.getLong(4),
+                            allData.getInt(5),
+                            allData.getString(6),
+                            allData.getString(7),
+                            allData.getString(8),
+                            allData.getInt(9),
+                            allData.getInt(10)
+                    ));
+                } while (allData.moveToNext());
+            }
+            db.close();
+            return allnotes;
+        } catch (Exception e) {
+            return new ArrayList<DelayedNote>();
         }
-        db.close();
-        return allnotes;
     }
 }

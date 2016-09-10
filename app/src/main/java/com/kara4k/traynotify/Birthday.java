@@ -20,11 +20,17 @@ class Birthday implements Comparable<Birthday> {
         this.id = id;
         this.name = name;
         this.date = date;
-        this.photoUri = "content://com.android.contacts/contacts/"+ cId + "/display_photo";
+        this.photoUri = "content://com.android.contacts/contacts/" + cId + "/display_photo";
         this.daysLeft = daysLeft;
         this.age = age;
         this.sign = sign;
         this.setTime = setTime;
+    }
+
+    public Birthday(String contId, String name, String date) {
+        this.id = contId;
+        this.name = name;
+        this.date = date;
     }
 
     public String getId() {
@@ -62,11 +68,11 @@ class Birthday implements Comparable<Birthday> {
     @Override
     public int compareTo(@NonNull Birthday birthday) {
 
-            if(this.daysLeft > birthday.daysLeft)
-                return 1;
-            if(this.daysLeft < birthday.daysLeft)
-                return -1;
-            return 0;
-        }
+        if (this.daysLeft > birthday.daysLeft)
+            return 1;
+        if (this.daysLeft < birthday.daysLeft)
+            return -1;
+        return 0;
+    }
 
 }

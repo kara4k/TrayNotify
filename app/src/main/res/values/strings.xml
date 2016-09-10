@@ -3,7 +3,7 @@
     <string name="sd_permission_denied">Permission denied</string>
     <string name="quick_note">Quick Note</string>
     <string name="completely_tray_clean">Completely Tray Clean</string>
-    <string name="notifications">Notifications</string>
+    <string name="notifications">Reminders</string>
     <string name="messages">Messages</string>
     <string name="birthdays">Birthdays</string>
     <string name="rate">Rate</string>
@@ -55,7 +55,7 @@
     <string name="age_sort">Age</string>
     <string name="search">Search</string>
     <string name="first_message_text">Or click on the icon below the text to the left of the time</string>
-    <string name="delete_ask">Delete?</string>
+    <string name="delete_ask">Delete selected notes?</string>
     <string name="delete">Delete</string>
     <string name="select_all">Select All</string>
     <string name="day_of_month"> day of month</string>
@@ -64,4 +64,5 @@
     <string name="month">Month</string>
     <string name="year">Year</string>
     <string name="repeat_year">Repeat every year</string>
+    <string name="sync_birthdays">Sync</string>
 </resources>

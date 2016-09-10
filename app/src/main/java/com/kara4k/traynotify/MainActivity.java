@@ -90,11 +90,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 setBarTitle(supportActionBar, getString(R.string.birthdays));
                                 setBirthdaysMenu();
                                 break;
-                            case R.id.settings:
-                                SettingsFragment settingsFragment = new SettingsFragment();
-                                showSecondaryFragment(settingsFragment);
-                                toolbar.setVisibility(View.GONE);
-                                break;
+//                            case R.id.settings:
+//                                SettingsFragment settingsFragment = new SettingsFragment();
+//                                showSecondaryFragment(settingsFragment);
+//                                toolbar.setVisibility(View.GONE);
+//                                break;
                             case R.id.rate:
                                 rateApp();
                                 break;
@@ -140,8 +140,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private void setBirthdaysMenu() {
         mainMenu.findItem(R.id.sort).setVisible(true);
         mainMenu.findItem(R.id.sortDaysLeft).setChecked(true);
-//        mainMenu.findItem(R.id.quick_note).setVisible(false);
         mainMenu.findItem(R.id.action_clear_all).setVisible(false);
+        mainMenu.findItem(R.id.sync_birthdays).setVisible(true);
     }
 
     private void sendEmail(String[] addresses) {
@@ -246,8 +246,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     private void setVPFragmentMenu() {
         mainMenu.findItem(R.id.sort).setVisible(false);
-//        mainMenu.findItem(R.id.quick_note).setVisible(true);
         mainMenu.findItem(R.id.action_clear_all).setVisible(true);
+        mainMenu.findItem(R.id.sync_birthdays).setVisible(false);
     }
 
     private void showFirstFragment() {
@@ -282,6 +282,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         if (id == R.id.action_search) {
 
             return true;
+        } else if (id == R.id.sync_birthdays) {
+            syncBirthdayInfo();
+            return true;
         } else if (id == R.id.sortDaysLeft) {
             sortByDaysLeft(item);
             return true;
@@ -294,13 +297,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         } else if (id == R.id.action_clear_all) {
             clearTray();
             return true;
-//        } else if (id == R.id.quick_note) {
-////            callQuickNoteActivity();
-//            vpFragment.getQuickNotes().trySortByNum();
         } else if (id == android.R.id.home) {
             mDrawerLayout.openDrawer(GravityCompat.START);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void syncBirthdayInfo() {
+        birthdayFragment.checkReadContactsPermissions();
+        mainMenu.findItem(R.id.sortDaysLeft).setChecked(true);
     }
 
     private void callQuickNoteActivity() {

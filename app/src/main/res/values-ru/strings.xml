@@ -57,7 +57,7 @@
     <string name="search">Поиск</string>
     <string name="first_message_text">Или нажмите на иконку под этим текстом, слева от времени</string>
     <string name="delete">Удалить</string>
-    <string name="delete_ask">Удалить?</string>
+    <string name="delete_ask">Удалить выбранные записи?</string>
     <string name="select_all">Выбрать все</string>
     <string name="day_of_month"> день месяца</string>
     <string name="month">Месяц</string>
@@ -65,4 +65,5 @@
     <string name="repeat_year">Повторять каждый год</string>
     <string name="week">Неделя</string>
     <string name="year">Год</string>
+    <string name="sync_birthdays">Синхронизировать</string>
 </resources>

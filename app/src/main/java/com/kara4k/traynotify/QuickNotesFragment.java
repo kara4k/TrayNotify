@@ -30,16 +30,7 @@ public class QuickNotesFragment extends Fragment {
         recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
         adapter = QuickAdapter.getInstance();
         adapter.setGetNoteId(null);
-//        try { // TODO: 07.09.2016
-//            if (getArguments() != null) {
-//                SendObj sendObj = (SendObj) getArguments().getSerializable("notes");
-//                notes = sendObj.getNotes();
-//            } else {
-//                notes = getAllNotesFromDB(getContext());
-//            }
-//        } catch (Exception e) {
         notes = getAllNotesFromDB(getContext());
-//        }
 
         adapter.setList(notes);
         recyclerView.setAdapter(adapter);
@@ -58,17 +49,21 @@ public class QuickNotesFragment extends Fragment {
 
 
     public static List<Note> getAllNotesFromDB(Context context) {
-        DBQuick db = new DBQuick(context);
-        db.open();
-        List<Note> allnotes = new ArrayList<>();
-        Cursor allData = db.getAllData();
-        if (allData.moveToFirst()) {
-            do {
-                allnotes.add(new Note(allData.getInt(0), allData.getString(1), allData.getString(2), allData.getInt(3), allData.getLong(4), allData.getInt(5)));
-            } while (allData.moveToNext());
+        try {
+            DBQuick db = new DBQuick(context);
+            db.open();
+            List<Note> allnotes = new ArrayList<>();
+            Cursor allData = db.getAllData();
+            if (allData.moveToFirst()) {
+                do {
+                    allnotes.add(new Note(allData.getInt(0), allData.getString(1), allData.getString(2), allData.getInt(3), allData.getLong(4), allData.getInt(5)));
+                } while (allData.moveToNext());
+            }
+            db.close();
+            return allnotes;
+        } catch (Exception e) {
+            return new ArrayList<Note>();
         }
-        db.close();
-        return allnotes;
     }
 
     public List<Note> getNotes() {

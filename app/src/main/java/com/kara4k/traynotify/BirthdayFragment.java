@@ -48,11 +48,46 @@ public class BirthdayFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        checkReadContactsPermissions();
+        setSortedListFromMDB();
+
+
+
 
         return recyclerView;
     }
 
+    private void setSortedListFromMDB() {
+        List<Birthday> list = getBirthdaysFromMDB();
+        Collections.sort(list);
+        birthdaysList = list;
+        adapter.setBirthdays(birthdaysList);
+        birthdaysListAll.clear();
+        birthdaysListAll.addAll(birthdaysList);
+    }
+
+    @NonNull
+    private List<Birthday> getBirthdaysFromMDB() {
+        try {
+            DBBirthday db = new DBBirthday(getContext());
+            db.open();
+            Cursor allData = db.getAllData();
+            List<Birthday> list = new ArrayList<>();
+            if (allData.moveToFirst()) {
+                do {
+                    String id = allData.getString(1);
+                    String name = allData.getString(2);
+                    String birthday = allData.getString(3);
+                    list.add(new Birthday(id, name, getStringDate(birthday), id, daysLeft(birthday), getAge(birthday), getZodiacSign(birthday), getNotificationTime(birthday)));
+                } while (allData.moveToNext());
+            }
+
+            allData.close();
+            db.close();
+            return list;
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
+    }
 
 
     private void hideVPTabs() {
@@ -60,7 +95,7 @@ public class BirthdayFragment extends Fragment {
         tabs.setVisibility(View.GONE);
     }
 
-    private void checkReadContactsPermissions() {
+    public void checkReadContactsPermissions() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             int hasReadContactsPermission = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS);
             if (hasReadContactsPermission == PackageManager.PERMISSION_DENIED) {
@@ -114,17 +149,33 @@ public class BirthdayFragment extends Fragment {
                                 + ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY, null, android.provider.ContactsContract.Data.DISPLAY_NAME);
                 if (bdc.moveToFirst()) {
                     String birthday = bdc.getString(0);
-                    list.add(new Birthday(id, name, getStringDate(birthday), id, daysLeft(birthday), getAge(birthday), getZodiacSign(birthday), getNotificationTime(birthday)));
+                    list.add(new Birthday(id, name, birthday));
                 }
                 bdc.close();
             } while (cur.moveToNext());
         }
         cur.close();
         Collections.sort(list);
-        birthdaysList = list;
-        adapter.setBirthdays(birthdaysList);
-        birthdaysListAll.addAll(birthdaysList);
 
+        writeBirthdaysToMDB(list);
+        setSortedListFromMDB();
+
+
+    }
+
+    private void writeBirthdaysToMDB(List<Birthday> list) {
+        try {
+            if (list.size()>0) {
+                DBBirthday db = new DBBirthday(getContext());
+                db.open();
+                db.clearDB();
+                for (Birthday x : list) {
+                    db.addNote(x.getId(), x.getName(), x.getDate());
+                }
+                db.close();
+            }
+        } catch (Exception e) {
+        }
     }
 
     private int getAge(String birthday) {

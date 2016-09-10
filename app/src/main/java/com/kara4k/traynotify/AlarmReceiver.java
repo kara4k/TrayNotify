@@ -18,25 +18,20 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
-import android.util.Log;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
 
     private DelayedNote note;
-    private SimpleDateFormat sdf;
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        sdf = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss SSSS");
         fillNote(intent, context);
 
         checkIfShowTrayNotification(context);
@@ -51,7 +46,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 
     private void repeatAlarm(Context context) {
-        Log.e("tag", "setting new Alarm!");
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, note.getCheckId(), createAlarmIntent(context), PendingIntent.FLAG_UPDATE_CURRENT);
         int repeat = note.getRepeat();
@@ -101,7 +95,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         setCal.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
         setZeroSeconds(setCal);
         setCal.add(Calendar.DAY_OF_MONTH, 1);
-        Log.e("nowday < setDAy", "onReceive:" + sdf.format(new Date(setCal.getTimeInMillis())));
         return setCal.getTimeInMillis();
     }
 
@@ -114,10 +107,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         if (setCal.get(Calendar.MONTH) < now.get(Calendar.MONTH)) {
             setCal.add(Calendar.YEAR, 1);
             setZeroSeconds(setCal);
-            Log.e("M<", "onReceive:" + sdf.format(new Date(setCal.getTimeInMillis())));
             return setCal.getTimeInMillis();
         } else if (setCal.get(Calendar.MONTH) > now.get(Calendar.MONTH)) {
-            Log.e("M<", "onReceive:" + sdf.format(new Date(setCal.getTimeInMillis())));
             return setCal.getTimeInMillis();
         } else if (setCal.get(Calendar.MONTH) == now.get(Calendar.MONTH)) {
             int setDay = setCal.get(Calendar.DAY_OF_MONTH);
@@ -147,33 +138,26 @@ public class AlarmReceiver extends BroadcastReceiver {
         } else if (nowDay < setDay) {
             return nowDayLessTHenSetDay(setCal, now);
         }
-        Log.e("ENDANDSET", "onReceive:" + sdf.format(new Date(setCal.getTimeInMillis())));
         return 0;
 
     }
 
     private long nowDayEqualsSetDay(Calendar setCal, Calendar now, int nowDay, int field) {
-        Log.e("eq", "set:" + sdf.format(new Date(setCal.getTimeInMillis())));
-        Log.e("eq", "now:" + sdf.format(new Date(now.getTimeInMillis())));
         setCal.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), nowDay);
         if (setCal.get(Calendar.HOUR_OF_DAY) < now.get(Calendar.HOUR_OF_DAY)) {
             setCal.add(field, 1);
             setZeroSeconds(setCal);
-            Log.e("h<", "onReceive:" + sdf.format(new Date(setCal.getTimeInMillis())));
             return setCal.getTimeInMillis();
         } else if (setCal.get(Calendar.HOUR_OF_DAY) > now.get(Calendar.HOUR_OF_DAY)) {
             setZeroSeconds(setCal);
-            Log.e("h>", "onReceive:" + sdf.format(new Date(setCal.getTimeInMillis())));
             return setCal.getTimeInMillis();
         } else if (setCal.get(Calendar.HOUR_OF_DAY) == now.get(Calendar.HOUR_OF_DAY)) {
             if (setCal.get(Calendar.MINUTE) <= now.get(Calendar.MINUTE)) {
                 setCal.add(field, 1);
                 setZeroSeconds(setCal);
-                Log.e("h=m<=", "onReceive:" + sdf.format(new Date(setCal.getTimeInMillis())));
                 return setCal.getTimeInMillis();
             } else if (setCal.get(Calendar.MINUTE) > now.get(Calendar.MINUTE)) {
                 setZeroSeconds(setCal);
-                Log.e("h=m>", "onReceive:" + sdf.format(new Date(setCal.getTimeInMillis())));
                 return setCal.getTimeInMillis();
             }
         }
@@ -184,7 +168,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         setCal.set(Calendar.MONTH, now.get(Calendar.MONTH));
         setCal.set(Calendar.YEAR, now.get(Calendar.YEAR));
         setZeroSeconds(setCal);
-        Log.e("nowday < setDAy", "onReceive:" + sdf.format(new Date(setCal.getTimeInMillis())));
         return setCal.getTimeInMillis();
     }
 
@@ -193,7 +176,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         setCal.set(Calendar.MONTH, now.get(Calendar.MONTH));
         setCal.set(Calendar.YEAR, now.get(Calendar.YEAR));
         setZeroSeconds(setCal);
-        Log.e("nowday > setDAy", "onReceive:" + sdf.format(new Date(setCal.getTimeInMillis())));
         return setCal.getTimeInMillis();
     }
 
@@ -355,7 +337,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private boolean ifNotify() {
         int repeat = note.getRepeat();
-        Log.e("ifnotif", String.valueOf(repeat));
         if (repeat == 1) {
             return checkWeekRepeat();
         } else if (repeat == 0) {

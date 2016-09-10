@@ -21,13 +21,19 @@
         android:orderInCategory="1"
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="always|collapseActionView" />
-
+    <item
+        android:id="@+id/sync_birthdays"
+        android:icon="@drawable/ic_sync_white_24dp"
+        android:title="@string/sync_birthdays"
+        android:orderInCategory="2"
+        android:visible="false"
+        app:showAsAction="always" />
 
 
     <item
         android:id="@+id/sort"
         android:icon="@drawable/ic_sort_white_24dp"
-        android:orderInCategory="1"
+        android:orderInCategory="3"
         android:title="@string/sort"
         app:showAsAction="always">
         <menu>
