@@ -132,17 +132,17 @@ class DelayedNote implements Serializable{
     @Override
     public String toString() {
         String note = "";
-        note = getId() + "\n"
-                + getText() + "\n"
-                + getTitle() + "\n"
-                + getCreateTime() + "\n"
-                + getSetTime() + "\n"
-                + getRepeat() + "\n"
-                + getDays() + "\n"
-                + getSound() + "\n"
-                + getVibration() + "\n"
-                + getPriority() + "\n"
-                + getCheckId();
+        note = "id " +  getId() + "\n"
+               + "text " + getText() + "\n"
+                + "title " +   getTitle() + "\n"
+                + "createTime " + getCreateTime() + "\n"
+                + "setTime " + getSetTime() + "\n"
+                + "repeat " + getRepeat() + "\n"
+                + "days " + getDays() + "\n"
+                + "sound " + getSound() + "\n"
+                + "vibration " + getVibration() + "\n"
+                + "priority " + getPriority() + "\n"
+                + "checkId " + getCheckId();
         return note;
     }
 }

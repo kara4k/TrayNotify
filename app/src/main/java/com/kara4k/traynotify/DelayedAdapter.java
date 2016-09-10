@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.DateFormatSymbols;
@@ -76,7 +77,8 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
         notesViewHolder.time.setText(timeFormat.format(new Date(notes.get(i).getSetTime())));
         notesViewHolder.numid.setText("#" + String.valueOf(notes.get(i).getCheckId()));
         highlightFinishedNotes(notesViewHolder, i);
-        setRepeatOnceView(notesViewHolder, i);
+
+        setRepeatView(notesViewHolder, i);
 
         notesViewHolder.itemView.setSelected(selectedItems.get(i, false));
 
@@ -94,30 +96,53 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
         Calendar calendar = Calendar.getInstance();
         long now = calendar.getTimeInMillis();
         long setTime = notes.get(i).getSetTime();
-        if (((notes.get(i).getRepeat() == 0) || (notes.get(i).getDays().equals("0;0;0;0;0;0;0;")))&&(now > setTime)) {
+        if ((notes.get(i).getRepeat() == 0)&&(now > setTime)) {
             notesViewHolder.numid.setTextColor(Color.RED);
         }
     }
 
-    private void setRepeatOnceView(DelayedNotesViewHolder notesViewHolder, int i) {
-        if ((notes.get(i).getRepeat() == 0) || (notes.get(i).getDays().equals("0;0;0;0;0;0;0;"))) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd.MM.yyyy");
-            String date = dateFormat.format(new Date(notes.get(i).getSetTime()));
-            date = date.substring(0, 1).toUpperCase() + date.substring(1);
-            notesViewHolder.date.setText(date);
-
-            for (int k = 0; k < notesViewHolder.days.length; k++) {
-                notesViewHolder.days[k].setVisibility(View.GONE);
-            }
-
-        } else {
-            notesViewHolder.date.setText("");
-            notesViewHolder.date.setVisibility(View.GONE);
-            setRepeatDaysView(notesViewHolder, i);
+    private void setRepeatView(DelayedNotesViewHolder notesViewHolder, int i) {
+        if ((notes.get(i).getRepeat() == 0)) {
+            setNoRepeat(notesViewHolder, i);
+        } else if (notes.get(i).getRepeat() == 1) {
+            setRepeatWeekView(notesViewHolder, i);
+        } else if (notes.get(i).getRepeat() == 2) {
+            setRepeatMonthView(notesViewHolder, i);
+        } else if (notes.get(i).getRepeat() == 3) {
+            setRepeatYearView(notesViewHolder, i);
         }
     }
 
-    private void setRepeatDaysView(DelayedNotesViewHolder notesViewHolder, int i) {
+    private void setRepeatYearView(DelayedNotesViewHolder notesViewHolder, int i) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("d MMMM");
+        String date = dateFormat.format(new Date(notes.get(i).getSetTime()));
+        notesViewHolder.date.setText(date);
+        hideDaysOfWeekViews(notesViewHolder);
+    }
+
+    private void setRepeatMonthView(DelayedNotesViewHolder notesViewHolder, int i) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("d ");
+        String date = dateFormat.format(new Date(notes.get(i).getSetTime())).concat(context.getString(R.string.day_of_month));
+        notesViewHolder.date.setText(date);
+        hideDaysOfWeekViews(notesViewHolder);
+    }
+
+    private void setNoRepeat(DelayedNotesViewHolder notesViewHolder, int i) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd.MM.yyyy");
+        String date = dateFormat.format(new Date(notes.get(i).getSetTime()));
+        date = date.substring(0, 1).toUpperCase() + date.substring(1);
+        notesViewHolder.date.setText(date);
+        notesViewHolder.repeat.setVisibility(View.GONE);
+        hideDaysOfWeekViews(notesViewHolder);
+    }
+
+    private void hideDaysOfWeekViews(DelayedNotesViewHolder notesViewHolder) {
+        for (int k = 0; k < notesViewHolder.days.length; k++) {
+            notesViewHolder.days[k].setVisibility(View.GONE);
+        }
+    }
+
+    private void setRepeatWeekView(DelayedNotesViewHolder notesViewHolder, int i) {
         DateFormatSymbols formatSymbols = DateFormatSymbols.getInstance();
         String[] shortWeekdays = formatSymbols.getShortWeekdays();
         String[] shortDays = new String[] {shortWeekdays[2].substring(0,1).toUpperCase().concat(shortWeekdays[2].substring(1)).concat(", "),
@@ -128,6 +153,8 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
                 shortWeekdays[7].substring(0,1).toUpperCase().concat(shortWeekdays[7].substring(1)).concat(", "),
                 shortWeekdays[1].substring(0,1).toUpperCase().concat(shortWeekdays[1].substring(1))
         };
+
+        notesViewHolder.date.setVisibility(View.GONE);
 
         for (int k = 0; k < notesViewHolder.days.length; k++) {
             notesViewHolder.days[k].setText(shortDays[k]);
@@ -230,6 +257,7 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
         private final TextView numid;
         private final TextView[] days;
         private final CheckBox checkBox;
+        private final ImageView repeat;
 
 
         DelayedNotesViewHolder(final View itemView) {
@@ -240,6 +268,7 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
             time = (TextView) itemView.findViewById(R.id.day_of_week);
             numid = (TextView) itemView.findViewById(R.id.numid);
             checkBox = (CheckBox) itemView.findViewById(R.id.checkbox_select_d);
+            repeat = (ImageView) itemView.findViewById(R.id.repeat_img);
             TextView mon = (TextView) itemView.findViewById(R.id.mon);
             TextView tue = (TextView) itemView.findViewById(R.id.tue);
             TextView wed = (TextView) itemView.findViewById(R.id.wed);

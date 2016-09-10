@@ -23,12 +23,14 @@ public class MyView extends RelativeLayout {
     private String textText;
     private boolean checkVisible;
     private boolean isChecked;
+    private boolean mCheckToggle;
     private boolean imageVisible;
     private Drawable drawable;
 
     public MyView(final Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
+        mCheckToggle = true;
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MyView);
 
@@ -47,7 +49,7 @@ public class MyView extends RelativeLayout {
         this.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (checkbox.isEnabled()) {
+                if ((checkbox.isEnabled()) && (mCheckToggle)) {
                     if (checkbox.isChecked()) {
                         checkbox.setChecked(false);
                     } else {
@@ -138,6 +140,10 @@ public class MyView extends RelativeLayout {
 
     public void setSecondOnClickListener(SecondOnClickListener secondOnClickListener) {
         this.secondOnClickListener = secondOnClickListener;
+    }
+
+    public void setmCheckToggle(boolean mCheckToggle) {
+        this.mCheckToggle = mCheckToggle;
     }
 
     public interface SecondOnClickListener {

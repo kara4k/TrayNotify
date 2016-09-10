@@ -15,8 +15,6 @@
     <string name="message_text">Текст:</string>
     <string name="message_title">Загл:</string>
     <string name="text_default">По умолчанию</string>
-    <string name="show">Показать</string>
-    <string name="create">Создать</string>
     <string name="vibrate">Вибрировать</string>
     <string name="pause">Пауза</string>
     <string name="repeat">Повторять</string>
@@ -61,4 +59,10 @@
     <string name="delete">Удалить</string>
     <string name="delete_ask">Удалить?</string>
     <string name="select_all">Выбрать все</string>
+    <string name="day_of_month"> день месяца</string>
+    <string name="month">Месяц</string>
+    <string name="repeat_month">Повторять каждый месяц</string>
+    <string name="repeat_year">Повторять каждый год</string>
+    <string name="week">Неделя</string>
+    <string name="year">Год</string>
 </resources>

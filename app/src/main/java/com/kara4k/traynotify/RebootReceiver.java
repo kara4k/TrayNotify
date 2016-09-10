@@ -1,6 +1,7 @@
 package com.kara4k.traynotify;
 
 
+import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -11,6 +12,7 @@ import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 
@@ -30,7 +32,7 @@ public class RebootReceiver extends BroadcastReceiver {
         List<Note> notes = QuickNotesFragment.getAllNotesFromDB(context);
         for (Note x : notes) {
             if (x.getIcon() == 1) {
-                nm.notify(x.getNumid(),createNotification(context, x));
+                nm.notify(x.getNumid(), createNotification(context, x));
             }
         }
     }
@@ -43,20 +45,39 @@ public class RebootReceiver extends BroadcastReceiver {
 
         if (allData.moveToFirst()) {
             do {
-                Intent alarmIntent = new Intent(context, AlarmReceiver.class);
-                Bundle bundle = new Bundle();
-                bundle.putInt("id", allData.getInt(10));
-                alarmIntent.putExtras(bundle);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, allData.getInt(10), alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, allData.getInt(10), getAlarmIntent(context, allData), PendingIntent.FLAG_UPDATE_CURRENT);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, allData.getLong(4), pendingIntent);
+                    startAfterKitKatAlarm(allData, alarmManager, pendingIntent);
                 } else {
-                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, allData.getLong(4), 24 * 60 * 60 * 1000, pendingIntent);
+                    startBeforeKITKATAlarm(allData, alarmManager, pendingIntent);
                 }
             } while (allData.moveToNext());
 
         }
         db.close();
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private void startAfterKitKatAlarm(Cursor allData, AlarmManager alarmManager, PendingIntent pendingIntent) {
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, allData.getLong(4), pendingIntent);
+    }
+
+    private void startBeforeKITKATAlarm(Cursor allData, AlarmManager alarmManager, PendingIntent pendingIntent) {
+        int repeat = allData.getInt(5);
+        if (repeat == 1) {
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, allData.getLong(4), 24 * 60 * 60 * 1000, pendingIntent);
+        } else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, allData.getLong(4), pendingIntent);
+        }
+    }
+
+    @NonNull
+    private Intent getAlarmIntent(Context context, Cursor allData) {
+        Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("id", allData.getInt(10));
+        alarmIntent.putExtras(bundle);
+        return alarmIntent;
     }
 
     private Notification createNotification(Context context, Note note) {

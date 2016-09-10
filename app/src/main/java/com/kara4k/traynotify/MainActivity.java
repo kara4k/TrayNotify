@@ -439,7 +439,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 smsListFiltered.addAll(smsListAll);
             } else {
                 for (SMS x : smsListAll) {
-                    if (x.getAddress().toLowerCase().contains(newText.toLowerCase()) || (x.getBody().toLowerCase().contains(newText.toLowerCase()))) {   // TODO: 03.07.2016 gettext!=null
+                    if (x.getAddress().toLowerCase().contains(newText.toLowerCase()) || (x.getBody().toLowerCase().contains(newText.toLowerCase()))) {
                         smsListFiltered.add(x);
                     }
                 }

@@ -14,8 +14,6 @@
     <string name="message_text">Text:</string>
     <string name="message_title">Title:</string>
     <string name="text_default">Default</string>
-    <string name="show">Show</string>
-    <string name="create">Create</string>
     <string name="vibrate">Vibrate</string>
     <string name="pause">Pause</string>
     <string name="repeat">Repeat</string>
@@ -60,4 +58,10 @@
     <string name="delete_ask">Delete?</string>
     <string name="delete">Delete</string>
     <string name="select_all">Select All</string>
+    <string name="day_of_month"> day of month</string>
+    <string name="week">Week</string>
+    <string name="repeat_month">Repeat every month</string>
+    <string name="month">Month</string>
+    <string name="year">Year</string>
+    <string name="repeat_year">Repeat every year</string>
 </resources>

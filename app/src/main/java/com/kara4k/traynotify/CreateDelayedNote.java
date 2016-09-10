@@ -2,6 +2,7 @@ package com.kara4k.traynotify;
 
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Notification;
@@ -26,9 +27,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
@@ -60,7 +63,9 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     private DBDelay db;
     private int checkThis;
     private DateFormatSymbols formatSymbols;
-    private MyView repeat;
+    private MyView repeatWeek;
+    private MyView repeatMonth;
+    private MyView repeatYear;
     private String[] shortDays;
     private DelayedNote note;
     private MyView vibrate;
@@ -69,8 +74,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.create_notification);
-        setContentView(R.layout.test);
+        setContentView(R.layout.create_notification);
 
         note = new DelayedNote();
 
@@ -122,13 +126,24 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
 
-        repeat = (MyView) findViewById(R.id.repeat);
-        repeat.setSecondOnClickListener(new MyView.SecondOnClickListener() {
+        repeatWeek = (MyView) findViewById(R.id.repeat_week);
+        repeatMonth = (MyView) findViewById(R.id.repeat_month);
+        repeatYear = (MyView) findViewById(R.id.repeat_year);
+
+        repeatWeek.setmCheckToggle(false);
+        repeatWeek.setSecondOnClickListener(new MyView.SecondOnClickListener() {
             @Override
             public void onClick() {
                 chooseDays();
             }
         });
+
+        setRepeatWeekCheckListener();
+
+        setRepeatMonthCheckListener();
+
+        setRepeatYearCheckListener();
+
 
         setRepeatDaysText();
 
@@ -163,6 +178,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
             }
         });
 
+
 //        Button test = (Button) findViewById(R.id.test);
 //        test.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -192,6 +208,81 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         onIntentReceive(tempId, vibrate);
     }
 
+    private void setRepeatYearCheckListener() {
+        repeatYear.getCheckbox().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    repeatYearChecked();
+                } else {
+                    repeatYearUnchecked();
+                }
+            }
+        });
+    }
+
+    private void repeatYearUnchecked() {
+        repeatWeek.getCheckbox().setEnabled(true);
+        repeatMonth.getCheckbox().setEnabled(true);
+    }
+
+    private void repeatYearChecked() {
+        repeatWeek.getCheckbox().setEnabled(false);
+        repeatWeek.getCheckbox().setChecked(false);
+        repeatMonth.getCheckbox().setEnabled(false);
+        repeatMonth.getCheckbox().setChecked(false);
+    }
+
+    private void setRepeatMonthCheckListener() {
+        repeatMonth.getCheckbox().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    repeatMonthChecked();
+                } else {
+                    repeatMonthUnchecked();
+                }
+            }
+        });
+    }
+
+    private void repeatMonthUnchecked() {
+        repeatWeek.getCheckbox().setEnabled(true);
+        repeatYear.getCheckbox().setEnabled(true);
+    }
+
+    private void repeatMonthChecked() {
+        repeatWeek.getCheckbox().setEnabled(false);
+        repeatWeek.getCheckbox().setChecked(false);
+        repeatYear.getCheckbox().setEnabled(false);
+        repeatYear.getCheckbox().setChecked(false);
+    }
+
+    private void setRepeatWeekCheckListener() {
+        repeatWeek.getCheckbox().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    repeatWeekChecked();
+                } else {
+                    repeatWeekUnchecked();
+                }
+            }
+        });
+    }
+
+    private void repeatWeekUnchecked() {
+        repeatMonth.getCheckbox().setEnabled(true);
+        repeatYear.getCheckbox().setEnabled(true);
+    }
+
+    private void repeatWeekChecked() {
+        repeatMonth.getCheckbox().setEnabled(false);
+        repeatMonth.getCheckbox().setChecked(false);
+        repeatYear.getCheckbox().setEnabled(false);
+        repeatYear.getCheckbox().setChecked(false);
+    }
+
     private void onIntentReceive(int tempId, MyView vibrate) {
         if (getIntent().getExtras() != null) {
             checkThis = getIntent().getIntExtra("id", 0);
@@ -212,6 +303,8 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
                     mainCal.setTimeInMillis(getIntent().getLongExtra("time", mainCal.getTimeInMillis()));
                     setDate.setText(sDateFormat.format(mainCal.getTimeInMillis()));
                     setTime.setText(sTimeFormat.format(mainCal.getTimeInMillis()));
+                    repeatYearChecked();
+                    repeatYear.getCheckbox().setChecked(true);
 
                 }
                 titleEdit.setText(getIntent().getStringExtra(Intent.EXTRA_SUBJECT));
@@ -259,7 +352,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
     private void parseRepeat() {
         if (note.getRepeat() == 1) {
-            this.repeat.getCheckbox().setChecked(true);
+            this.repeatWeek.getCheckbox().setChecked(true);
             String[] split = note.getDays().split(";");
             for (int i = 0; i < split.length; i++) {
                 if (split[i].equals("0")) {
@@ -269,8 +362,14 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
                 }
             }
             setRepeatDaysText();
-        } else {
-            this.repeat.getCheckbox().setChecked(false);
+        }
+        if (note.getRepeat() == 2) {
+            repeatMonthChecked();
+            repeatMonth.getCheckbox().setChecked(true);
+        }
+        if (note.getRepeat() == 3) {
+            repeatYearChecked();
+            repeatYear.getCheckbox().setChecked(true);
         }
     }
 
@@ -347,7 +446,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         if (!selectedDays.equals("")) {
             selectedDays = selectedDays.substring(0, selectedDays.length() - 2);
         }
-        repeat.getText().setText(selectedDays);
+        repeatWeek.getText().setText(selectedDays);
     }
 
     private void chooseDays() {
@@ -372,7 +471,6 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         setRepeatDaysText();
-                        repeat.getCheckbox().setChecked(true);
                     }
                 }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
@@ -405,12 +503,18 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     }
 
     private int getNoteRepeat() {
-        return this.repeat.getCheckbox().isChecked() ? 1 : 0;
+        if ((repeatWeek.getCheckbox().isChecked()) && (!repeatWeek.getText().getText().equals(""))) {
+            return 1;
+        } else if (repeatMonth.getCheckbox().isChecked()) {
+            return 2;
+        } else if (repeatYear.getCheckbox().isChecked()) {
+            return 3;
+        } else return 0;
     }
 
     private String getNoteDays() {
         String stringDays = "";
-        if ((repeat.getCheckbox().isChecked()) && (!repeat.getText().getText().equals(""))) {
+        if ((repeatWeek.getCheckbox().isChecked()) && (!repeatWeek.getText().getText().equals(""))) {
             for (boolean day : days) {
                 if (day) {
                     stringDays += "1;";
@@ -457,8 +561,57 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     }
 
     private void createNotification() {
+        fillNoteFromViews();
+        writeNoteToDb();
+        setMainCallZeroSecs();
+        setAlarm(getPendingIntent());
+        finish();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss. SSSS");
+        Log.e("TAG", note.toString());
+        Log.e("TAG", sdf.format(new Date(mainCal.getTimeInMillis())));
+    }
 
+    private void setAlarm(PendingIntent pendingIntent) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            setAfterKITKATAlarm(pendingIntent);
+        } else {
+            setBeforeKITKATAlarm(pendingIntent);
+        }
+    }
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private void setAfterKITKATAlarm(PendingIntent pendingIntent) {
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, mainCal.getTimeInMillis(), pendingIntent);
+    }
+
+    private void setBeforeKITKATAlarm(PendingIntent pendingIntent) {
+        int repeat = note.getRepeat();
+        if (repeat != 1) {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, mainCal.getTimeInMillis(), pendingIntent);
+        } else {
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, mainCal.getTimeInMillis(), 24 * 60 * 60 * 1000, pendingIntent);
+        }
+    }
+
+    private PendingIntent getPendingIntent() {
+        return PendingIntent.getBroadcast(getApplicationContext(), checkThis, getAlarmIntent(), PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    @NonNull
+    private Intent getAlarmIntent() {
+        Intent alarmIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("id", note.getCheckId());
+        alarmIntent.putExtras(bundle);
+        return alarmIntent;
+    }
+
+    private void setMainCallZeroSecs() {
+        mainCal.set(Calendar.SECOND, 00);
+        mainCal.set(Calendar.MILLISECOND, 0000);
+    }
+
+    private void fillNoteFromViews() {
         note.setText(getNoteText());
         note.setTitle(getNoteTitle());
         note.setCreateTime(getNoteCreateTime());
@@ -470,7 +623,9 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         note.setPriority(getNotePriority());
         note.setCheckId(getNoteCheckId());
         note.setBirthday(getNoteBirthday());
+    }
 
+    private void writeNoteToDb() {
         db.open();
         Cursor alarmNote = db.getAlarmNote(checkThis);
         if (alarmNote.moveToFirst()) {
@@ -478,32 +633,6 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         } else {
             db.addNote(note);
         }
-
-
-        Intent alarmIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt("id", note.getCheckId());
-
-
-        alarmIntent.putExtras(bundle);
-
-
-        mainCal.set(Calendar.SECOND, 00);
-        mainCal.set(Calendar.MILLISECOND, 0000);
-
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE SSSS, dd.MM.yyyy; HH:mm:ss:SSSSS ");
-
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), checkThis, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, mainCal.getTimeInMillis(), 24 * 60 * 60 * 1000, pendingIntent);
-
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, mainCal.getTimeInMillis(), pendingIntent);
-        } else {
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, mainCal.getTimeInMillis(), 24 * 60 * 60 * 1000, pendingIntent);
-        }
-
-        finish();
     }
 
     private int getNoteBirthday() {
@@ -545,12 +674,14 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         note = new DelayedNote();
         textEdit.setText("");
         titleEdit.setText("");
-        Calendar cal = Calendar.getInstance();
-        setDate.setText(sDateFormat.format(cal.getTimeInMillis()));
-        setTime.setText(sTimeFormat.format(cal.getTimeInMillis()));
+        mainCal = Calendar.getInstance();
+        setDate.setText(sDateFormat.format(mainCal.getTimeInMillis()));
+        setTime.setText(sTimeFormat.format(mainCal.getTimeInMillis()));
         days = new boolean[]{true, true, true, true, true, true, true};
         setRepeatDaysText();
-        repeat.getCheckbox().setChecked(false);
+        repeatWeek.getCheckbox().setChecked(false);
+        repeatMonth.getCheckbox().setChecked(false);
+        repeatYear.getCheckbox().setChecked(false);
         soundUri = null;
         sound.setText(getString(R.string.text_default));
         vibration = null;

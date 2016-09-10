@@ -2,5 +2,4 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="dimen_default">16dp</dimen>
-    <dimen name="button_padding">7dp</dimen>
 </resources>

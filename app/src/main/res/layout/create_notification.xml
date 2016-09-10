@@ -1,175 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dimen_default"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-
-
-
-        <LinearLayout
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_default"
             android:orientation="vertical">
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_default"
-                android:layout_marginTop="@dimen/dimen_default"
-                android:text="@string/message_title"
-                android:textColor="@android:color/black" />
-
-            <EditText
-                android:id="@+id/editTitle"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_default"
-                android:layout_marginRight="@dimen/dimen_default"
-                android:layout_marginTop="@dimen/dimen_default"
-                android:background="@android:color/transparent"
-                tools:ignore="TextFields" />
-        </LinearLayout>
+                android:orientation="vertical">
 
-        <View style="@style/Divider" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="fill"
-            android:layout_weight="1"
-            android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_default"
+                    android:layout_marginTop="@dimen/dimen_default"
+                    android:text="@string/message_title"
+                    android:textColor="@android:color/black" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_default"
-                android:layout_marginTop="@dimen/dimen_default"
-                android:text="@string/message_text"
-                android:textColor="@android:color/black" />
+                <EditText
+                    android:id="@+id/editTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_default"
+                    android:layout_marginRight="@dimen/dimen_default"
+                    android:layout_marginTop="@dimen/dimen_default"
+                    android:background="@android:color/transparent"
+                    tools:ignore="TextFields" />
+            </LinearLayout>
 
-            <EditText
-                android:id="@+id/textEdit"
+            <View style="@style/Divider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="fill"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_default"
+                    android:layout_marginTop="@dimen/dimen_default"
+                    android:text="@string/message_text"
+                    android:textColor="@android:color/black" />
+
+                <EditText
+                    android:id="@+id/textEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_default"
+                    android:layout_marginRight="@dimen/dimen_default"
+                    android:layout_marginTop="@dimen/dimen_default"
+                    android:background="@android:color/transparent"
+                    tools:ignore="TextFields" />
+
+            </LinearLayout>
+
+            <View style="@style/Divider" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_default"
-                android:layout_marginRight="@dimen/dimen_default"
                 android:layout_marginTop="@dimen/dimen_default"
-                android:background="@android:color/transparent"
-                tools:ignore="TextFields" />
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <com.kara4k.traynotify.MyView
+                    android:id="@+id/setDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:CheckVisible="false"
+                    app:Image="@drawable/ic_event_black_24dp"
+                    app:ImageVisible="true"
+                    app:Text=""
+                    app:Title="@string/date" />
 
-        <View style="@style/Divider" />
+                <com.kara4k.traynotify.MyView
+                    android:id="@+id/setTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:CheckVisible="false"
+                    app:Image="@drawable/ic_access_time_black_24dp"
+                    app:ImageVisible="true"
+                    app:Text="18:21"
+                    app:Title="@string/time" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_default"
-            android:orientation="horizontal">
+
+            </LinearLayout>
+
+            <View style="@style/Divider" />
 
             <com.kara4k.traynotify.MyView
-                android:id="@+id/setDate"
-                android:layout_width="wrap_content"
+                android:id="@+id/repeat_week"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:CheckVisible="false"
-                app:Image="@drawable/ic_event_black_24dp"
-                app:ImageVisible="true"
+                app:CheckVisible="true"
+                app:Image="@drawable/ic_repeat_grey_24dp"
+                app:ImageVisible="false"
                 app:Text=""
-                app:Title="@string/date" />
+                app:Title="@string/week"
+                app:isChecked="false" />
 
             <com.kara4k.traynotify.MyView
-                android:id="@+id/setTime"
-                android:layout_width="wrap_content"
+                android:id="@+id/repeat_month"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:CheckVisible="false"
-                app:Image="@drawable/ic_access_time_black_24dp"
+                app:CheckVisible="true"
+                app:Image="@drawable/ic_repeat_grey_24dp"
+                app:ImageVisible="false"
+                app:Text="@string/repeat_month"
+                app:Title="@string/month"
+                app:isChecked="false" />
+
+            <com.kara4k.traynotify.MyView
+                android:id="@+id/repeat_year"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:CheckVisible="true"
+                app:Image="@drawable/ic_repeat_grey_24dp"
+                app:ImageVisible="false"
+                app:Text="@string/repeat_year"
+                app:Title="@string/year"
+                app:isChecked="false" />
+
+            <View style="@style/Divider" />
+
+            <com.kara4k.traynotify.MyView
+                android:id="@+id/sound"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:Image="@drawable/ic_phonelink_ring_black_24dp"
                 app:ImageVisible="true"
-                app:Text="18:21"
-                app:Title="@string/time" />
+                app:Text="@string/text_default"
+                app:Title="@string/sound" />
+
+            <com.kara4k.traynotify.MyView
+                android:id="@+id/vibrate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:Image="@drawable/ic_vibration_black_24dp"
+                app:ImageVisible="true"
+                app:Text="@string/text_default"
+                app:Title="@string/vibration" />
+
+            <View
+                style="@style/Divider"
+                android:layout_marginBottom="100dp" />
 
 
         </LinearLayout>
+    </ScrollView>
 
-        <com.kara4k.traynotify.MyView
-            android:id="@+id/repeat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:CheckVisible="true"
-            app:Image="@drawable/ic_repeat_grey_24dp"
-            app:ImageVisible="false"
-            app:Text=""
-            app:Title="@string/repeat"
-            app:isChecked="false" />
-
-
-        <com.kara4k.traynotify.MyView
-            android:id="@+id/sound"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:Image="@drawable/ic_phonelink_ring_black_24dp"
-            app:ImageVisible="true"
-            app:Text="@string/text_default"
-            app:Title="@string/sound" />
-
-        <com.kara4k.traynotify.MyView
-            android:id="@+id/vibrate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:Image="@drawable/ic_vibration_black_24dp"
-            app:ImageVisible="true"
-            app:Text="@string/text_default"
-            app:Title="@string/vibration" />
-
-        <View style="@style/Divider" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
-            android:visibility="gone"
-            android:layout_marginTop="@dimen/dimen_default"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/test"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_default"
-                android:layout_weight="1"
-                android:background="@color/colorAccent"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:padding="@dimen/button_padding"
-                android:text="@string/show"
-                android:textColor="@android:color/white" />
-
-            <Button
-                android:id="@+id/create"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_default"
-                android:layout_marginRight="@dimen/dimen_default"
-                android:layout_weight="1"
-                android:background="@color/colorAccent"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:padding="@dimen/button_padding"
-                android:text="@string/create"
-                android:textColor="@android:color/white" />
-
-        </LinearLayout>
-
-
-    </LinearLayout>
-</ScrollView>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_done_white_24dp" />
+</android.support.design.widget.CoordinatorLayout>
