@@ -65,4 +65,6 @@
     <string name="year">Year</string>
     <string name="repeat_year">Repeat every year</string>
     <string name="sync_birthdays">Sync</string>
+    <string name="remove">Remove</string>
+    <string name="open_app">Open app</string>
 </resources>

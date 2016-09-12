@@ -5,28 +5,22 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,7 +31,6 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,7 +48,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     private MyView setDate;
     private MyView setTime;
     private long[] vibration;
-    private NotificationManagerCompat nm;
+//    private NotificationManagerCompat nm;
     private EditText textEdit;
     private EditText titleEdit;
     private AlarmManager alarmManager;
@@ -122,7 +115,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         };
 
 
-        nm = NotificationManagerCompat.from(this);
+//        nm = NotificationManagerCompat.from(this);
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
 
@@ -641,7 +634,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.notification_menu, menu);
+        getMenuInflater().inflate(R.menu.quick_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -654,9 +647,9 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
             case R.id.clear_forms:
                 clearForms();
                 break;
-            case R.id.action_clear_notification:
-                nm.cancel(checkThis);
-                break;
+//            case R.id.action_clear_notification:
+//                nm.cancel(checkThis);
+//                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -690,57 +683,57 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
     }
 
-    private void makeTest() {
+//    private void makeTest() {
+//
+//        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
+//        if (titleEdit.getText().toString().equals("")) {
+//            mBuilder.setContentTitle(getString(R.string.app_name));
+//        } else {
+//            mBuilder.setContentTitle(titleEdit.getText().toString());
+//        }
+//        mBuilder.setContentText(textEdit.getText().toString());
+//        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(textEdit.getText().toString()));
+//        mBuilder.setSmallIcon(R.drawable.notify);
+//        if (soundUri == null && vibration == null) {
+//            mBuilder.setDefaults(Notification.DEFAULT_ALL);
+//        } else if (soundUri != null && vibration == null) {
+//            mBuilder.setSound(soundUri);
+//            mBuilder.setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
+//        } else if (vibration != null && soundUri == null) {
+//            mBuilder.setVibrate(vibration);
+//            mBuilder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS);
+//        } else if (soundUri != null && vibration != null) {
+//            mBuilder.setSound(soundUri);
+//            mBuilder.setVibrate(vibration);
+//            mBuilder.setDefaults(Notification.DEFAULT_LIGHTS);
+//        }
+//
+//        mBuilder.setSmallIcon(R.drawable.notify);
+//        setLargeIcon(mBuilder);
+//
+//        nm.notify(0, mBuilder.build());
+//    }
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
-        if (titleEdit.getText().toString().equals("")) {
-            mBuilder.setContentTitle(getString(R.string.app_name));
-        } else {
-            mBuilder.setContentTitle(titleEdit.getText().toString());
-        }
-        mBuilder.setContentText(textEdit.getText().toString());
-        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(textEdit.getText().toString()));
-        mBuilder.setSmallIcon(R.drawable.notify);
-        if (soundUri == null && vibration == null) {
-            mBuilder.setDefaults(Notification.DEFAULT_ALL);
-        } else if (soundUri != null && vibration == null) {
-            mBuilder.setSound(soundUri);
-            mBuilder.setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
-        } else if (vibration != null && soundUri == null) {
-            mBuilder.setVibrate(vibration);
-            mBuilder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS);
-        } else if (soundUri != null && vibration != null) {
-            mBuilder.setSound(soundUri);
-            mBuilder.setVibrate(vibration);
-            mBuilder.setDefaults(Notification.DEFAULT_LIGHTS);
-        }
+//    private void setLargeIcon(NotificationCompat.Builder mBuilder) {
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+//            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_icon));
+//        } else {
+//            tryBirthdayPhoto(mBuilder);
+//        }
+//    }
 
-        mBuilder.setSmallIcon(R.drawable.notify);
-        setLargeIcon(mBuilder);
-
-        nm.notify(0, mBuilder.build());
-    }
-
-    private void setLargeIcon(NotificationCompat.Builder mBuilder) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_icon));
-        } else {
-            tryBirthdayPhoto(mBuilder);
-        }
-    }
-
-    private void tryBirthdayPhoto(NotificationCompat.Builder mBuilder) {
-        if (birthday != 0) {
-            try {
-                Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), Uri.parse("content://com.android.contacts/contacts/" + birthday + "/display_photo"));
-                mBuilder.setLargeIcon(mBitmap);
-            } catch (IOException e) {
-                mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_icon));
-            }
-        } else {
-            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_icon));
-        }
-    }
+//    private void tryBirthdayPhoto(NotificationCompat.Builder mBuilder) {
+//        if (birthday != 0) {
+//            try {
+//                Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), Uri.parse("content://com.android.contacts/contacts/" + birthday + "/display_photo"));
+//                mBuilder.setLargeIcon(mBitmap);
+//            } catch (IOException e) {
+//                mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_icon));
+//            }
+//        } else {
+//            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_icon));
+//        }
+//    }
 
     private void chooseSoundIntent() {
         Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);

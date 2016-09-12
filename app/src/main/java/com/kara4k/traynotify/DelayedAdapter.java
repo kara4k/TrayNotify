@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -213,13 +214,15 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
     public void deleteSelected() {
         try {
             ArrayList<Integer> list = getSelectedId();
+            NotificationManagerCompat nm = NotificationManagerCompat.from(context);
             AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             Intent alarmIntent = new Intent(context, AlarmReceiver.class);
             for (int i = 0; i < list.size(); i++) {
                 removeFromDB(list.get(i));
                 cancelAlarmEvent(am, alarmIntent, list.get(i));
-                notifyDataSetChanged();
+                nm.cancel(list.get(i));
             }
+            notifyDataSetChanged();
         } catch (Exception e) {
         }
     }

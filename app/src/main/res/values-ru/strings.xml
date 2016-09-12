@@ -66,4 +66,6 @@
     <string name="week">Неделя</string>
     <string name="year">Год</string>
     <string name="sync_birthdays">Синхронизировать</string>
+    <string name="remove">Убрать</string>
+    <string name="open_app">Открыть приложение</string>
 </resources>

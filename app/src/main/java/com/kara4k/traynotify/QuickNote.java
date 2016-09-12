@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationManagerCompat;
@@ -97,23 +96,23 @@ public class QuickNote extends AppCompatActivity {
             case R.id.clear_forms:
                 clearForms();
                 break;
-            case R.id.action_clear_note:
-                clearTrayCurrent();
-                break;
+//            case R.id.action_clear_note:
+//                clearTrayCurrent();
+//                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void clearTrayCurrent() {
-        try {
-            nm.cancel(id);
-            DBQuick db = new DBQuick(getApplicationContext());
-            db.open();
-            db.setQuickTrayInDB(id, 0);
-            db.close();
-        } catch (Exception e) {
-        }
-    }
+//    private void clearTrayCurrent() {
+//        try {
+//            nm.cancel(id);
+//            DBQuick db = new DBQuick(getApplicationContext());
+//            db.open();
+//            db.setQuickTrayInDB(id, 0);
+//            db.close();
+//        } catch (Exception e) {
+//        }
+//    }
 
 
     private void sendIntent() {
@@ -168,9 +167,20 @@ public class QuickNote extends AppCompatActivity {
         mBuilder.setSmallIcon(R.drawable.notify);
 
 
-        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_icon));
+        PendingIntent removePI = PendingIntent.getBroadcast(getApplicationContext(), id, actionRemoveIntent(), PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.addAction(R.drawable.ic_delete_sweep_white_24dp, getString(R.string.remove), removePI);  // TODO: 11.09.2016
+
+
+//        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_icon));
         nm.notify(id, mBuilder.build());
 
+    }
+
+    private Intent actionRemoveIntent() {
+        Intent intent = new Intent(getApplicationContext(), NActionReceiver.class);
+        intent.putExtra("type", 1);
+        intent.putExtra("id", id);
+        return intent;
     }
 
     private Intent[] makeIntent() {

@@ -3,8 +3,11 @@ package com.kara4k.traynotify;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -114,7 +117,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         setFabNotes();
         showFirstFragment();
 
+        getApplicationContext().registerReceiver(removeTrayReceiver, new IntentFilter("refreshTrayIcons"));
+
     }
+
 
     private void setFabNotes() {
         fab.setImageResource(R.drawable.ic_note_add_white_24dp);
@@ -631,5 +637,22 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     }
 
+    private BroadcastReceiver removeTrayReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                int id = intent.getIntExtra("id", 0);
+                QuickAdapter.getInstance().refreshSingle(id);
+            } catch (Exception e) {
+            }
+        }
+
+    };
+
+    static void refreshQuickTrayIcon(Context context, int id) {
+        Intent intent = new Intent("refreshTrayIcons");
+        intent.putExtra("id", id);
+        context.sendBroadcast(intent);
+    }
 
 }

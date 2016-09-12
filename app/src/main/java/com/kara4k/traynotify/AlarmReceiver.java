@@ -92,10 +92,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         Calendar setCal = Calendar.getInstance();
         setCal.setTimeInMillis(note.getSetTime());
         Calendar now = Calendar.getInstance();
-        setCal.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
-        setZeroSeconds(setCal);
-        setCal.add(Calendar.DAY_OF_MONTH, 1);
-        return setCal.getTimeInMillis();
+        int nowDay = now.get(Calendar.DAY_OF_MONTH);
+        return nowDayEqualsSetDay(setCal, now, nowDay, Calendar.DAY_OF_MONTH);
     }
 
 
@@ -197,8 +195,22 @@ public class AlarmReceiver extends BroadcastReceiver {
         mBuilder.setContentIntent(PendingIntent.getActivities(context, note.getCheckId(), makeIntent(context), PendingIntent.FLAG_UPDATE_CURRENT));
         mBuilder.setOngoing(true);
         mBuilder.setSmallIcon(R.drawable.notify);
-        setLargeIcon(context, mBuilder);
+
+        if (note.getBirthday() != 0) {
+            setLargeIcon(context, mBuilder);
+        }
+
+        PendingIntent removePI = PendingIntent.getBroadcast(context, note.getCheckId(), actionRemoveIntent(context, note.getCheckId()), PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.addAction(R.drawable.ic_delete_sweep_white_24dp, context.getString(R.string.remove), removePI);
+
         nm.notify(note.getCheckId(), mBuilder.build());
+    }
+
+    private Intent actionRemoveIntent(Context context, int id) {
+        Intent intent = new Intent(context, NActionReceiver.class);
+        intent.putExtra("type", 1);
+        intent.putExtra("id", id);
+        return intent;
     }
 
     private void setLargeIcon(Context context, NotificationCompat.Builder mBuilder) {

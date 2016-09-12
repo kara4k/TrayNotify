@@ -18,7 +18,10 @@
         tools:ignore="GoogleAppIndexingWarning">
         <receiver
             android:name=".AlarmReceiver"
-            android:process=":receiver" />
+            android:process=":Alarm" />
+
+        <receiver android:name=".NActionReceiver"
+            android:process=":Actions"/>
 
         <receiver android:name=".RebootReceiver">
             <intent-filter>
@@ -92,6 +95,8 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
         </activity>
+
+
         <!--<activity android:name=".SettingsFragment">-->
 
         <!--</activity>-->

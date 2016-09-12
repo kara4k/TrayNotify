@@ -9,7 +9,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -89,8 +88,21 @@ public class RebootReceiver extends BroadcastReceiver {
         mBuilder.setOngoing(true);
         mBuilder.setContentIntent(PendingIntent.getActivities(context, note.getNumid(), makeIntent(context, note), PendingIntent.FLAG_UPDATE_CURRENT));
         mBuilder.setSmallIcon(R.drawable.notify);
-        mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.main_icon));
+
+
+//        mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.main_icon));
+
+        PendingIntent removePI = PendingIntent.getBroadcast(context, note.getNumid(), actionRemoveIntent(context, note.getNumid()), PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.addAction(R.drawable.ic_delete_sweep_white_24dp, context.getString(R.string.remove), removePI);
+
         return mBuilder.build();
+    }
+
+    private Intent actionRemoveIntent(Context context, int id) {
+        Intent intent = new Intent(context, NActionReceiver.class);
+        intent.putExtra("type", 1);
+        intent.putExtra("id", id);
+        return intent;
     }
 
     private Intent[] makeIntent(Context context, Note note) {

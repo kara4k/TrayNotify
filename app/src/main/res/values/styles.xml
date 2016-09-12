@@ -9,7 +9,6 @@
         <item name="windowActionModeOverlay">true</item>
 
 
-
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -27,8 +26,6 @@
         <item name="android:background">?android:attr/listDivider</item>
         <item name="android:layout_marginTop">@dimen/dimen_default</item>
     </style>
-
-
 
 
     <style name="PickerStyle" parent="Theme.AppCompat.Light.Dialog">

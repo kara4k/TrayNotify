@@ -1,86 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="@dimen/dimen_default">
-
-        <com.kara4k.traynotify.MyView
-            android:id="@+id/text_color"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:Image="@drawable/colorz"
-            app:ImageVisible="true"
-            app:Title="@string/text_color" />
-
-        <com.kara4k.traynotify.MyView
-            android:id="@+id/text_size"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:Image="@drawable/ic_format_size_black_24dp"
-            app:ImageVisible="true"
-            app:Text="14"
-            app:Title="@string/text_size" />
-
-        <com.kara4k.traynotify.MyView
-            android:id="@+id/backkground"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:Image="@drawable/colorz"
-            app:ImageVisible="true"
-            app:Title="@string/backround" />
-
-        <com.kara4k.traynotify.MyView
-            android:id="@+id/choose_note"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:Image="@drawable/ic_note_black_24dp"
-            app:ImageVisible="true"
-            app:Title="@string/note" />
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_default"
-            android:layout_marginBottom="100dp"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/dimen_default">
 
-            <Button
-                android:id="@+id/edit"
+            <com.kara4k.traynotify.MyView
+                android:id="@+id/text_color"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_default"
-                android:layout_marginRight="8dp"
-                android:background="@color/colorAccent"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:layout_weight="1"
-                android:paddingBottom="7dp"
-                android:paddingTop="7dp"
-                android:text="@string/edit"
-                android:textColor="@android:color/white" />
+                app:Image="@drawable/colorz"
+                app:ImageVisible="true"
+                app:Title="@string/text_color" />
 
-            <Button
-                android:id="@+id/create"
+            <com.kara4k.traynotify.MyView
+                android:id="@+id/text_size"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="@dimen/dimen_default"
-                android:background="@color/colorAccent"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:paddingBottom="7dp"
-                android:paddingTop="7dp"
-                android:text="@string/ok"
-                android:textColor="@android:color/white" />
+                app:Image="@drawable/ic_format_size_black_24dp"
+                app:ImageVisible="true"
+                app:Text="14"
+                app:Title="@string/text_size" />
+
+            <com.kara4k.traynotify.MyView
+                android:id="@+id/backkground"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:Image="@drawable/colorz"
+                app:ImageVisible="true"
+                app:Title="@string/backround" />
+
+            <com.kara4k.traynotify.MyView
+                android:id="@+id/choose_note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="100dp"
+                app:Image="@drawable/ic_note_black_24dp"
+                app:ImageVisible="true"
+                app:Title="@string/note" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="100dp"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/dimen_default"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_default"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorAccent"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:paddingBottom="7dp"
+                    android:paddingTop="7dp"
+                    android:text="@string/edit"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/create"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="@dimen/dimen_default"
+                    android:layout_weight="1"
+                    android:background="@color/colorAccent"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:paddingBottom="7dp"
+                    android:paddingTop="7dp"
+                    android:text="@string/ok"
+                    android:textColor="@android:color/white" />
+            </LinearLayout>
+
+
         </LinearLayout>
+    </ScrollView>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_done_white_24dp" />
 
-    </LinearLayout>
-</ScrollView>
+</android.support.design.widget.CoordinatorLayout>

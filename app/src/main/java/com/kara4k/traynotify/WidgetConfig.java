@@ -10,9 +10,11 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
 import yuku.ambilwarna.AmbilWarnaDialog;
 
@@ -23,7 +25,6 @@ public class WidgetConfig extends AppCompatActivity implements DialogInterface.O
     private int textSize = 14;
     private int backgroundColor = Color.WHITE;
     private String wTitle;
-    String wText;
     private int numId = 0;
 
     private int widgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
@@ -50,8 +51,7 @@ public class WidgetConfig extends AppCompatActivity implements DialogInterface.O
         final MyView textSizeView = (MyView) findViewById(R.id.text_size);
         final MyView backgroundView = (MyView) findViewById(R.id.backkground);
         noteView = (MyView) findViewById(R.id.choose_note);
-        Button createBtn = (Button) findViewById(R.id.create);
-        Button editBtn = (Button) findViewById(R.id.edit);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
 
         setNoteLabel(noteView);
@@ -145,7 +145,7 @@ public class WidgetConfig extends AppCompatActivity implements DialogInterface.O
             }
         });
 
-        createBtn.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 writePrefsAndUpdate();
@@ -154,13 +154,7 @@ public class WidgetConfig extends AppCompatActivity implements DialogInterface.O
             }
         });
 
-        editBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(WidgetConfig.this, MainActivity.class);
-                WidgetConfig.this.startActivity(intent);
-            }
-        });
+
     }
 
     @Override
@@ -168,6 +162,27 @@ public class WidgetConfig extends AppCompatActivity implements DialogInterface.O
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
         Widget.updateWidget(this, appWidgetManager, sp, widgetID);
         super.onBackPressed();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.widget_config, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.main_window :
+                startMainActivity();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void startMainActivity() {
+        Intent intent = new Intent(WidgetConfig.this, MainActivity.class);
+        WidgetConfig.this.startActivity(intent);
     }
 
     @Override

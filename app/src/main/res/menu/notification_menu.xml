@@ -13,10 +13,10 @@
         android:title="@string/clear_forms"
         android:icon="@drawable/ic_format_clear_white_24dp"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_clear_notification"
-        android:orderInCategory="3"
-        android:title="@string/delete_tray_notification"
-        android:icon="@drawable/ic_speaker_notes_off_white_24dp"
-        app:showAsAction="ifRoom" />
+    <!--<item-->
+        <!--android:id="@+id/action_clear_notification"-->
+        <!--android:orderInCategory="3"-->
+        <!--android:title="@string/delete_tray_notification"-->
+        <!--android:icon="@drawable/ic_speaker_notes_off_white_24dp"-->
+        <!--app:showAsAction="ifRoom" />-->
 </menu>
