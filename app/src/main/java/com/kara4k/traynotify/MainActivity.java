@@ -93,11 +93,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 setBarTitle(supportActionBar, getString(R.string.birthdays));
                                 setBirthdaysMenu();
                                 break;
-//                            case R.id.settings:
-//                                SettingsFragment settingsFragment = new SettingsFragment();
-//                                showSecondaryFragment(settingsFragment);
-//                                toolbar.setVisibility(View.GONE);
-//                                break;
+                            case R.id.settings:
+                                Intent settings = new Intent(MainActivity.this, Settings.class);
+                                startActivity(settings);
+                                break;
                             case R.id.rate:
                                 rateApp();
                                 break;
@@ -238,14 +237,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             mDrawerLayout.closeDrawers();
         } else {
             Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
-            if (currentFragment instanceof SMSFragment) {
-                showFirstFragment();
-                setVPFragmentMenu();
-            } else if (currentFragment instanceof BirthdayFragment) {
-                showFirstFragment();
-                setVPFragmentMenu();
-            } else if (currentFragment instanceof ViewPagerFragment) {
+            if (currentFragment instanceof ViewPagerFragment) {
                 super.onBackPressed();
+            } else {
+                showFirstFragment();
+                setVPFragmentMenu();
             }
         }
     }

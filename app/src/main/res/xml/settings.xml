@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:key="main">
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="main_tray"
-        android:title="Tray Icon"
-        android:summary="Fast access from statusbar"/>
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="track_clipboard"
-        android:title="Track Clipboard"
-        android:summary="Write all changes of clipboard"/>
-    <PreferenceScreen android:key="test"
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Reminders"></PreferenceCategory>
+    <Preference
+        android:defaultValue="0"
+        android:key="sound"
+        android:summary="@string/text_default"
+        android:title="@string/melody" />
+    <Preference
+        android:defaultValue="1"
+        android:key="vibration"
+        android:summary="@string/text_default"
+        android:title="@string/vibration" />
+    <PreferenceScreen
+        android:key="test"
         android:title="Reminders">
-<SwitchPreference android:title="tyty"
-    android:key="yuyu"
-    android:defaultValue="true"
-    />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="yuyu"
+            android:title="tyty" />
     </PreferenceScreen>
 </PreferenceScreen>

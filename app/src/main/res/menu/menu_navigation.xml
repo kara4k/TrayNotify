@@ -14,9 +14,9 @@
             android:id="@+id/birthdays"
             android:icon="@drawable/ic_perm_contact_calendar_black_24dp"
             android:title="@string/birthdays" />
-        <!--<item android:id="@+id/settings"-->
-            <!--android:title="Settings"-->
-            <!--android:icon="@drawable/ic_settings_black_24dp"/>-->
+        <item android:id="@+id/settings"
+            android:title="@string/settings"
+            android:icon="@drawable/ic_settings_black_24dp"/>
     </group>
     <group android:checkableBehavior="all">
 

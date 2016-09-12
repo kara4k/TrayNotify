@@ -95,11 +95,10 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
         </activity>
+        <activity android:name=".Settings"
+            android:label="@string/settings">
 
-
-        <!--<activity android:name=".SettingsFragment">-->
-
-        <!--</activity>-->
+        </activity>
     </application>
 
 </manifest>

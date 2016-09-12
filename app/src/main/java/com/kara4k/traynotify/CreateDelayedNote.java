@@ -9,12 +9,14 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -63,6 +65,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     private DelayedNote note;
     private MyView vibrate;
     private int birthday = 0;
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,6 +77,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         textEdit = (EditText) findViewById(R.id.textEdit);
         titleEdit = (EditText) findViewById(R.id.editTitle);
 
+        sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         db = new DBDelay(getApplicationContext());
         checkThis = db.getNoteCheckID();
         int tempId = checkThis;
@@ -182,7 +186,11 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
 
         sound = (MyView) findViewById(R.id.sound);
-        sound.setOnClickListener(new View.OnClickListener() {
+
+        setDefaultSoundText();
+        setDefaultSoundUri();
+
+        this.sound.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -198,7 +206,24 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
             }
         });
 
+
+
         onIntentReceive(tempId, vibrate);
+    }
+
+    private void setDefaultSoundUri() {
+        String sound = sp.getString(Settings.SOUND, "0");
+        if (!sound.equals("0")) {
+            soundUri = Uri.parse(sound);
+        }
+    }
+
+    private void setDefaultSoundText() {
+        String trackName = sp.getString(Settings.TRACK_NAME, "0");
+        if (trackName.equals("0")) {
+            trackName = getString(R.string.text_default);
+        }
+        sound.getText().setText(trackName);
     }
 
     private void setRepeatYearCheckListener() {
@@ -675,8 +700,10 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         repeatWeek.getCheckbox().setChecked(false);
         repeatMonth.getCheckbox().setChecked(false);
         repeatYear.getCheckbox().setChecked(false);
-        soundUri = null;
-        sound.setText(getString(R.string.text_default));
+        setDefaultSoundText();
+        setDefaultSoundUri();
+//        soundUri = null;
+//        sound.setText(getString(R.string.text_default));
         vibration = null;
         vibrate.setText(getString(R.string.text_default));
         birthday = 0;

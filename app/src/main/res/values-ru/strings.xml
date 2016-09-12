@@ -68,4 +68,6 @@
     <string name="sync_birthdays">Синхронизировать</string>
     <string name="remove">Убрать</string>
     <string name="open_app">Открыть приложение</string>
+    <string name="choose">Выбрать</string>
+    <string name="settings">Настройки</string>
 </resources>
