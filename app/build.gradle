@@ -8,8 +8,8 @@ android {
         applicationId "com.kara4k.traynotify"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 5
-        versionName "1.4"
+        versionCode 6
+        versionName "1.5"
     }
     buildTypes {
         release {
@@ -25,6 +25,5 @@ dependencies {
 //    testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.2.0'
     compile 'com.android.support:design:24.2.0'
-    compile 'com.github.machinarius:preferencefragment:0.1.1'
     compile 'com.github.yukuku:ambilwarna:2.0.1'
 }

@@ -17,7 +17,6 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.widget.Toast;
 
 public class Settings extends PreferenceActivity implements DialogInterface.OnClickListener, VibroDialogFragment.MDialogInterface
@@ -52,6 +51,7 @@ public class Settings extends PreferenceActivity implements DialogInterface.OnCl
         });
 
         vibrationPref = findPreference(VIBRATION);
+        initVibroPattern();
         vibrationPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -62,17 +62,34 @@ public class Settings extends PreferenceActivity implements DialogInterface.OnCl
 
     }
 
+    private void initVibroPattern() {
+        try {
+            String vPattern = sp.getString(VIBRATION, "1");
+            if (vPattern.equals("1")) {
+                vibrationPref.setSummary(getString(R.string.text_default));
+            } else {
+                vibration = CreateDelayedNote.parseVibrationFromString(vPattern);
+                vibrationPref.setSummary(CreateDelayedNote.parseVibroTitle(vibration));
+            }
+        } catch (Exception e) {
+        }
+    }
+
     private void setVibrationByDefault() {
         VibroDialogFragment vibroDialog = new VibroDialogFragment();
         vibroDialog.setmDialogInterface(this);
-//        if (vibration != null) {
-//            Bundle bundle = new Bundle();
-//            bundle.putInt("vibrate", (int) vibration[1] / 100);
-//            bundle.putInt("pause", (int) vibration[2] / 100);
-//            bundle.putInt("repeat", (vibration.length - 1) / 2);
-//            vibroDialog.setArguments(bundle);
-//        }
+        setDialogArguments(vibroDialog);
         vibroDialog.show(getFragmentManager(), getString(R.string.pattern));
+    }
+
+    private void setDialogArguments(VibroDialogFragment vibroDialog) {
+        if (vibration != null) {
+            Bundle bundle = new Bundle();
+            bundle.putInt("vibrate", (int) vibration[1] / 100);
+            bundle.putInt("pause", (int) vibration[2] / 100);
+            bundle.putInt("repeat", (vibration.length - 1) / 2);
+            vibroDialog.setArguments(bundle);
+        }
     }
 
     private void setSoundPrefSummary() {
@@ -153,8 +170,6 @@ public class Settings extends PreferenceActivity implements DialogInterface.OnCl
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putString(SOUND, soundUri.toString());
                         editor.putString(TRACK_NAME, trackName).apply();
-                        Log.e("TAG", "onActivityResult: " + trackName);
-                        Log.e("TAG", "onActivityResult: " + soundUri.toString());
                         mCursor.close();
                     }
 
@@ -186,11 +201,17 @@ public class Settings extends PreferenceActivity implements DialogInterface.OnCl
     public void getResult(long[] vibroPattern, String v, String p, String r) {
         vibration = vibroPattern;
         vibrationPref.setSummary(v + " x " + p + " x " + r);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(VIBRATION, CreateDelayedNote.getNoteVibration(vibration)).apply();
     }
 
     @Override
     public void clearVibro() {
         vibration = null;
         vibrationPref.setSummary(getString(R.string.text_default));
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(VIBRATION, "1").apply();
     }
+
+
 }

@@ -23,7 +23,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,7 +39,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class CreateDelayedNote extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class CreateDelayedNote extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, DialogInterface.OnClickListener {
 
     private MyView sound;
     private Uri soundUri;
@@ -50,7 +49,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     private MyView setDate;
     private MyView setTime;
     private long[] vibration;
-//    private NotificationManagerCompat nm;
+    //    private NotificationManagerCompat nm;
     private EditText textEdit;
     private EditText titleEdit;
     private AlarmManager alarmManager;
@@ -146,6 +145,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
 
         vibrate = (MyView) findViewById(R.id.vibrate);
+        setDefaultVibroPattern();
         vibrate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -186,17 +186,17 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
 
         sound = (MyView) findViewById(R.id.sound);
-
         setDefaultSoundText();
         setDefaultSoundUri();
-
         this.sound.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                checkSDPermission();
+                showSoundDialog();
+//                checkSDPermission();
             }
         });
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -207,14 +207,34 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         });
 
 
-
         onIntentReceive(tempId, vibrate);
+    }
+
+    public void showSoundDialog() {
+        new android.app.AlertDialog.Builder(CreateDelayedNote.this).setTitle(sound.getText().getText())
+                .setPositiveButton(R.string.choose, this)
+                .setNegativeButton(getString(R.string.cancel), this)
+                .setNeutralButton(getString(R.string.text_default), this)
+                .create().show();
+    }
+
+    private void setDefaultVibroPattern() {
+        String vPattern = sp.getString(Settings.VIBRATION, "1");
+        if (!vPattern.equals("1")) {
+            vibration = parseVibrationFromString(vPattern);
+            vibrate.getText().setText(parseVibroTitle(vibration));
+        } else {
+            vibration = null;
+            vibrate.getText().setText(getString(R.string.text_default));
+        }
     }
 
     private void setDefaultSoundUri() {
         String sound = sp.getString(Settings.SOUND, "0");
         if (!sound.equals("0")) {
             soundUri = Uri.parse(sound);
+        } else {
+            soundUri = null;
         }
     }
 
@@ -353,9 +373,15 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         parseRepeat();
         if (!note.getSound().equals("0")) {
             parseSound();
+        } else {
+            setDefaultSound();
         }
+
         if (!note.getVibration().equals("1")) {
             parseVibration(vibrate);
+        } else {
+            vibration = null;
+            vibrate.setText(getString(R.string.text_default));
         }
         birthday = note.getBirthday();
     }
@@ -405,7 +431,13 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     }
 
     private void parseVibration(MyView vibrate) {
-        String[] strings = note.getVibration().split(";");
+
+        vibration = parseVibrationFromString(note.getVibration());
+        vibrate.setText(parseVibroTitle(vibration));
+    }
+
+    public static long[] parseVibrationFromString(String pattern) {
+        String[] strings = pattern.split(";");
         int repeatTime = Integer.parseInt(strings[2]);
         List<Long> vibratePattern = new ArrayList<Long>();
         vibratePattern.add(0, (long) 0);
@@ -420,10 +452,12 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
             vibration[j] = vibratePattern.get(j);
         }
 
-        setVibrationTextFromString(vibrate, vibration);
+        return vibration;
+
     }
 
-    private void setVibrationTextFromString(MyView vibrate, long[] vibration) {
+
+    public static String parseVibroTitle(long[] vibration) {
         long v = vibration[1] / 100;
         long p = vibration[2] / 100;
 
@@ -450,7 +484,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
                     .concat(String.valueOf(p).substring(1)));
         }
 
-        vibrate.setText(vText.concat(" x ").concat(pText).concat(" x ").concat(rText));
+        return vText.concat(" x ").concat(pText).concat(" x ").concat(rText);
     }
 
 
@@ -558,7 +592,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         return sound;
     }
 
-    private String getNoteVibration() {
+    public static String getNoteVibration(long[] vibration) {
         String vibro;
         if (vibration != null) {
             vibro = String.valueOf(vibration[1]).concat(";")
@@ -584,9 +618,6 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         setMainCallZeroSecs();
         setAlarm(getPendingIntent());
         finish();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss. SSSS");
-        Log.e("TAG", note.toString());
-        Log.e("TAG", sdf.format(new Date(mainCal.getTimeInMillis())));
     }
 
     private void setAlarm(PendingIntent pendingIntent) {
@@ -637,7 +668,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         note.setRepeat(getNoteRepeat());
         note.setDays(getNoteDays());
         note.setSound(getNoteSound());
-        note.setVibration(getNoteVibration());
+        note.setVibration(getNoteVibration(vibration));
         note.setPriority(getNotePriority());
         note.setCheckId(getNoteCheckId());
         note.setBirthday(getNoteBirthday());
@@ -704,8 +735,9 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         setDefaultSoundUri();
 //        soundUri = null;
 //        sound.setText(getString(R.string.text_default));
-        vibration = null;
-        vibrate.setText(getString(R.string.text_default));
+//        vibration = null;
+//        vibrate.setText(getString(R.string.text_default));
+        setDefaultVibroPattern();
         birthday = 0;
 
     }
@@ -850,5 +882,23 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         }
     }
 
+    @Override
+    public void onClick(DialogInterface dialogInterface, int i) {
+        switch (i) {
+            case DialogInterface.BUTTON_POSITIVE:
+                checkSDPermission();
+                break;
+            case DialogInterface.BUTTON_NEGATIVE:
+                break;
+            case DialogInterface.BUTTON_NEUTRAL:
+                setDefaultSound();
+                break;
+        }
+    }
+
+    private void setDefaultSound() {
+        soundUri = null;
+        sound.setText(getString(R.string.text_default));
+    }
 }
 

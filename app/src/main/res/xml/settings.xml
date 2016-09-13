@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="Reminders"></PreferenceCategory>
+    <PreferenceCategory android:title="@string/notifications"/>
     <Preference
         android:defaultValue="0"
         android:key="sound"
@@ -11,12 +11,5 @@
         android:key="vibration"
         android:summary="@string/text_default"
         android:title="@string/vibration" />
-    <PreferenceScreen
-        android:key="test"
-        android:title="Reminders">
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="yuyu"
-            android:title="tyty" />
-    </PreferenceScreen>
+
 </PreferenceScreen>

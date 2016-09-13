@@ -208,7 +208,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private Intent actionRemoveIntent(Context context, int id) {
         Intent intent = new Intent(context, NActionReceiver.class);
-        intent.putExtra("type", 1);
+        intent.putExtra("type", 2);
         intent.putExtra("id", id);
         return intent;
     }
