@@ -87,6 +87,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 setBarTitle(supportActionBar, getString(R.string.messages));
                                 setVPFragmentMenu();
                                 break;
+                            case R.id.clipboard:
+                                ClipFragment clipFragment = new ClipFragment();
+                                showSecondaryFragment(clipFragment);
+                                setBarTitle(supportActionBar, getString(R.string.clipboard));
+                                setVPFragmentMenu();
+                                break;
                             case R.id.birthdays:
                                 birthdayFragment = new BirthdayFragment();
                                 showSecondaryFragment(birthdayFragment);

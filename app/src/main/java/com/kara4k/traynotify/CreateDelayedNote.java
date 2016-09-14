@@ -23,6 +23,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -617,6 +618,8 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         writeNoteToDb();
         setMainCallZeroSecs();
         setAlarm(getPendingIntent());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss SSSS");
+        Log.e("TAG", "getYearRepeatTime: " + sdf.format(new Date(mainCal.getTimeInMillis())) );
         finish();
     }
 

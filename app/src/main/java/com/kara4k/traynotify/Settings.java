@@ -15,16 +15,18 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.widget.Toast;
 
-public class Settings extends PreferenceActivity implements DialogInterface.OnClickListener, VibroDialogFragment.MDialogInterface
-{
+public class Settings extends PreferenceActivity implements DialogInterface.OnClickListener, VibroDialogFragment.MDialogInterface, Preference.OnPreferenceChangeListener {
 
     public static final String SOUND = "sound";
     public static final String TRACK_NAME = "track_name";
     public static final String VIBRATION = "vibration";
+    public static final String TRACK_CLIPBOARD = "track_clipboard";
 
 
     private Uri soundUri;
@@ -59,6 +61,10 @@ public class Settings extends PreferenceActivity implements DialogInterface.OnCl
                 return true;
             }
         });
+
+        Log.e("c", "onCreate: " + "wtf");
+        SwitchPreference trackCBPref = (SwitchPreference) findPreference(TRACK_CLIPBOARD);
+        trackCBPref.setOnPreferenceChangeListener(this);
 
     }
 
@@ -214,4 +220,18 @@ public class Settings extends PreferenceActivity implements DialogInterface.OnCl
     }
 
 
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
+        if (preference.getKey().equals(TRACK_CLIPBOARD)) {
+            Intent clipService = new Intent(getApplicationContext(), ClipboardService.class);
+            if ((boolean) newValue) {
+                Log.e("c", "onPreferenceChange: " + "started");
+                startService(clipService);
+            } else {
+                Log.e("c", "onPreferenceChange: " + "stopped");
+                stopService(clipService);
+            }
+        }
+        return true;
+    }
 }

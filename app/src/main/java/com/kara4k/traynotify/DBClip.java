@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 class DBClip {
 
@@ -17,7 +18,7 @@ class DBClip {
     private static final String KEY_TEXT = "TEXT";
     private static final String KEY_DATE = "DATE";
     private static final String KEY_NUMID = "NUMID";
-    private static final String KEY_CHECK = "CHECK";
+    private static final String KEY_CHECKED = "CHECKED";
 
 
     private final Context mContext;
@@ -35,11 +36,34 @@ class DBClip {
     }
 
     public Cursor getAllData() {
+        Log.e("DBClip", "getAllData: " + "here");
         return mDB.query(TABLE_NAME, null, null, null, null, null, KEY_ID + " DESC");
     }
 
     public void removeClip(int numId) {
         mDB.delete(TABLE_NAME, KEY_NUMID + "=?", new String[]{String.valueOf(numId)});
+    }
+
+    public boolean isExist(String text) {
+        Cursor clips = mDB.query(TABLE_NAME, null, KEY_TEXT + "=?", new String[]{text}, null, null, null);
+        if (clips.moveToFirst()) {
+            Log.e("DBClip", "isExist: " + "exist");
+            return true;
+        } else {
+            Log.e("DBClip", "isExist: " + "notExist");
+            return false;
+        }
+    }
+
+    public int getClipNumID() {
+        int numId;
+        Cursor cursor = mDB.query(TABLE_NAME, null, null, null, null, null, KEY_NUMID + " DESC");
+        if (cursor.moveToFirst()) {
+            numId = cursor.getInt(3) + 1;
+        } else {
+            numId = 1;
+        }
+        return numId;
     }
 
     public void addClip(String text, long date, int numid) {
@@ -50,15 +74,7 @@ class DBClip {
         mDB.insert(TABLE_NAME, null, cv);
     }
 
-//    public void updateRec(String title, String text, int inTray, long date, int numid) {
-//        ContentValues cv = new ContentValues();
-//        cv.put(KEY_TITLE, title);
-//        cv.put(KEY_TEXT, text);
-//        cv.put(KEY_ICON, inTray);
-//        cv.put(KEY_DATE, date);
-//        cv.put(KEY_NUMID, numid);
-//        mDB.update(TABLE_NAME, cv, KEY_NUMID + " = ?", new String[]{String.valueOf(numid)});
-//    }
+
 
 
     public void close() {
@@ -82,7 +98,7 @@ class DBClip {
                     + KEY_TEXT + " text,"
                     + KEY_DATE + " integer,"
                     + KEY_NUMID + " integer,"
-                    + KEY_CHECK + " integer" + ");");
+                    + KEY_CHECKED + " integer" + ");");
 
         }
 

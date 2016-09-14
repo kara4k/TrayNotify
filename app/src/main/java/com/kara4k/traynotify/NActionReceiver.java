@@ -13,8 +13,9 @@ public class NActionReceiver extends BroadcastReceiver {
             removeTrayNotification(context, intent);
         } catch (Exception e) {
         }
-
     }
+
+
 
     private void removeTrayNotification(Context context, Intent intent) {
         NotificationManagerCompat nm = NotificationManagerCompat.from(context);

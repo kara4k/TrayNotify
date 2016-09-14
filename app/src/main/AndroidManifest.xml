@@ -21,7 +21,7 @@
             android:process=":Alarm" />
 
         <receiver android:name=".NActionReceiver"
-            android:process=":Actions"/>
+            android:process=":ActionsReceiver"/>
 
         <receiver android:name=".RebootReceiver">
             <intent-filter>
@@ -43,6 +43,12 @@
                 android:resource="@xml/widget_metadata">
             </meta-data>
         </receiver>
+
+        <service android:name=".ClipboardService"
+            android:process=":ClipboardService">
+
+        </service>
+
 
 
 

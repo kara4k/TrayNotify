@@ -40,7 +40,7 @@ class DBQuick {
     }
 
     public void removeNote(int numId) {
-        mDB.delete(TABLE_NAME,KEY_NUMID + "=?",new String[]{String.valueOf(numId)});
+        mDB.delete(TABLE_NAME, KEY_NUMID + "=?", new String[]{String.valueOf(numId)});
     }
 
     public int getNoteCheckID() {
@@ -60,7 +60,7 @@ class DBQuick {
         return mDB.query(TABLE_NAME, new String[]{KEY_TEXT, KEY_TITLE, KEY_DATE, KEY_NUMID}, KEY_NUMID + "= ?", new String[]{String.valueOf(id)}, null, null, null);
     }
 
-    public void addNote(String title, String text,int inTray, long date, int numid) {
+    public void addNote(String title, String text, int inTray, long date, int numid) {
         ContentValues cv = new ContentValues();
         cv.put(KEY_TITLE, title);
         cv.put(KEY_TEXT, text);
@@ -117,12 +117,6 @@ class DBQuick {
                     + KEY_NUMID + " integer" + ");");
 
         }
-
-
-
-
-
-
 
 
         @Override
