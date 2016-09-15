@@ -9,12 +9,6 @@
         <!--android:title="@string/quick_note"-->
         <!--app:showAsAction="always" />-->
     <item
-        android:id="@+id/action_clear_all"
-        android:icon="@drawable/ic_delete_sweep_white_24dp"
-        android:orderInCategory="3"
-        android:title="@string/completely_tray_clean"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/action_search"
         android:icon="@drawable/ic_search_white_24dp"
         android:title="@string/search"
@@ -28,6 +22,20 @@
         android:orderInCategory="2"
         android:visible="false"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_clear_all"
+        android:icon="@drawable/ic_delete_sweep_white_24dp"
+        android:orderInCategory="3"
+        android:title="@string/completely_tray_clean"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/clear_all_clips"
+        android:icon="@drawable/ic_delete_white_24dp"
+        android:title="@string/clear_list"
+        android:orderInCategory="4"
+        android:visible="false"
+        app:showAsAction="always" />
+
 
 
     <item

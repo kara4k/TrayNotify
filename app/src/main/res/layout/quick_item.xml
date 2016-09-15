@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/selection"
     android:clickable="true"
+    android:id="@+id/quick_holder"
     android:padding="@dimen/dimen_default">
 
     <CheckBox

@@ -12,7 +12,7 @@
             android:title="@string/messages" />
         <item
             android:id="@+id/clipboard"
-            android:icon="@drawable/ic_sms_black_24dp"
+            android:icon="@drawable/ic_content_paste_black_24dp"
             android:title="@string/clipboard" />
         <item
             android:id="@+id/birthdays"

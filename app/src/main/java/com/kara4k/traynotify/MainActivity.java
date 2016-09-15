@@ -1,6 +1,5 @@
 package com.kara4k.traynotify;
 
-import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -20,6 +19,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.SearchView;
@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private SMSFragment smsFragment;
     private ActionMode actionMode;
     private Toolbar toolbar;
+    private ClipFragment clipFragment;
 
 
     @Override
@@ -88,10 +89,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 setVPFragmentMenu();
                                 break;
                             case R.id.clipboard:
-                                ClipFragment clipFragment = new ClipFragment();
+                                clipFragment = new ClipFragment();
                                 showSecondaryFragment(clipFragment);
                                 setBarTitle(supportActionBar, getString(R.string.clipboard));
-                                setVPFragmentMenu();
+                                setClipFragmentMenu();
                                 break;
                             case R.id.birthdays:
                                 birthdayFragment = new BirthdayFragment();
@@ -124,6 +125,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         getApplicationContext().registerReceiver(removeTrayReceiver, new IntentFilter("refreshTrayIcons"));
 
+        Intent intent = new Intent(this, ClipboardService.class); // TODO: 15.09.2016  remove
+        startService(intent);
+
     }
 
 
@@ -153,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         mainMenu.findItem(R.id.sortDaysLeft).setChecked(true);
         mainMenu.findItem(R.id.action_clear_all).setVisible(false);
         mainMenu.findItem(R.id.sync_birthdays).setVisible(true);
+        mainMenu.findItem(R.id.clear_all_clips).setVisible(false);
     }
 
     private void sendEmail(String[] addresses) {
@@ -256,6 +261,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         mainMenu.findItem(R.id.sort).setVisible(false);
         mainMenu.findItem(R.id.action_clear_all).setVisible(true);
         mainMenu.findItem(R.id.sync_birthdays).setVisible(false);
+        mainMenu.findItem(R.id.clear_all_clips).setVisible(false);
+    }
+
+    private void setClipFragmentMenu() {
+        mainMenu.findItem(R.id.sort).setVisible(false);
+        mainMenu.findItem(R.id.action_clear_all).setVisible(false);
+        mainMenu.findItem(R.id.sync_birthdays).setVisible(false);
+        mainMenu.findItem(R.id.clear_all_clips).setVisible(true);
     }
 
     private void showFirstFragment() {
@@ -305,10 +318,38 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         } else if (id == R.id.action_clear_all) {
             clearTray();
             return true;
+        } else if (id == R.id.clear_all_clips) {
+            showClearClipDialog();
+            return true;
         } else if (id == android.R.id.home) {
             mDrawerLayout.openDrawer(GravityCompat.START);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showClearClipDialog() {
+        new AlertDialog.Builder(MainActivity.this).setTitle(R.string.ask_clear_clip_history)
+                .setPositiveButton(R.string.clear, getClearClipDialogListener())
+                .setNegativeButton(getString(R.string.cancel), null)
+                .create()
+                .show();
+    }
+
+    @NonNull
+    private DialogInterface.OnClickListener getClearClipDialogListener() {
+        return new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        try {
+                            clearClipHistory();
+                        } catch (Exception e) {
+                        }
+                    }
+                };
+    }
+
+    private void clearClipHistory() {
+        ClipAdapter.getInstance().clearListAll();
     }
 
     private void syncBirthdayInfo() {
@@ -368,7 +409,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             return smsFragmentSearch(newText);
         } else if ((fragment != null) && (fragment instanceof BirthdayFragment)) {
             return birthdayFragmentSearch(newText);
-        } else if ((fragment != null) && (fragment instanceof ViewPagerFragment)) {
+        } else if ((fragment != null) && (fragment instanceof ClipFragment)) {
+            return clipFragmentSearch(newText);
+        }
+        else if ((fragment != null) && (fragment instanceof ViewPagerFragment)) {
             int pagerItem = vpFragment.getViewPager().getCurrentItem();
             if (pagerItem == 0) {
                 return quickNotesSearch(newText);
@@ -377,6 +421,28 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
         }
         return true;
+    }
+
+    private boolean clipFragmentSearch(String newText) {
+        try {
+            List<Clip> clipsAll = clipFragment.getClipListAll();
+            List<Clip> clipsFiltered = clipFragment.getClipList();
+            clipsFiltered.clear();
+            if (newText.length() == 0) {
+                clipsFiltered.addAll(clipsAll);
+            } else {
+                for (Clip x : clipsAll) {
+                    if (x.getText().toLowerCase().contains(newText.toLowerCase())) {
+                        clipsFiltered.add(x);
+                    }
+                }
+            }
+            clipFragment.setClipList(clipsFiltered);
+            ClipAdapter.getInstance().notifyDataSetChanged();
+            return true;
+        } catch (Exception e) {
+            return true;
+        }
     }
 
     private boolean delayedNotesSearch(String newText) {

@@ -8,12 +8,14 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationManagerCompat;
@@ -31,14 +33,27 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 
     private DelayedNote note;
+    private SharedPreferences sp;
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        sp = PreferenceManager.getDefaultSharedPreferences(context);
 
         fillNote(intent, context);
 
         checkIfShowTrayNotification(context);
         repeatAlarm(context);
+
+        startClipTracking(context);
+
+    }
+
+    private void startClipTracking(Context context) {
+        boolean isTrack = sp.getBoolean(Settings.TRACK_CLIPBOARD, false);
+        Intent trackClip = new Intent(context, ClipboardService.class);
+        if (isTrack) {
+            context.startService(trackClip);
+        }
     }
 
     private void checkIfShowTrayNotification(Context context) {

@@ -70,4 +70,8 @@
     <string name="choose">Choose</string>
     <string name="clipboard">Clipboard</string>
     <string name="track">Track</string>
+    <string name="clear_list">Clear list</string>
+    <string name="ask_clear_clip_history">Clear clipboard history?</string>
+    <string name="clear">Clear</string>
+    <string name="save_clip_hist">Save clipboard history</string>
 </resources>

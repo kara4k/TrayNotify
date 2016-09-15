@@ -44,6 +44,35 @@ class DBClip {
         mDB.delete(TABLE_NAME, KEY_NUMID + "=?", new String[]{String.valueOf(numId)});
     }
 
+    public void setChecked(String text, int value) {
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_CHECKED, value);
+        mDB.update(TABLE_NAME, cv, KEY_TEXT + "=?", new String[]{String.valueOf(text)});
+    }
+
+    public void clearAndCheckSingle(int numId, int value) {
+        open();
+        uncheckAll();
+        setChecked(numId, value);
+        close();
+    }
+
+    public void setChecked(int numId, int value) {
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_CHECKED, value);
+        mDB.update(TABLE_NAME, cv, KEY_NUMID + "=?", new String[]{String.valueOf(numId)});
+    }
+
+    public void uncheckAll() {
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_CHECKED, 0);
+        mDB.update(TABLE_NAME, cv, KEY_CHECKED + "=?", new String[]{String.valueOf(1)});
+    }
+
+    public void clearDB() {
+        mDB.delete(TABLE_NAME, null, null);
+    }
+
     public boolean isExist(String text) {
         Cursor clips = mDB.query(TABLE_NAME, null, KEY_TEXT + "=?", new String[]{text}, null, null, null);
         if (clips.moveToFirst()) {
