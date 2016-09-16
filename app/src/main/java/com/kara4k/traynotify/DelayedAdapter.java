@@ -183,14 +183,16 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
         return notes.size();
     }
 
+    public void startSelection() {
+        select = true;
+        refreshAll();
+    }
+
     public void endSelectionMode() {
         select = false;
         selectedItems = new SparseBooleanArray();
-
-        for (int i = 0; i < notes.size(); i++) {
-            notifyItemChanged(i);
-        }
         selectedCount = 0;
+        refreshAll();
 
     }
 
@@ -217,13 +219,27 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
             NotificationManagerCompat nm = NotificationManagerCompat.from(context);
             AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+
+            removeFromList(list);
+            // TODO: 16.09.2016 красиво
             for (int i = 0; i < list.size(); i++) {
                 removeFromDB(list.get(i));
                 cancelAlarmEvent(am, alarmIntent, list.get(i));
                 nm.cancel(list.get(i));
             }
-            notifyDataSetChanged();
+//            notifyDataSetChanged();
         } catch (Exception e) {
+        }
+    }
+
+    private void removeFromList(ArrayList<Integer> list) {
+        for (int i = 0; i < notes.size(); i++) {
+            for (int x : list) {
+                if (notes.get(i).getCheckId() == x) {
+                    notes.remove(i);
+                    notifyItemRemoved(i);
+                }
+            }
         }
     }
 

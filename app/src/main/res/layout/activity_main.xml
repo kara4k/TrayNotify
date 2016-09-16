@@ -34,7 +34,8 @@
                 android:visibility="gone"
                 app:tabGravity="fill"
                 app:tabMode="fixed"
-                app:tabMaxWidth="0dp"/>
+                app:tabMaxWidth="0dp"
+                app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
         </android.support.design.widget.AppBarLayout>
 

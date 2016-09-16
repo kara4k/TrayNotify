@@ -591,7 +591,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     private void deleteSelectedOnConfirm() {
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
-        if (currentFragment instanceof QuickNotesFragment || currentFragment instanceof DelayedNotesFragment) {
+        if (currentFragment instanceof ViewPagerFragment) {
             if (pagerItem == 0) {
                 QuickAdapter.getInstance().deleteSelected();
                 actionMode.finish();
@@ -607,10 +607,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     private void endActionMode() {
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
-        if (currentFragment instanceof QuickNotesFragment || currentFragment instanceof DelayedNotesFragment) {
+        if (currentFragment instanceof ViewPagerFragment) {
             endSelectionForCurrent();
-            showFirstFragment();
-            fab.setVisibility(View.VISIBLE);
+//            showFirstFragment();
+
+
+
         } else if (currentFragment instanceof ClipFragment) {
             ClipAdapter.getInstance().endSelectionMode();
         }
@@ -619,6 +621,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     private void endSelectionForCurrent() {
+        fab.setVisibility(View.VISIBLE);
+        vpFragment.getViewPager().setSwipeLocked(false);
+        vpFragment.getTabs().setVisibility(View.VISIBLE);
         if (pagerItem == 0) {
             QuickAdapter.getInstance().endSelectionMode();
         } else if (pagerItem == 1) {
@@ -628,7 +633,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     private void selectAll() {
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
-        if (currentFragment instanceof QuickNotesFragment || currentFragment instanceof DelayedNotesFragment) {
+        if (currentFragment instanceof ViewPagerFragment) {
             if (pagerItem == 0) {
                 QuickAdapter.getInstance().selectAll();
             } else if (pagerItem == 1) {
@@ -647,6 +652,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
 
     }
+
 
     private void selection(int i) {
         if (actionMode == null) {
@@ -671,6 +677,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     private void vpSelection(int i) {
+        vpFragment.getViewPager().setSwipeLocked(true);
+        vpFragment.getTabs().setVisibility(View.GONE);
         pagerItem = i;
         fab.setVisibility(View.GONE);
         if (pagerItem == 0) {
@@ -683,33 +691,41 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     private void delayedSelection() {
         if (actionMode == null) {
-            int index = vpFragment.getDelayedNotes().getRecyclerPosition();
-            int top = vpFragment.getDelayedNotes().getPadding();
-            DelayedAdapter.getInstance().setSelect(true);
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            DelayedNotesFragment delayedNotesFragment = new DelayedNotesFragment();
-            ft.replace(R.id.container, delayedNotesFragment);
-            ft.commitNowAllowingStateLoss();
+//            int index = vpFragment.getDelayedNotes().getRecyclerPosition();
+//            int top = vpFragment.getDelayedNotes().getPadding();
+            DelayedAdapter.getInstance().startSelection();
+//            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//            DelayedNotesFragment delayedNotesFragment = new DelayedNotesFragment();
+//            ft.replace(R.id.container, delayedNotesFragment);
+//            ft.commitNowAllowingStateLoss();
             actionMode = startSupportActionMode(callback);
             actionMode.setTitle("1");
-            delayedNotesFragment.scrollTo(index, top);
+//            delayedNotesFragment.scrollTo(index, top);
         }
     }
 
     private void quickSelection() {
         if (actionMode == null) {
-            int index = vpFragment.getQuickNotes().getRecyclerPosition();
-            int top = vpFragment.getQuickNotes().getPadding();
-            QuickAdapter.getInstance().setSelect(true);
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            QuickNotesFragment quickNotesFragment = new QuickNotesFragment();
-            ft.replace(R.id.container, quickNotesFragment);
-            ft.commitNowAllowingStateLoss();
+            QuickAdapter.getInstance().startSelection();
             actionMode = startSupportActionMode(callback);
             actionMode.setTitle("1");
-            quickNotesFragment.scrollTo(index, top);
         }
     }
+
+//    private void quickSelection() {
+//        if (actionMode == null) {
+//            int index = vpFragment.getQuickNotes().getRecyclerPosition();
+//            int top = vpFragment.getQuickNotes().getPadding();
+//            QuickAdapter.getInstance().setSelect(true);
+//            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//            QuickNotesFragment quickNotesFragment = new QuickNotesFragment();
+//            ft.replace(R.id.container, quickNotesFragment);
+//            ft.commitNowAllowingStateLoss();
+//            actionMode = startSupportActionMode(callback);
+//            actionMode.setTitle("1");
+//            quickNotesFragment.scrollTo(index, top);
+//        }
+//    }
 
     @Override
     public void selectedItemsCount(int i) {

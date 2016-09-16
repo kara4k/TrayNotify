@@ -47,15 +47,19 @@ public class ViewPagerFragment extends Fragment {
             viewPager.setCurrentItem(item);
         }
 
-        viewPager.setSwipeLocked(true);
+//        viewPager.setSwipeLocked(true);
 
         return linearLayout;
     }
 
-    public ViewPager getViewPager() {
+
+    public LockableViewPager getViewPager() {
         return viewPager;
     }
 
+    public TabLayout getTabs() {
+        return tabs;
+    }
 
     public void refreshQuick(List<Note> notes) {
         try {

@@ -58,7 +58,6 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
     }
 
 
-
     public void setSelectionMode(SelectionMode selectionMode) {
         this.selectionMode = selectionMode;
     }
@@ -148,6 +147,11 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
         }
     }
 
+    public void startSelection() {
+        select = true;
+        refreshAll();
+    }
+
     public void clearTrayAll() {
         for (Note x : notes) {
             x.setIcon(0);
@@ -158,12 +162,8 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
     public void endSelectionMode() {
         select = false;
         selectedItems = new SparseBooleanArray();
-
-        for (int i = 0; i < notes.size(); i++) {
-            notifyItemChanged(i);
-        }
         selectedCount = 0;
-
+        refreshAll();
     }
 
     public void selectAll() {
@@ -178,16 +178,26 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
     public void deleteSelected() {
         try {
             ArrayList<Integer> list = getSelectedId();
-            for (int i = 0; i < list.size(); i++) {
-                removeFromDB(list.get(i));
-                updateWidget(list.get(i));
-                removeTray(list.get(i));
 
-            }
-            notifyDataSetChanged();
+            removeFromList(list);
+            removeFromDB(list);
+            removeTray(list);
+            updateWidget(list);
+
         } catch (Exception e) {
         }
 
+    }
+
+    private void removeFromList(ArrayList<Integer> list) {
+        for (int i = 0; i < notes.size(); i++) {
+            for (int x : list) {
+                if (notes.get(i).getNumid() == x) {
+                    notes.remove(i);
+                    notifyItemRemoved(i);
+                }
+            }
+        }
     }
 
     @NonNull
@@ -202,29 +212,38 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
         return list;
     }
 
-    private void removeFromDB(int numId) {
+    private void removeFromDB(ArrayList<Integer> list) {
         DBQuick db = new DBQuick(context);
         db.open();
-        db.removeNote(numId);
+        for (int x : list) {
+            db.removeNote(x);
+        }
         db.close();
     }
 
-    private void removeTray(int numID) {
+    private void removeTray(ArrayList<Integer> list) {
         NotificationManagerCompat nm = NotificationManagerCompat.from(context);
-        nm.cancel(numID);
+        for (int x : list) {
+            nm.cancel(x);
+
+        }
     }
 
-    private void updateWidget(int numID) {
+    private void updateWidget(ArrayList<Integer> list) {
         SharedPreferences sp = context.getSharedPreferences(WidgetConfig.WIDGET_CONF, Context.MODE_PRIVATE);
-        int widgetID = sp.getInt("#" + numID, -1);
-        if (widgetID != -1) {
-            SharedPreferences.Editor edit = sp.edit();
-            edit.putInt(WidgetConfig.WIDGET_NOTE_ID + widgetID, 0);
-            edit.remove("#" + numID);
-            edit.apply();
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            Widget.updateWidget(context, appWidgetManager, sp, widgetID);
+        for (int x : list) {
+            int widgetID = sp.getInt("#" + x, -1);
+            if (widgetID != -1) {
+                SharedPreferences.Editor edit = sp.edit();
+                edit.putInt(WidgetConfig.WIDGET_NOTE_ID + widgetID, 0);
+                edit.remove("#" + x);
+                edit.apply();
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+                Widget.updateWidget(context, appWidgetManager, sp, widgetID);
+            }
         }
+
+
     }
 
     public class NotesViewHolder extends RecyclerView.ViewHolder {
