@@ -8,4 +8,7 @@
         <attr name="ImageVisible" format="boolean" />
         <attr name="Image" format="reference|integer" />
     </declare-styleable>
+    <declare-styleable name="LockableViewPager">
+        <attr name="locked" format="boolean" />
+    </declare-styleable>
 </resources>

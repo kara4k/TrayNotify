@@ -8,9 +8,11 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
@@ -22,8 +24,24 @@ public class RebootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+
         setReminders(context);
         showNotes(context);
+        startClipTracking(context);
+
+    }
+
+    private void startClipTracking(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean isTrack = sp.getBoolean(Settings.TRACK_CLIPBOARD, false);
+
+        if (isTrack) {
+            try {
+                Intent trackClip = new Intent(context, ClipboardService.class);
+                context.startService(trackClip);
+            } catch (Exception e) {
+            }
+        }
     }
 
     private void showNotes(Context context) {

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 class DBClip {
 
@@ -36,7 +35,6 @@ class DBClip {
     }
 
     public Cursor getAllData() {
-        Log.e("DBClip", "getAllData: " + "here");
         return mDB.query(TABLE_NAME, null, null, null, null, null, KEY_ID + " DESC");
     }
 
@@ -76,10 +74,8 @@ class DBClip {
     public boolean isExist(String text) {
         Cursor clips = mDB.query(TABLE_NAME, null, KEY_TEXT + "=?", new String[]{text}, null, null, null);
         if (clips.moveToFirst()) {
-            Log.e("DBClip", "isExist: " + "exist");
             return true;
         } else {
-            Log.e("DBClip", "isExist: " + "notExist");
             return false;
         }
     }

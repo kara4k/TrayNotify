@@ -1,5 +1,6 @@
 package com.kara4k.traynotify;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -28,11 +29,15 @@ public class ClipFragment extends Fragment {
         adapter.setNotes(clipList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        SelectionMode selectionMode = (SelectionMode) getActivity();
+        adapter.setSelectionMode(selectionMode);
+
         return recyclerView;
     }
 
     private void fillLists() {
-        clipList = getClipListFromDB();
+        clipList = getClipListFromDB(getContext());
         clipListAll.clear();
         clipListAll.addAll(clipList);
     }
@@ -45,9 +50,9 @@ public class ClipFragment extends Fragment {
         super.onStart();
     }
 
-    private List<Clip> getClipListFromDB() {
+    public static List<Clip> getClipListFromDB(Context context) {
         try {
-            DBClip db = new DBClip(getContext());
+            DBClip db = new DBClip(context);
             db.open();
             ArrayList<Clip> list = new ArrayList<>();
             Cursor allData = db.getAllData();

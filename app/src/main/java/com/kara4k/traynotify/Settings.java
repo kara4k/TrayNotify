@@ -62,7 +62,6 @@ public class Settings extends PreferenceActivity implements DialogInterface.OnCl
             }
         });
 
-        Log.e("c", "onCreate: " + "wtf");
         SwitchPreference trackCBPref = (SwitchPreference) findPreference(TRACK_CLIPBOARD);
         trackCBPref.setOnPreferenceChangeListener(this);
 
@@ -223,15 +222,22 @@ public class Settings extends PreferenceActivity implements DialogInterface.OnCl
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         if (preference.getKey().equals(TRACK_CLIPBOARD)) {
-            Intent clipService = new Intent(getApplicationContext(), ClipboardService.class);
-            if ((boolean) newValue) {
-                Log.e("c", "onPreferenceChange: " + "started");
-                startService(clipService);
-            } else {
-                Log.e("c", "onPreferenceChange: " + "stopped");
-                stopService(clipService);
+            try {
+                Intent clipService = new Intent(getApplicationContext(), ClipboardService.class);
+                toggleServiceRun((boolean) newValue, clipService);
+            } catch (Exception e) {
             }
         }
         return true;
+    }
+
+    private void toggleServiceRun(boolean newValue, Intent clipService) {
+        if (newValue) {
+            Log.e("c", "onPreferenceChange: " + "started");
+            startService(clipService);
+        } else {
+            Log.e("c", "onPreferenceChange: " + "stopped");
+            stopService(clipService);
+        }
     }
 }

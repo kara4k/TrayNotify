@@ -74,5 +74,5 @@
     <string name="ask_clear_clip_history">Очистить историю буфера обмена?</string>
     <string name="clear_list">Очистить</string>
     <string name="clear">Очистить</string>
-    <string name="save_clip_hist">Сохранять историю буфера обмена</string>
+    <string name="save_clip_hist">Записывать историю буфера обмена</string>
 </resources>

@@ -125,8 +125,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         getApplicationContext().registerReceiver(removeTrayReceiver, new IntentFilter("refreshTrayIcons"));
 
-        Intent intent = new Intent(this, ClipboardService.class); // TODO: 15.09.2016  remove
-        startService(intent);
+        try {
+            Intent intent = new Intent(this, ClipboardService.class); // TODO: 15.09.2016  remove
+            startService(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -183,7 +187,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         FragmentTransaction fta = getSupportFragmentManager().beginTransaction();
         fta.replace(R.id.container, fragment);
         fta.commitAllowingStateLoss();
-        fab.setVisibility(View.INVISIBLE);
+        if (fab.getVisibility() == View.VISIBLE) {
+            fab.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void rateApp() {
@@ -338,14 +344,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @NonNull
     private DialogInterface.OnClickListener getClearClipDialogListener() {
         return new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        try {
-                            clearClipHistory();
-                        } catch (Exception e) {
-                        }
-                    }
-                };
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                try {
+                    clearClipHistory();
+                } catch (Exception e) {
+                }
+            }
+        };
     }
 
     private void clearClipHistory() {
@@ -411,8 +417,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             return birthdayFragmentSearch(newText);
         } else if ((fragment != null) && (fragment instanceof ClipFragment)) {
             return clipFragmentSearch(newText);
-        }
-        else if ((fragment != null) && (fragment instanceof ViewPagerFragment)) {
+        } else if ((fragment != null) && (fragment instanceof ViewPagerFragment)) {
             int pagerItem = vpFragment.getViewPager().getCurrentItem();
             if (pagerItem == 0) {
                 return quickNotesSearch(newText);
@@ -550,8 +555,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 case R.id.action_selectAll:
                     selectAll();
                     break;
-
-
             }
             return false;
         }
@@ -587,20 +590,31 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     private void deleteSelectedOnConfirm() {
-        if (pagerItem == 0) {
-            QuickAdapter.getInstance().deleteSelected();
-            actionMode.finish();
-        } else if (pagerItem == 1) {
-            DelayedAdapter.getInstance().deleteSelected();
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
+        if (currentFragment instanceof QuickNotesFragment || currentFragment instanceof DelayedNotesFragment) {
+            if (pagerItem == 0) {
+                QuickAdapter.getInstance().deleteSelected();
+                actionMode.finish();
+            } else if (pagerItem == 1) {
+                DelayedAdapter.getInstance().deleteSelected();
+                actionMode.finish();
+            }
+        } else if (currentFragment instanceof ClipFragment) {
+            ClipAdapter.getInstance().deleteSelected();
             actionMode.finish();
         }
     }
 
     private void endActionMode() {
-        endSelectionForCurrent();
-        showFirstFragment();
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
+        if (currentFragment instanceof QuickNotesFragment || currentFragment instanceof DelayedNotesFragment) {
+            endSelectionForCurrent();
+            showFirstFragment();
+            fab.setVisibility(View.VISIBLE);
+        } else if (currentFragment instanceof ClipFragment) {
+            ClipAdapter.getInstance().endSelectionMode();
+        }
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED);
-        fab.setVisibility(View.VISIBLE);
         actionMode = null;
     }
 
@@ -613,10 +627,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     private void selectAll() {
-        if (pagerItem == 0) {
-            QuickAdapter.getInstance().selectAll();
-        } else if (pagerItem == 1) {
-            DelayedAdapter.getInstance().selectAll();
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
+        if (currentFragment instanceof QuickNotesFragment || currentFragment instanceof DelayedNotesFragment) {
+            if (pagerItem == 0) {
+                QuickAdapter.getInstance().selectAll();
+            } else if (pagerItem == 1) {
+                DelayedAdapter.getInstance().selectAll();
+            }
+        } else if (currentFragment instanceof ClipFragment) {
+            ClipAdapter.getInstance().selectAll();
         }
     }
 
@@ -630,8 +649,29 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     private void selection(int i) {
+        if (actionMode == null) {
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            if (currentFragment instanceof ViewPagerFragment) {
+                vpSelection(i);
+            } else if (currentFragment instanceof ClipFragment) {
+                clipSelection();
+            }
+        } else {
+            actionMode.finish();
+        }
+    }
+
+    private void clipSelection() {
+        if (actionMode == null) {
+            actionMode = startSupportActionMode(callback);
+            actionMode.setTitle("1");
+            ClipAdapter.getInstance().startSelection();
+        }
+    }
+
+    private void vpSelection(int i) {
         pagerItem = i;
-        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         fab.setVisibility(View.GONE);
         if (pagerItem == 0) {
             quickSelection();
@@ -639,6 +679,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             delayedSelection();
         }
     }
+
 
     private void delayedSelection() {
         if (actionMode == null) {
@@ -652,8 +693,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             actionMode = startSupportActionMode(callback);
             actionMode.setTitle("1");
             delayedNotesFragment.scrollTo(index, top);
-        } else {
-            actionMode.finish();
         }
     }
 
@@ -669,8 +708,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             actionMode = startSupportActionMode(callback);
             actionMode.setTitle("1");
             quickNotesFragment.scrollTo(index, top);
-        } else {
-            actionMode.finish();
         }
     }
 

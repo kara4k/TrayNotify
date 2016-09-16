@@ -706,12 +706,18 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
             case R.id.clear_forms:
                 clearForms();
                 break;
-//            case R.id.action_clear_notification:
-//                nm.cancel(checkThis);
+//            case R.id.copy:
+//                putToClipboard();
 //                break;
         }
         return super.onOptionsItemSelected(item);
     }
+
+//    private void putToClipboard() {
+//        ClipboardManager cm = (ClipboardManager) getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
+//        ClipData clip = ClipData.newPlainText("", textEdit.getText().toString());
+//        cm.setPrimaryClip(clip);
+//    }
 
     private void sendIntent() {
         Intent sendIntent = new Intent();

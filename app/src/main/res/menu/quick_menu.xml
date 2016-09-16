@@ -14,9 +14,9 @@
         android:icon="@drawable/ic_format_clear_white_24dp"
         app:showAsAction="ifRoom" />
     <!--<item-->
-        <!--android:id="@+id/action_clear_note"-->
+        <!--android:id="@+id/copy"-->
         <!--android:orderInCategory="3"-->
-        <!--android:title="@string/delete_tray_notification"-->
-        <!--android:icon="@drawable/ic_speaker_notes_off_white_24dp"-->
+        <!--android:title="paste"-->
+        <!--android:icon="@drawable/ic_content_copy_white_24dp"-->
         <!--app:showAsAction="ifRoom" />-->
 </menu>

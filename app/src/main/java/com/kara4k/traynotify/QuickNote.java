@@ -81,6 +81,8 @@ public class QuickNote extends AppCompatActivity {
     }
 
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.quick_menu, menu);
@@ -96,23 +98,12 @@ public class QuickNote extends AppCompatActivity {
             case R.id.clear_forms:
                 clearForms();
                 break;
-//            case R.id.action_clear_note:
-//                clearTrayCurrent();
+//            case R.id.copy:
+//                putToClipboard();
 //                break;
         }
         return super.onOptionsItemSelected(item);
     }
-
-//    private void clearTrayCurrent() {
-//        try {
-//            nm.cancel(id);
-//            DBQuick db = new DBQuick(getApplicationContext());
-//            db.open();
-//            db.setQuickTrayInDB(id, 0);
-//            db.close();
-//        } catch (Exception e) {
-//        }
-//    }
 
 
     private void sendIntent() {
@@ -222,5 +213,6 @@ public class QuickNote extends AppCompatActivity {
             return 0;
         }
     }
+
 
 }

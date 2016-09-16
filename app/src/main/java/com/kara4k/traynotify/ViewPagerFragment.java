@@ -19,7 +19,7 @@ import java.util.List;
 public class ViewPagerFragment extends Fragment {
 
     private TabLayout tabs;
-    private ViewPager viewPager;
+    private LockableViewPager viewPager;
     private QuickNotesFragment quickNotes;
     private DelayedNotesFragment delayedNotes;
     private Adapter adapter;
@@ -29,7 +29,7 @@ public class ViewPagerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.viewpager_fragment, container, false);
-        viewPager = (ViewPager) linearLayout.findViewById(R.id.viewpager);
+        viewPager = (LockableViewPager) linearLayout.findViewById(R.id.viewpager);
         adapter = new Adapter(getFragmentManager());
         quickNotes = new QuickNotesFragment();
         delayedNotes = new DelayedNotesFragment();
@@ -47,6 +47,7 @@ public class ViewPagerFragment extends Fragment {
             viewPager.setCurrentItem(item);
         }
 
+        viewPager.setSwipeLocked(true);
 
         return linearLayout;
     }

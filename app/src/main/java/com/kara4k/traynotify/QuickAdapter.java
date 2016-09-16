@@ -95,8 +95,11 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
         setIsChecked(notesViewHolder, i);
 
         if ((select) || (selectionMode == null)) {
-            notesViewHolder.dateLayout.setOnClickListener(null);
             notesViewHolder.tray.setVisibility(View.GONE);
+            notesViewHolder.dateLayoutListener = 0;
+        } else {
+            notesViewHolder.tray.setVisibility(View.VISIBLE);
+            notesViewHolder.dateLayoutListener = 1;
         }
 
     }
@@ -234,6 +237,7 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
         private final ImageView tray;
         private final CheckBox checkBox;
         private final LinearLayout dateLayout;
+        public int dateLayoutListener;
 
         NotesViewHolder(final View itemView) {
             super(itemView);
@@ -248,7 +252,15 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
             dateLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onTrayImageClick(view);
+                    if (dateLayoutListener == 1) {
+                        onTrayImageClick(view);
+                    } else if (dateLayoutListener == 0) {
+                        if (select) {
+                            toggleItemSelection(itemView);
+                        } else {
+                            selectNoteToWidget();
+                        }
+                    }
                 }
             });
 
@@ -257,8 +269,7 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
                 public void onClick(View view) {
                     try {
                         if (select) {
-                            selectionModeClick(itemView);
-                            checkForEndSelect();
+                            toggleItemSelection(itemView);
                         } else {
                             nonSelectionMode(view);
                         }
@@ -271,8 +282,7 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
                 @Override
                 public void onClick(View view) {
                     if (select) {
-                        selectionModeClick(itemView);
-                        checkForEndSelect();
+                        toggleItemSelection(itemView);
                     }
                 }
             });
@@ -291,6 +301,11 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
                     return true;
                 }
             });
+        }
+
+        private void toggleItemSelection(View itemView) {
+            selectionModeClick(itemView);
+            checkForEndSelect();
         }
 
         private void checkForEndSelect() {
@@ -317,21 +332,28 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
 
         private void nonSelectionMode(View view) {
             if (QuickAdapter.getInstance().getNoteId != null) {
-                int numid = getNotes().get(getAdapterPosition()).getNumid();
-                String title = getNotes().get(getAdapterPosition()).getTitle();
-                getNoteId.getId(numid, title);
+                selectNoteToWidget();
             } else {
-
-                Context context = view.getContext();
-                Note note = getNotes().get(getAdapterPosition());
-                Intent intent = new Intent(context, QuickNote.class);
-                intent.putExtra(Intent.EXTRA_SUBJECT, note.getTitle());
-                intent.putExtra(Intent.EXTRA_TEXT, note.getText());
-                boolean tray = note.getIcon() == 1 ? true : false;
-                intent.putExtra("tray", tray);
-                intent.putExtra("id", note.getNumid());
-                context.startActivity(intent);
+                startQuickNoteActivity(view);
             }
+        }
+
+        private void startQuickNoteActivity(View view) {
+            Context context = view.getContext();
+            Note note = getNotes().get(getAdapterPosition());
+            Intent intent = new Intent(context, QuickNote.class);
+            intent.putExtra(Intent.EXTRA_SUBJECT, note.getTitle());
+            intent.putExtra(Intent.EXTRA_TEXT, note.getText());
+            boolean tray = note.getIcon() == 1 ? true : false;
+            intent.putExtra("tray", tray);
+            intent.putExtra("id", note.getNumid());
+            context.startActivity(intent);
+        }
+
+        private void selectNoteToWidget() {
+            int numid = getNotes().get(getAdapterPosition()).getNumid();
+            String title = getNotes().get(getAdapterPosition()).getTitle();
+            getNoteId.getId(numid, title);
         }
 
         private void onTrayImageClick(View view) {
