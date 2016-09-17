@@ -55,13 +55,13 @@ class DBClip {
         close();
     }
 
-    public void setChecked(int numId, int value) {
+    private void setChecked(int numId, int value) {
         ContentValues cv = new ContentValues();
         cv.put(KEY_CHECKED, value);
         mDB.update(TABLE_NAME, cv, KEY_NUMID + "=?", new String[]{String.valueOf(numId)});
     }
 
-    public void uncheckAll() {
+    private void uncheckAll() {
         ContentValues cv = new ContentValues();
         cv.put(KEY_CHECKED, 0);
         mDB.update(TABLE_NAME, cv, KEY_CHECKED + "=?", new String[]{String.valueOf(1)});

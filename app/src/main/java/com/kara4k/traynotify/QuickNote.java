@@ -159,7 +159,7 @@ public class QuickNote extends AppCompatActivity {
 
 
         PendingIntent removePI = PendingIntent.getBroadcast(getApplicationContext(), id, actionRemoveIntent(), PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.addAction(R.drawable.ic_delete_sweep_white_24dp, getString(R.string.remove), removePI);  // TODO: 11.09.2016
+        mBuilder.addAction(R.drawable.ic_delete_sweep_white_24dp, getString(R.string.remove), removePI);
 
 
 //        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_icon));

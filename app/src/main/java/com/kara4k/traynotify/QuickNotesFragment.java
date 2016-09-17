@@ -26,7 +26,6 @@ public class QuickNotesFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        inflater.inflate(R.layout.quick_notes_fragment, container);
         recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
         adapter = QuickAdapter.getInstance();
         adapter.setGetNoteId(null);

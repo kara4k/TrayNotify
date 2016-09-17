@@ -97,7 +97,7 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
         Calendar calendar = Calendar.getInstance();
         long now = calendar.getTimeInMillis();
         long setTime = notes.get(i).getSetTime();
-        if ((notes.get(i).getRepeat() == 0)&&(now > setTime)) {
+        if ((notes.get(i).getRepeat() == 0) && (now > setTime)) {
             notesViewHolder.numid.setTextColor(Color.RED);
         }
     }
@@ -146,13 +146,13 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
     private void setRepeatWeekView(DelayedNotesViewHolder notesViewHolder, int i) {
         DateFormatSymbols formatSymbols = DateFormatSymbols.getInstance();
         String[] shortWeekdays = formatSymbols.getShortWeekdays();
-        String[] shortDays = new String[] {shortWeekdays[2].substring(0,1).toUpperCase().concat(shortWeekdays[2].substring(1)).concat(", "),
-                shortWeekdays[3].substring(0,1).toUpperCase().concat(shortWeekdays[3].substring(1)).concat(", "),
-                shortWeekdays[4].substring(0,1).toUpperCase().concat(shortWeekdays[4].substring(1)).concat(", "),
-                shortWeekdays[5].substring(0,1).toUpperCase().concat(shortWeekdays[5].substring(1)).concat(", "),
-                shortWeekdays[6].substring(0,1).toUpperCase().concat(shortWeekdays[6].substring(1)).concat(", "),
-                shortWeekdays[7].substring(0,1).toUpperCase().concat(shortWeekdays[7].substring(1)).concat(", "),
-                shortWeekdays[1].substring(0,1).toUpperCase().concat(shortWeekdays[1].substring(1))
+        String[] shortDays = new String[]{shortWeekdays[2].substring(0, 1).toUpperCase().concat(shortWeekdays[2].substring(1)).concat(", "),
+                shortWeekdays[3].substring(0, 1).toUpperCase().concat(shortWeekdays[3].substring(1)).concat(", "),
+                shortWeekdays[4].substring(0, 1).toUpperCase().concat(shortWeekdays[4].substring(1)).concat(", "),
+                shortWeekdays[5].substring(0, 1).toUpperCase().concat(shortWeekdays[5].substring(1)).concat(", "),
+                shortWeekdays[6].substring(0, 1).toUpperCase().concat(shortWeekdays[6].substring(1)).concat(", "),
+                shortWeekdays[7].substring(0, 1).toUpperCase().concat(shortWeekdays[7].substring(1)).concat(", "),
+                shortWeekdays[1].substring(0, 1).toUpperCase().concat(shortWeekdays[1].substring(1))
         };
 
         notesViewHolder.date.setVisibility(View.GONE);
@@ -212,23 +212,23 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
     }
 
 
-
     public void deleteSelected() {
         try {
             ArrayList<Integer> list = getSelectedId();
-            NotificationManagerCompat nm = NotificationManagerCompat.from(context);
-            AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            Intent alarmIntent = new Intent(context, AlarmReceiver.class);
 
             removeFromList(list);
-            // TODO: 16.09.2016 красиво
-            for (int i = 0; i < list.size(); i++) {
-                removeFromDB(list.get(i));
-                cancelAlarmEvent(am, alarmIntent, list.get(i));
-                nm.cancel(list.get(i));
-            }
-//            notifyDataSetChanged();
+            removeFromDB(list);
+            cancelAlarmEvent(list);
+            removeFromTray(list);
+
         } catch (Exception e) {
+        }
+    }
+
+    private void removeFromTray(ArrayList<Integer> list) {
+        NotificationManagerCompat nm = NotificationManagerCompat.from(context);
+        for (int x : list) {
+            nm.cancel(x);
         }
     }
 
@@ -237,10 +237,11 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
             for (int x : list) {
                 if (notes.get(i).getCheckId() == x) {
                     notes.remove(i);
-                    notifyItemRemoved(i);
+//                    notifyItemRemoved(i);
                 }
             }
         }
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -255,16 +256,22 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
         return list;
     }
 
-    private void removeFromDB(int checkId) {
+    private void removeFromDB(ArrayList<Integer> list) {
         DBDelay db = new DBDelay(context);
         db.open();
-        db.removeNote(checkId);
+        for (int x : list) {
+            db.removeNote(x);
+        }
         db.close();
     }
 
-    private void cancelAlarmEvent(AlarmManager am, Intent alarmIntent, int checkId) {
-        PendingIntent pi = PendingIntent.getBroadcast(context, checkId, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        am.cancel(pi);
+    private void cancelAlarmEvent(ArrayList<Integer> list) {
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+        for (int x : list) {
+            PendingIntent pi = PendingIntent.getBroadcast(context, x, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            am.cancel(pi);
+        }
     }
 
     public class DelayedNotesViewHolder extends RecyclerView.ViewHolder {
@@ -301,10 +308,9 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
                 public void onClick(View view) {
                     try {
                         if (select) {
-                           selectionModeClick(itemView);
+                            selectionModeClick(itemView);
                             checkForEndSelect();
-                        }
-                        else {
+                        } else {
                             goToEditActivity(view);
                         }
 

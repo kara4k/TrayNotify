@@ -18,13 +18,10 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
-import android.util.Log;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class AlarmReceiver extends BroadcastReceiver {
@@ -110,12 +107,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         if (setCal.get(Calendar.MONTH) < now.get(Calendar.MONTH)) {
             setCal.add(Calendar.YEAR, 1);
             setZeroSeconds(setCal);
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss SSSS");
-            Log.e("TAG", "getYearRepeatTime: " + sdf.format(new Date(setCal.getTimeInMillis())));
             return setCal.getTimeInMillis();
         } else if (setCal.get(Calendar.MONTH) > now.get(Calendar.MONTH)) {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss SSSS");
-            Log.e("TAG", "getYearRepeatTime: " + sdf.format(new Date(setCal.getTimeInMillis())));
             return setCal.getTimeInMillis();
         } else if (setCal.get(Calendar.MONTH) == now.get(Calendar.MONTH)) {
             int setDay = setCal.get(Calendar.DAY_OF_MONTH);
@@ -128,8 +121,6 @@ public class AlarmReceiver extends BroadcastReceiver {
                 return nowDayEqualsSetDay(setCal, now, nowDay, Calendar.YEAR);
             }
         }
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss SSSS");
-        Log.e("TAG", "getYearRepeatTime: " + "0");
         return 0;
     }
 
@@ -156,25 +147,17 @@ public class AlarmReceiver extends BroadcastReceiver {
         if (setCal.get(Calendar.HOUR_OF_DAY) < now.get(Calendar.HOUR_OF_DAY)) {
             setCal.add(field, 1);
             setZeroSeconds(setCal);
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss SSSS");
-            Log.e("TAG", "getYearRepeatTime: " + sdf.format(new Date(setCal.getTimeInMillis())));
             return setCal.getTimeInMillis();
         } else if (setCal.get(Calendar.HOUR_OF_DAY) > now.get(Calendar.HOUR_OF_DAY)) {
             setZeroSeconds(setCal);
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss SSSS");
-            Log.e("TAG", "getYearRepeatTime: " + sdf.format(new Date(setCal.getTimeInMillis())));
             return setCal.getTimeInMillis();
         } else if (setCal.get(Calendar.HOUR_OF_DAY) == now.get(Calendar.HOUR_OF_DAY)) {
             if (setCal.get(Calendar.MINUTE) <= now.get(Calendar.MINUTE)) {
                 setCal.add(field, 1);
                 setZeroSeconds(setCal);
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss SSSS");
-                Log.e("TAG", "getYearRepeatTime: " + sdf.format(new Date(setCal.getTimeInMillis())));
                 return setCal.getTimeInMillis();
             } else if (setCal.get(Calendar.MINUTE) > now.get(Calendar.MINUTE)) {
                 setZeroSeconds(setCal);
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss SSSS");
-                Log.e("TAG", "getYearRepeatTime: " + sdf.format(new Date(setCal.getTimeInMillis())));
                 return setCal.getTimeInMillis();
             }
         }
@@ -185,8 +168,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         setCal.set(Calendar.MONTH, now.get(Calendar.MONTH));
         setCal.set(Calendar.YEAR, now.get(Calendar.YEAR));
         setZeroSeconds(setCal);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss SSSS");
-        Log.e("TAG", "getYearRepeatTime: " + sdf.format(new Date(setCal.getTimeInMillis())));
         return setCal.getTimeInMillis();
     }
 
@@ -195,8 +176,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         setCal.set(Calendar.MONTH, now.get(Calendar.MONTH));
         setCal.set(Calendar.YEAR, now.get(Calendar.YEAR));
         setZeroSeconds(setCal);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss SSSS");
-        Log.e("TAG", "getYearRepeatTime: " + sdf.format(new Date(setCal.getTimeInMillis())));
         return setCal.getTimeInMillis();
     }
 

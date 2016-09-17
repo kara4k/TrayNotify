@@ -129,7 +129,7 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
         return notes.size();
     }
 
-    public void refreshAll() {
+    private void refreshAll() {
         for (int i = 0; i < notes.size(); i++) {
             notifyItemChanged(i);
         }
@@ -183,7 +183,7 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
             removeFromDB(list);
             removeTray(list);
             updateWidget(list);
-
+//            notifyDataSetChanged();
         } catch (Exception e) {
         }
 
@@ -194,10 +194,11 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
             for (int x : list) {
                 if (notes.get(i).getNumid() == x) {
                     notes.remove(i);
-                    notifyItemRemoved(i);
+//                    notifyItemRemoved(i);
                 }
             }
         }
+        notifyDataSetChanged();
     }
 
     @NonNull

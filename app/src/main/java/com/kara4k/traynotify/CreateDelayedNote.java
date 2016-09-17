@@ -5,6 +5,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
@@ -23,7 +24,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -66,6 +66,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     private MyView vibrate;
     private int birthday = 0;
     private SharedPreferences sp;
+    private MyView priority;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -177,13 +178,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         });
 
 
-//        Button test = (Button) findViewById(R.id.test);
-//        test.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                makeTest();
-//            }
-//        });
+
 
 
         sound = (MyView) findViewById(R.id.sound);
@@ -198,6 +193,8 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
             }
         });
 
+        priority = (MyView) findViewById(R.id.max_priority);
+        checkIfShowPriorityView();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -211,7 +208,15 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         onIntentReceive(tempId, vibrate);
     }
 
-    public void showSoundDialog() {
+    private void checkIfShowPriorityView() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            priority.setVisibility(View.GONE);
+        } else {
+            priority.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void showSoundDialog() {
         new android.app.AlertDialog.Builder(CreateDelayedNote.this).setTitle(sound.getText().getText())
                 .setPositiveButton(R.string.choose, this)
                 .setNegativeButton(getString(R.string.cancel), this)
@@ -384,6 +389,13 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
             vibration = null;
             vibrate.setText(getString(R.string.text_default));
         }
+
+        if (note.getPriority()!= 0) {
+            priority.getCheckbox().setChecked(true);
+        } else {
+            priority.getCheckbox().setChecked(false);
+        }
+
         birthday = note.getBirthday();
     }
 
@@ -606,7 +618,21 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     }
 
     private int getNotePriority() {
-        return 0;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return 0;
+        } else {
+            return checkIfImportant();
+        }
+
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private int checkIfImportant() {
+        if (priority.getCheckbox().isChecked()) {
+            return Notification.PRIORITY_MAX;
+        } else {
+            return Notification.PRIORITY_DEFAULT;
+        }
     }
 
     private int getNoteCheckId() {
@@ -618,8 +644,6 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         writeNoteToDb();
         setMainCallZeroSecs();
         setAlarm(getPendingIntent());
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss SSSS");
-        Log.e("TAG", "getYearRepeatTime: " + sdf.format(new Date(mainCal.getTimeInMillis())) );
         finish();
     }
 
@@ -706,18 +730,11 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
             case R.id.clear_forms:
                 clearForms();
                 break;
-//            case R.id.copy:
-//                putToClipboard();
-//                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-//    private void putToClipboard() {
-//        ClipboardManager cm = (ClipboardManager) getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
-//        ClipData clip = ClipData.newPlainText("", textEdit.getText().toString());
-//        cm.setPrimaryClip(clip);
-//    }
+
 
     private void sendIntent() {
         Intent sendIntent = new Intent();
@@ -742,66 +759,12 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         repeatYear.getCheckbox().setChecked(false);
         setDefaultSoundText();
         setDefaultSoundUri();
-//        soundUri = null;
-//        sound.setText(getString(R.string.text_default));
-//        vibration = null;
-//        vibrate.setText(getString(R.string.text_default));
         setDefaultVibroPattern();
+        priority.getCheckbox().setChecked(false);
         birthday = 0;
 
     }
 
-//    private void makeTest() {
-//
-//        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
-//        if (titleEdit.getText().toString().equals("")) {
-//            mBuilder.setContentTitle(getString(R.string.app_name));
-//        } else {
-//            mBuilder.setContentTitle(titleEdit.getText().toString());
-//        }
-//        mBuilder.setContentText(textEdit.getText().toString());
-//        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(textEdit.getText().toString()));
-//        mBuilder.setSmallIcon(R.drawable.notify);
-//        if (soundUri == null && vibration == null) {
-//            mBuilder.setDefaults(Notification.DEFAULT_ALL);
-//        } else if (soundUri != null && vibration == null) {
-//            mBuilder.setSound(soundUri);
-//            mBuilder.setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
-//        } else if (vibration != null && soundUri == null) {
-//            mBuilder.setVibrate(vibration);
-//            mBuilder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS);
-//        } else if (soundUri != null && vibration != null) {
-//            mBuilder.setSound(soundUri);
-//            mBuilder.setVibrate(vibration);
-//            mBuilder.setDefaults(Notification.DEFAULT_LIGHTS);
-//        }
-//
-//        mBuilder.setSmallIcon(R.drawable.notify);
-//        setLargeIcon(mBuilder);
-//
-//        nm.notify(0, mBuilder.build());
-//    }
-
-//    private void setLargeIcon(NotificationCompat.Builder mBuilder) {
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-//            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_icon));
-//        } else {
-//            tryBirthdayPhoto(mBuilder);
-//        }
-//    }
-
-//    private void tryBirthdayPhoto(NotificationCompat.Builder mBuilder) {
-//        if (birthday != 0) {
-//            try {
-//                Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), Uri.parse("content://com.android.contacts/contacts/" + birthday + "/display_photo"));
-//                mBuilder.setLargeIcon(mBitmap);
-//            } catch (IOException e) {
-//                mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_icon));
-//            }
-//        } else {
-//            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_icon));
-//        }
-//    }
 
     private void chooseSoundIntent() {
         Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);

@@ -141,6 +141,15 @@
             <View style="@style/Divider" />
 
             <com.kara4k.traynotify.MyView
+                android:id="@+id/max_priority"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:CheckVisible="true"
+                app:ImageVisible="false"
+                app:Text="@string/show_as_popup"
+                app:Title="@string/important" />
+
+            <com.kara4k.traynotify.MyView
                 android:id="@+id/sound"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -157,6 +166,7 @@
                 app:ImageVisible="true"
                 app:Text="@string/text_default"
                 app:Title="@string/vibration" />
+
 
             <View
                 style="@style/Divider"

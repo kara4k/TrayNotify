@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +26,7 @@ public class ClipAdapter extends RecyclerView.Adapter<ClipAdapter.ClipHolder> {
 
     private List<Clip> notes;
     private Context context;
-    protected ClipboardManager cm;
+    private ClipboardManager cm;
 
     private SparseBooleanArray selectedItems = new SparseBooleanArray();
     private boolean select;
@@ -74,13 +73,11 @@ public class ClipAdapter extends RecyclerView.Adapter<ClipAdapter.ClipHolder> {
         setDateTime(holder, i);
         IfInClipNowIcon(holder, i);
 
-        Log.e("ClipAdapter", "onBindViewHolder: " + String.valueOf(select) + "\n" + notes.get(i).getText());
 
         holder.itemView.setSelected(selectedItems.get(i, false));
 
         ifSelectionMode(holder, i);
 
-        Log.e("ClipAdapter", "onBindViewHolder: visib " + holder.checkBox.getVisibility());
 
 
 
@@ -147,7 +144,7 @@ public class ClipAdapter extends RecyclerView.Adapter<ClipAdapter.ClipHolder> {
         refreshAll();
     }
 
-    public void refreshAll() {
+    private void refreshAll() {
         for (int i = 0; i < notes.size(); i++) {
             notifyItemChanged(i);
         }
@@ -180,10 +177,11 @@ public class ClipAdapter extends RecyclerView.Adapter<ClipAdapter.ClipHolder> {
             for (int x : list) {
                 if (notes.get(i).getNumId() == x) {
                     notes.remove(i);
-                    notifyItemRemoved(i);
+//                    notifyItemRemoved(i);
                 }
             }
         }
+        notifyDataSetChanged();
     }
 
 

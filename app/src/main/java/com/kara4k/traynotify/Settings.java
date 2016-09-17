@@ -18,7 +18,6 @@ import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.widget.Toast;
 
 public class Settings extends PreferenceActivity implements DialogInterface.OnClickListener, VibroDialogFragment.MDialogInterface, Preference.OnPreferenceChangeListener {
@@ -233,10 +232,8 @@ public class Settings extends PreferenceActivity implements DialogInterface.OnCl
 
     private void toggleServiceRun(boolean newValue, Intent clipService) {
         if (newValue) {
-            Log.e("c", "onPreferenceChange: " + "started");
             startService(clipService);
         } else {
-            Log.e("c", "onPreferenceChange: " + "stopped");
             stopService(clipService);
         }
     }

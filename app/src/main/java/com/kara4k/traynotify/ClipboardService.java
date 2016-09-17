@@ -8,18 +8,16 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
 
 import java.util.Calendar;
 
 public class ClipboardService extends Service implements ClipboardManager.OnPrimaryClipChangedListener {
 
-    ClipboardManager cm;
-    NotificationManagerCompat nm;
+    private ClipboardManager cm;
+    private NotificationManagerCompat nm;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e("ClipboardService", "onStartCommand: " + "onStart");
 
         cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         nm = NotificationManagerCompat.from(getApplicationContext());
@@ -33,7 +31,6 @@ public class ClipboardService extends Service implements ClipboardManager.OnPrim
     @Override
     public void onDestroy() {
        cm.removePrimaryClipChangedListener(this);
-        Log.e("ClipboardService", "onDestroy: " + "removed");
         super.onDestroy();
     }
 
@@ -83,10 +80,8 @@ public class ClipboardService extends Service implements ClipboardManager.OnPrim
         DBClip db = new DBClip(getApplicationContext());
         db.open();
         int id = db.getClipNumID();
-        Log.e("ClipboardService", "writeClipToDB: " + id);
         if (!db.isExist(text)) {
             db.addClip(text, getCurrentTime(), id);
-            Log.e("ClipboardService", "writeClipToDB: " + "writing to db!");
         }
         db.close();
     }

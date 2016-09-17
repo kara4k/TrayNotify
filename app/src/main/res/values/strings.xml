@@ -26,7 +26,7 @@
     <string name="pattern">Set pattern</string>
     <string name="days_capital">Days</string>
     <string name="cancel">Cancel</string>
-    <string name="melody">Select Tone</string>
+    <string name="melody">Tone</string>
     <string name="sms_access_denied">SMS access denied</string>
     <string name="sec">" sec."</string>
     <string name="times">" times."</string>
@@ -39,21 +39,16 @@
     <string name="vibration">Vibration</string>
     <string name="notification">Notification</string>
     <string name="loading">Loading</string>
-    <string name="first_message">To remove from the tray attached particular record, go to the editing screen by touching it, and use the rightmost icon.</string>
-    <string name="second_message">To clear all notifications in the system tray use the rightmost icon in the main window.</string>
     <string name="text_color">Text color</string>
     <string name="text_size">Text size</string>
     <string name="backround">Background</string>
     <string name="note">Note</string>
-    <string name="edit">Edit</string>
-    <string name="ok">Apply</string>
     <string name="deselect">Deselect</string>
     <string name="sort">Sort</string>
     <string name="days_sort">Days</string>
     <string name="name_sort">Name</string>
     <string name="age_sort">Age</string>
     <string name="search">Search</string>
-    <string name="first_message_text">Or click on the icon below the text to the left of the time</string>
     <string name="delete_ask">Delete selected notes?</string>
     <string name="delete">Delete</string>
     <string name="select_all">Select All</string>
@@ -74,4 +69,6 @@
     <string name="ask_clear_clip_history">Clear clipboard history?</string>
     <string name="clear">Clear</string>
     <string name="save_clip_hist">Save clipboard history</string>
+    <string name="important">Important</string>
+    <string name="show_as_popup">Show as popup</string>
 </resources>

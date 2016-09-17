@@ -1,6 +1,6 @@
 package com.kara4k.traynotify;
 
-public class Clip {
+class Clip {
     private int id;
     private String text;
     private long date;

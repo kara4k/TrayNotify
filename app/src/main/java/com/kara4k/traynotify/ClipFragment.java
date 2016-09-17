@@ -16,9 +16,9 @@ import java.util.List;
 
 public class ClipFragment extends Fragment {
 
-    ClipAdapter adapter;
-    List<Clip> clipList;
-    List<Clip> clipListAll = new ArrayList<>();
+    private ClipAdapter adapter;
+    private List<Clip> clipList;
+    private List<Clip> clipListAll = new ArrayList<>();
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
@@ -50,7 +50,7 @@ public class ClipFragment extends Fragment {
         super.onStart();
     }
 
-    public static List<Clip> getClipListFromDB(Context context) {
+    private static List<Clip> getClipListFromDB(Context context) {
         try {
             DBClip db = new DBClip(context);
             db.open();

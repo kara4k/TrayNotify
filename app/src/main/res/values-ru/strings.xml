@@ -40,12 +40,8 @@
     <string name="vibration">Вибрация</string>
     <string name="notification">Напоминание</string>
     <string name="loading">Загрузка</string>
-    <string name="first_message">Для удаления из трея конкретной закрепленной записи, перейдите в экран редактирования, коснувшись ее, и используйте крайнюю правую пиктограмму.</string>
-    <string name="second_message">Для очистки всех уведомлений в трее используйте крайнюю правую пиктограмму в главном окне.</string>
     <string name="backround">Фон</string>
-    <string name="edit">Правка</string>
     <string name="note">Заметка</string>
-    <string name="ok">Применить</string>
     <string name="text_color">Цвет текста</string>
     <string name="text_size">Размер текста</string>
     <string name="deselect">Убрать</string>
@@ -54,7 +50,6 @@
     <string name="days_sort">Дни</string>
     <string name="sort">Сортировать</string>
     <string name="search">Поиск</string>
-    <string name="first_message_text">Или нажмите на иконку под этим текстом, слева от времени</string>
     <string name="delete">Удалить</string>
     <string name="delete_ask">Удалить выбранные записи?</string>
     <string name="select_all">Выбрать все</string>
@@ -75,4 +70,6 @@
     <string name="clear_list">Очистить</string>
     <string name="clear">Очистить</string>
     <string name="save_clip_hist">Записывать историю буфера обмена</string>
+    <string name="important">Важное</string>
+    <string name="show_as_popup">Всплывать поверх окон</string>
 </resources>
