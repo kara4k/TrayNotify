@@ -30,7 +30,7 @@ public class ClipboardService extends Service implements ClipboardManager.OnPrim
 
     @Override
     public void onDestroy() {
-       cm.removePrimaryClipChangedListener(this);
+        cm.removePrimaryClipChangedListener(this);
         super.onDestroy();
     }
 
@@ -42,17 +42,36 @@ public class ClipboardService extends Service implements ClipboardManager.OnPrim
 
     @Override
     public void onPrimaryClipChanged() {
-        if (cm.getPrimaryClip() != null) {
-            if ((isTextPlain(cm)) || (isTextHTML(cm))) {
-                if (ifNotSpace()) {
-                    String s = cm.getPrimaryClip().getItemAt(0).getText().toString();
-                    writeClipToDB(s);
+        tryWriteOnChange();
+    }
 
+    public void tryWriteOnChange() {
+        try {
+            writeOnChange();
+        } catch (Exception e) {
+        }
+    }
 
+    public void writeOnChange() {
+        if (ifWriteToDB(cm)) {
+            String s = cm.getPrimaryClip().getItemAt(0).getText().toString();
+            writeClipToDB(s);
+        }
+    }
+
+    private boolean ifWriteToDB(ClipboardManager cm) {
+        try {
+            if (ClipAdapter.ifNotNullClipNow(cm)) {
+                if ((isTextPlain(cm)) || (isTextHTML(cm))) {
+                    if (ifNotSpace()) {
+                        return true;
+                    }
                 }
             }
+            return false;
+        } catch (Exception e) {
+            return false;
         }
-
     }
 
     private boolean isTextPlain(ClipboardManager cm) {

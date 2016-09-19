@@ -21,15 +21,18 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RemoteViews;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -176,9 +179,6 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
             }
         });
-
-
-
 
 
         sound = (MyView) findViewById(R.id.sound);
@@ -390,7 +390,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
             vibrate.setText(getString(R.string.text_default));
         }
 
-        if (note.getPriority()!= 0) {
+        if (note.getPriority() != 0) {
             priority.getCheckbox().setChecked(true);
         } else {
             priority.getCheckbox().setChecked(false);
@@ -629,7 +629,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private int checkIfImportant() {
         if (priority.getCheckbox().isChecked()) {
-            return Notification.PRIORITY_MAX;
+            return Notification.PRIORITY_HIGH;
         } else {
             return Notification.PRIORITY_DEFAULT;
         }
@@ -730,10 +730,109 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
             case R.id.clear_forms:
                 clearForms();
                 break;
+            case R.id.copy:
+                makeTest();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void makeTest() {
+
+        NotificationManagerCompat nm = NotificationManagerCompat.from(getApplicationContext());
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
+//        if (titleEdit.getText().toString().equals("")) {
+//            mBuilder.setContentTitle(getString(R.string.app_name));
+//        } else {
+//            mBuilder.setContentTitle(titleEdit.getText().toString());
+//        }
+//        mBuilder.setContentText(textEdit.getText().toString());
+//        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(textEdit.getText().toString()));
+//        mBuilder.setSmallIcon(R.drawable.notify);
+        if (soundUri == null && vibration == null) {
+            mBuilder.setDefaults(Notification.DEFAULT_ALL);
+        } else if (soundUri != null && vibration == null) {
+            mBuilder.setSound(soundUri);
+            mBuilder.setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
+        } else if (vibration != null && soundUri == null) {
+            mBuilder.setVibrate(vibration);
+            mBuilder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS);
+        } else if (soundUri != null && vibration != null) {
+            mBuilder.setSound(soundUri);
+            mBuilder.setVibrate(vibration);
+            mBuilder.setDefaults(Notification.DEFAULT_LIGHTS);
+        }
+
+        mBuilder.setSmallIcon(R.drawable.notify);
+//        Intent intent = new Intent(getApplicationContext(), QuickNote.class);
+//        PendingIntent p = PendingIntent.getActivity(getApplicationContext(), note.getCheckId(), getPackageManager().getLaunchIntentForPackage(getPackageName())
+//                ,PendingIntent.FLAG_UPDATE_CURRENT);
+//        mBuilder.setFullScreenIntent(p,true);
+
+        if (titleEdit.getText().toString().toLowerCase().contains("ongoing")) {
+            mBuilder.setOngoing(true);
+        }
+        if (titleEdit.getText().toString().toLowerCase().contains("push")) {
+
+            mBuilder.setPriority(Notification.PRIORITY_HIGH);
+        }
+
+
+//        NotificationCompat.BigPictureStyle notiStyle = new
+//                NotificationCompat.BigPictureStyle();
+//        notiStyle.setBigContentTitle("Big Picture Expanded");
+//        notiStyle.setSummaryText("Nice big picture.");
+
+
+        Intent intent = new Intent(getApplicationContext(), QuickNote.class);
+        PendingIntent p = PendingIntent.getActivity(getApplicationContext(), note.getCheckId(), getPackageManager().getLaunchIntentForPackage(getPackageName())
+                , PendingIntent.FLAG_UPDATE_CURRENT);
+
+        RemoteViews smallView = new RemoteViews(getPackageName(), R.layout.notification);
+//        Drawable drawable = getApplicationInfo().loadIcon(getPackageManager());
+//        Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+
+//        remoteView.setImageViewBitmap(R.id.n_app_icon,bitmap);
+//        smallView.setTextViewText(R.id.n_title, titleEdit.getText().toString());
+        smallView.setTextViewText(R.id.n_text, textEdit.getText().toString());
+        smallView.setViewVisibility(R.id.n_main_icon, View.VISIBLE);
+//        remoteView.setTextViewText(R.id.n_time, "#1");
+
+        RemoteViews bigView = new RemoteViews(getPackageName(), R.layout.notification_big);
+//        bigView.setInt(R.id.n_big_layout, "setBackgroundColor", Color.BLACK);
+//        bigView.setInt(R.id.n_big_text, "setTextColor", Color.WHITE);
+
+
+        bigView.setTextViewText(R.id.n_big_title, titleEdit.getText().toString());
+        bigView.setTextViewText(R.id.n_big_text, textEdit.getText().toString());
+
+        Intent quickIntent = new Intent(getApplicationContext(), QuickNote.class);
+        PendingIntent actionPI = PendingIntent.getActivity(getApplicationContext(), note.getCheckId(), quickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        bigView.setOnClickPendingIntent(R.id.n_big_actions,actionPI);
+        bigView.setViewVisibility(R.id.n_big_main_icon, View.GONE);
+
+//        bigView.setViewVisibility(R.id.n_big_notetype, View.GONE);
+//        bigView.setViewVisibility(R.id.n_big_numid, View.GONE);
+
+
+
+        mBuilder.setContent(smallView);
+        mBuilder.setCustomBigContentView(bigView);
+
+        RemoteViews pushView = new RemoteViews(getPackageName(), R.layout.notification_big);
+        pushView.setTextViewText(R.id.n_big_title, titleEdit.getText().toString());
+        pushView.setTextViewText(R.id.n_big_text, textEdit.getText().toString());
+        pushView.setViewVisibility(R.id.n_big_actions, View.GONE);
+        pushView.setViewVisibility(R.id.n_big_main_icon, View.VISIBLE);
+
+
+        mBuilder.setCustomHeadsUpContentView(pushView);
+
+        mBuilder.setContentIntent(p);
+
+        nm.notify(0, mBuilder.build());
+    }
 
 
     private void sendIntent() {

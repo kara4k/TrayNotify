@@ -71,15 +71,14 @@ public class ClipAdapter extends RecyclerView.Adapter<ClipAdapter.ClipHolder> {
         holder.text.setText(notes.get(i).getText());
 
         setDateTime(holder, i);
+
+
         IfInClipNowIcon(holder, i);
 
 
         holder.itemView.setSelected(selectedItems.get(i, false));
 
         ifSelectionMode(holder, i);
-
-
-
 
 
     }
@@ -99,14 +98,30 @@ public class ClipAdapter extends RecyclerView.Adapter<ClipAdapter.ClipHolder> {
 
     private void IfInClipNowIcon(ClipHolder holder, int i) {
 
-        if ((cm.getPrimaryClip() != null)) {
-            checkIfInClipNow(holder, i);
-        } else {
+        try {
+            if (ifNotNullClipNow(cm)) {
+                checkIfInClipNow(holder, i);
+            } else {
+                setNotInClipIcon(holder, i);
+            }
+        } catch (Exception e) {
             setNotInClipIcon(holder, i);
         }
     }
 
+    public static boolean ifNotNullClipNow(ClipboardManager cm) {
+        if (cm.getPrimaryClip() != null) {
+            if (cm.getPrimaryClip().getItemAt(0) != null) {
+                if (cm.getPrimaryClip().getItemAt(0).toString() != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private void checkIfInClipNow(ClipHolder holder, int i) {
+
         String textInClipNow = cm.getPrimaryClip().getItemAt(0).getText().toString();
         if ((textInClipNow.equals(notes.get(i).getText()))) {
             setInClipIcon(holder, i);

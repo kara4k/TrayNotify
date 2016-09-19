@@ -32,5 +32,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="NotificationBigActionsStyle">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
 
 </resources>

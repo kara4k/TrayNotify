@@ -71,4 +71,7 @@
     <string name="save_clip_hist">Save clipboard history</string>
     <string name="important">Important</string>
     <string name="show_as_popup">Show as popup</string>
+    <string name="copy">COPY</string>
+    <string name="close">CLOSE</string>
+    <string name="n_share">SHARE</string>
 </resources>

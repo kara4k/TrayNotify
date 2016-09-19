@@ -72,4 +72,7 @@
     <string name="save_clip_hist">Записывать историю буфера обмена</string>
     <string name="important">Важное</string>
     <string name="show_as_popup">Всплывать поверх окон</string>
+    <string name="n_share">ОТПРАВИТЬ</string>
+    <string name="copy">КОПИРОВАТЬ</string>
+    <string name="close">ЗАКРЫТЬ</string>
 </resources>
