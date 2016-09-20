@@ -71,16 +71,16 @@
             android:paddingRight="@dimen/n_big_actions_padding">
 
             <ImageView
+                android:id="@+id/n_big_share_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/n_big_share_icon"
-                android:src="@drawable/ic_share_white_24dp" />
+                android:src="@drawable/ic_share_black_24dp" />
 
             <TextView
+                android:id="@+id/n_big_share_text"
                 style="@style/NotificationBigActionsStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/n_big_share_text"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="5dp"
                 android:ellipsize="end"
@@ -101,16 +101,16 @@
             android:paddingRight="@dimen/n_big_actions_padding">
 
             <ImageView
+                android:id="@+id/n_big_copy_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/n_big_copy_icon"
-                android:src="@drawable/ic_content_copy_white_24dp" />
+                android:src="@drawable/ic_content_copy_black_24dp" />
 
             <TextView
+                android:id="@+id/n_big_copy_text"
                 style="@style/NotificationBigActionsStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/n_big_copy_text"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="5dp"
                 android:ellipsize="end"
@@ -128,22 +128,64 @@
             android:paddingRight="@dimen/n_big_actions_padding">
 
             <ImageView
+                android:id="@+id/n_big_close_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/n_big_close_icon"
-                android:src="@drawable/ic_close_white_24dp" />
+                android:src="@drawable/ic_close_black_24dp" />
 
             <TextView
+                android:id="@+id/n_big_close_text"
                 style="@style/NotificationBigActionsStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/n_big_close_text"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="5dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@string/close" />
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/n_big_actions2"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/n_big_actions"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+
+            <ImageView
+                android:id="@+id/n_big_share_icon2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/dimen_default"
+                android:src="@drawable/ic_share_black_24dp" />
+
+
+            <ImageView
+                android:id="@+id/n_big_copy_icon2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:paddingRight="@dimen/dimen_default"
+                android:src="@drawable/ic_content_copy_black_24dp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/n_big_close_icon2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="@dimen/dimen_default"
+            android:src="@drawable/ic_close_black_24dp" />
+
+
     </LinearLayout>
 
 

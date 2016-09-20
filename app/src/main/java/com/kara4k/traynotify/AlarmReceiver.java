@@ -289,14 +289,25 @@ public class AlarmReceiver extends BroadcastReceiver {
         if (showActions) {
             boolean showText = sp.getBoolean(Settings.REM_SHOW_ACTIONS_TEXT, true);
             if (!showText) {
-                bigView.setViewVisibility(R.id.n_big_share_text, View.GONE);
-                bigView.setViewVisibility(R.id.n_big_copy_text, View.GONE);
-                bigView.setViewVisibility(R.id.n_big_close_text, View.GONE);
+//                bigView.setViewVisibility(R.id.n_big_share_text, View.GONE);
+//                bigView.setViewVisibility(R.id.n_big_copy_text, View.GONE);
+//                bigView.setViewVisibility(R.id.n_big_close_text, View.GONE);
+//
+//                int iconColor = sp.getInt(Settings.REM_ACTIONS_ICON_COLOR, Color.BLACK);
+//                bigView.setInt(R.id.n_big_share_icon, "setColorFilter", iconColor);
+//                bigView.setInt(R.id.n_big_copy_icon, "setColorFilter", iconColor);
+//                bigView.setInt(R.id.n_big_close_icon, "setColorFilter", iconColor);
+
+                bigView.setViewVisibility(R.id.n_big_actions, View.GONE);
+                bigView.setViewVisibility(R.id.n_big_actions2, View.VISIBLE);
 
                 int iconColor = sp.getInt(Settings.REM_ACTIONS_ICON_COLOR, Color.BLACK);
-                bigView.setInt(R.id.n_big_share_icon, "setColorFilter", iconColor);
-                bigView.setInt(R.id.n_big_copy_icon, "setColorFilter", iconColor);
-                bigView.setInt(R.id.n_big_close_icon, "setColorFilter", iconColor);
+                bigView.setInt(R.id.n_big_share_icon2, "setColorFilter", iconColor);
+                bigView.setInt(R.id.n_big_copy_icon2, "setColorFilter", iconColor);
+                bigView.setInt(R.id.n_big_close_icon2, "setColorFilter", iconColor);
+                bigView.setOnClickPendingIntent(R.id.n_big_share_icon2,getActionPI(context,note,1));
+                bigView.setOnClickPendingIntent(R.id.n_big_copy_icon2,getActionPI(context,note,2));
+                bigView.setOnClickPendingIntent(R.id.n_big_close_icon2,getActionPI(context,note,3));
             } else {
                 int actionsTextColor = sp.getInt(Settings.REM_ACTIONS_TEXT_COLOR, Color.BLACK);
                 bigView.setInt(R.id.n_big_share_text, "setTextColor", actionsTextColor);
@@ -307,6 +318,10 @@ public class AlarmReceiver extends BroadcastReceiver {
                 bigView.setInt(R.id.n_big_share_icon, "setColorFilter", iconColor);
                 bigView.setInt(R.id.n_big_copy_icon, "setColorFilter", iconColor);
                 bigView.setInt(R.id.n_big_close_icon, "setColorFilter", iconColor);
+
+                bigView.setOnClickPendingIntent(R.id.n_big_share, getActionPI(context, note, 1));
+                bigView.setOnClickPendingIntent(R.id.n_big_copy, getActionPI(context, note, 2));
+                bigView.setOnClickPendingIntent(R.id.n_big_close, getActionPI(context, note, 3));
             }
 
 
@@ -318,9 +333,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         trySetPhotoIfBirthday(context, bigView, R.id.n_big_main_icon, textColor);
 
 
-        bigView.setOnClickPendingIntent(R.id.n_big_share, getActionPI(context, note, 1));
-        bigView.setOnClickPendingIntent(R.id.n_big_copy, getActionPI(context, note, 2));
-        bigView.setOnClickPendingIntent(R.id.n_big_close, getActionPI(context, note, 3));
+
         return bigView;
     }
 
