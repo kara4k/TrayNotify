@@ -59,7 +59,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/info"
         android:layout_marginTop="10dp"
-        android:clickable="true"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -74,12 +73,14 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_share_black_24dp" />
+                android:id="@+id/n_big_share_icon"
+                android:src="@drawable/ic_share_white_24dp" />
 
             <TextView
                 style="@style/NotificationBigActionsStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/n_big_share_text"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="5dp"
                 android:ellipsize="end"
@@ -102,12 +103,14 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_content_copy_black_24dp" />
+                android:id="@+id/n_big_copy_icon"
+                android:src="@drawable/ic_content_copy_white_24dp" />
 
             <TextView
                 style="@style/NotificationBigActionsStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/n_big_copy_text"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="5dp"
                 android:ellipsize="end"
@@ -127,12 +130,14 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_close_black_24dp" />
+                android:id="@+id/n_big_close_icon"
+                android:src="@drawable/ic_close_white_24dp" />
 
             <TextView
                 style="@style/NotificationBigActionsStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/n_big_close_text"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="5dp"
                 android:ellipsize="end"

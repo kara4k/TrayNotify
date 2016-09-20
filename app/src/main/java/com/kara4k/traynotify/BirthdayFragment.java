@@ -17,6 +17,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -210,7 +211,8 @@ public class BirthdayFragment extends Fragment {
         return age;
     }
 
-    private int getZodiacSign(String birthday) {
+    public static int getZodiacSign(String birthday) {
+        Log.e("BirthdayFragment", "getZodiacSign: " + birthday);
         String[] yearMonthDay = birthday.split("-");
         int month = Integer.parseInt(yearMonthDay[1]);
         int day = Integer.parseInt(yearMonthDay[2]);

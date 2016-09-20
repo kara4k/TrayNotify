@@ -4,14 +4,25 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 
 public class NActionReceiver extends BroadcastReceiver {
+
+    public static final String TYPE = "type";
+    public static final String ID = "id";
+    public static final String ACTION = "action";
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        try {
-            removeTrayNotification(context, intent);
-        } catch (Exception e) {
+        int action = intent.getIntExtra(ACTION, 0);
+        Log.e("NActionReceiver", "onReceive: " + action);
+
+        if (action == 3) {
+            try {
+                removeTrayNotification(context, intent);
+            } catch (Exception e) {
+            }
         }
     }
 

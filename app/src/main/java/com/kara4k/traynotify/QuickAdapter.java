@@ -1,15 +1,12 @@
 package com.kara4k.traynotify;
 
 
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationManagerCompat;
-import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -365,7 +362,7 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
             intent.putExtra(Intent.EXTRA_SUBJECT, note.getTitle());
             intent.putExtra(Intent.EXTRA_TEXT, note.getText());
             boolean tray = note.getIcon() == 1 ? true : false;
-            intent.putExtra("tray", tray);
+            intent.putExtra("inTray", tray);
             intent.putExtra("id", note.getNumid());
             context.startActivity(intent);
         }
@@ -382,7 +379,7 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
                 Note note = QuickAdapter.getInstance().getNotes().get(getAdapterPosition());
                 NotificationManagerCompat nm = NotificationManagerCompat.from(context);
                 if (note.getIcon() != 1) {
-                    nm.notify(note.getNumid(), createNotification(context, note));
+                    nm.notify(note.getNumid(), RebootReceiver.makeNotification(context, note));
                     tray.setImageResource(R.drawable.ic_speaker_notes_red_24dp);
                     writeTrayToDB(context, note, 1);
                     note.setIcon(1);
@@ -405,45 +402,7 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
             db.close();
         }
 
-        private Notification createNotification(Context context, Note note) {
-            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
-            mBuilder.setContentTitle(note.getTitle());
-            mBuilder.setContentText(note.getText());
-            mBuilder.setContentInfo("#" + String.valueOf(note.getNumid()).substring(1));
-            mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(note.getText()));
-            mBuilder.setOngoing(true);
-            mBuilder.setContentIntent(PendingIntent.getActivities(context, note.getNumid(), makeIntent(context, note), PendingIntent.FLAG_UPDATE_CURRENT));
-            mBuilder.setSmallIcon(R.drawable.notify);
 
-//            mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.main_icon));
-
-            PendingIntent removePI = PendingIntent.getBroadcast(context, note.getNumid(), actionRemoveIntent(note.getNumid()), PendingIntent.FLAG_UPDATE_CURRENT);
-            mBuilder.addAction(R.drawable.ic_delete_sweep_white_24dp, context.getString(R.string.remove), removePI);
-
-            return mBuilder.build();
-
-
-        }
-
-        private Intent actionRemoveIntent(int id) {
-            Intent intent = new Intent(context, NActionReceiver.class);
-            intent.putExtra("type", 1);
-            intent.putExtra("id", id);
-            return intent;
-        }
-
-        private Intent[] makeIntent(Context context, Note note) {
-            Intent main = new Intent(context, MainActivity.class);
-            main.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            Intent quick = new Intent(context, QuickNote.class);
-
-            quick.putExtra(Intent.EXTRA_SUBJECT, note.getTitle());
-            quick.putExtra(Intent.EXTRA_TEXT, note.getText());
-            quick.putExtra("id", note.getNumid());
-            quick.putExtra("tray", true);
-            return new Intent[]{main, quick};
-        }
 
 
     }

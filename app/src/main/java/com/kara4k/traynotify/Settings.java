@@ -26,6 +26,23 @@ public class Settings extends PreferenceActivity implements DialogInterface.OnCl
     public static final String TRACK_NAME = "track_name";
     public static final String VIBRATION = "vibration";
     public static final String TRACK_CLIPBOARD = "track_clipboard";
+    public static final String VERSION_CODE = "version_code";
+
+    public static final String QUICK_BACKGROUND = "n_q_background";
+    public static final String QUICK_TEXT = "n_q_text";
+    public static final String QUICK_SHOW_ACTIONS = "n_q_show_actions";
+    public static final String QUICK_SHOW_ACTIONS_TEXT = "n_q_show_actions_text";
+    public static final String QUICK_ACTIONS_TEXT_COLOR = "n_q_actions_text_color";
+    public static final String QUICK_ACTIONS_ICON_COLOR = "n_q_actions_icon_color";
+
+    public static final String REM_BACKGROUND = "n_r_background";
+    public static final String REM_TEXT = "n_r_text";
+    public static final String REM_SHOW_ACTIONS = "n_r_show_actions";
+    public static final String REM_SHOW_ACTIONS_TEXT = "n_r_show_actions_text";
+    public static final String REM_ACTIONS_TEXT_COLOR = "n_r_actions_text_color";
+    public static final String REM_ACTIONS_ICON_COLOR = "n_r_actions_icon_color";
+    public static final String REM_PUSH_BACKGROUND = "n_r_push_background";
+    public static final String REM_PUSH_TEXT_COLOR = "n_r_push_text_color";
 
 
     private Uri soundUri;
@@ -63,6 +80,11 @@ public class Settings extends PreferenceActivity implements DialogInterface.OnCl
 
         SwitchPreference trackCBPref = (SwitchPreference) findPreference(TRACK_CLIPBOARD);
         trackCBPref.setOnPreferenceChangeListener(this);
+
+        SwitchPreference remActions = (SwitchPreference) findPreference(REM_SHOW_ACTIONS);
+        remActions.setOnPreferenceChangeListener(this);
+        SwitchPreference quickActions = (SwitchPreference) findPreference(QUICK_SHOW_ACTIONS);
+        remActions.setOnPreferenceChangeListener(this);
 
     }
 
@@ -225,6 +247,18 @@ public class Settings extends PreferenceActivity implements DialogInterface.OnCl
                 Intent clipService = new Intent(getApplicationContext(), ClipboardService.class);
                 toggleServiceRun((boolean) newValue, clipService);
             } catch (Exception e) {
+            }
+        }
+        if (preference.getKey().equals(REM_SHOW_ACTIONS)) {
+            SwitchPreference remShowActionText = (SwitchPreference) findPreference(REM_SHOW_ACTIONS_TEXT);
+            if (!(boolean)newValue) {
+                remShowActionText.setChecked(false);
+            }
+        }
+        if (preference.getKey().equals(QUICK_SHOW_ACTIONS)) {
+            SwitchPreference quickShowActionText = (SwitchPreference) findPreference(QUICK_SHOW_ACTIONS_TEXT);
+            if (!(boolean)newValue) {
+                quickShowActionText.setChecked(false);
             }
         }
         return true;

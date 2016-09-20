@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -749,21 +750,24 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 //        mBuilder.setContentText(textEdit.getText().toString());
 //        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(textEdit.getText().toString()));
 //        mBuilder.setSmallIcon(R.drawable.notify);
-        if (soundUri == null && vibration == null) {
-            mBuilder.setDefaults(Notification.DEFAULT_ALL);
-        } else if (soundUri != null && vibration == null) {
-            mBuilder.setSound(soundUri);
-            mBuilder.setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
-        } else if (vibration != null && soundUri == null) {
-            mBuilder.setVibrate(vibration);
-            mBuilder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS);
-        } else if (soundUri != null && vibration != null) {
-            mBuilder.setSound(soundUri);
-            mBuilder.setVibrate(vibration);
-            mBuilder.setDefaults(Notification.DEFAULT_LIGHTS);
-        }
+//        if (soundUri == null && vibration == null) {
+//            mBuilder.setDefaults(Notification.DEFAULT_ALL);
+//        } else if (soundUri != null && vibration == null) {
+//            mBuilder.setSound(soundUri);
+//            mBuilder.setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
+//        } else if (vibration != null && soundUri == null) {
+//            mBuilder.setVibrate(vibration);
+//            mBuilder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS);
+//        } else if (soundUri != null && vibration != null) {
+//            mBuilder.setSound(soundUri);
+//            mBuilder.setVibrate(vibration);
+//            mBuilder.setDefaults(Notification.DEFAULT_LIGHTS);
+//        }
 
-        mBuilder.setSmallIcon(R.drawable.notify);
+//        Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+        mBuilder.setSmallIcon(R.drawable.ic_note_black_24dp);
+        mBuilder.setColor(Color.RED);
+//        mBuilder.setSmallIcon(R.drawable.notify);
 //        Intent intent = new Intent(getApplicationContext(), QuickNote.class);
 //        PendingIntent p = PendingIntent.getActivity(getApplicationContext(), note.getCheckId(), getPackageManager().getLaunchIntentForPackage(getPackageName())
 //                ,PendingIntent.FLAG_UPDATE_CURRENT);
@@ -795,12 +799,18 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 //        remoteView.setImageViewBitmap(R.id.n_app_icon,bitmap);
 //        smallView.setTextViewText(R.id.n_title, titleEdit.getText().toString());
         smallView.setTextViewText(R.id.n_text, textEdit.getText().toString());
-        smallView.setViewVisibility(R.id.n_main_icon, View.VISIBLE);
+        smallView.setInt(R.id.n_text, "setTextColor", Color.WHITE);
+        smallView.setInt(R.id.n_layout, "setBackgroundColor", Color.BLACK);
+//        smallView.setViewVisibility(R.id.n_main_icon, View.VISIBLE);
 //        remoteView.setTextViewText(R.id.n_time, "#1");
 
         RemoteViews bigView = new RemoteViews(getPackageName(), R.layout.notification_big);
-//        bigView.setInt(R.id.n_big_layout, "setBackgroundColor", Color.BLACK);
-//        bigView.setInt(R.id.n_big_text, "setTextColor", Color.WHITE);
+        bigView.setInt(R.id.n_big_layout, "setBackgroundColor", Color.BLACK);
+        bigView.setInt(R.id.n_big_text, "setTextColor", Color.WHITE);
+        bigView.setInt(R.id.n_big_title, "setTextColor", Color.WHITE);
+        int color = Color.parseColor("#AB894567");
+        bigView.setInt(R.id.n_big_share_icon, "setColorFilter", Color.RED);
+        bigView.setInt(R.id.n_big_close_icon, "setColorFilter", color);
 
 
         bigView.setTextViewText(R.id.n_big_title, titleEdit.getText().toString());
@@ -825,6 +835,9 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         pushView.setTextViewText(R.id.n_big_text, textEdit.getText().toString());
         pushView.setViewVisibility(R.id.n_big_actions, View.GONE);
         pushView.setViewVisibility(R.id.n_big_main_icon, View.VISIBLE);
+        pushView.setInt(R.id.n_big_layout, "setBackgroundColor", Color.BLACK);
+        pushView.setInt(R.id.n_big_text, "setTextColor", Color.WHITE);
+        pushView.setInt(R.id.n_big_title, "setTextColor", Color.WHITE);
 
 
         mBuilder.setCustomHeadsUpContentView(pushView);

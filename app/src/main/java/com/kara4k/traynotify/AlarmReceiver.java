@@ -8,16 +8,22 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
+import android.view.View;
+import android.widget.RemoteViews;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -184,28 +190,225 @@ public class AlarmReceiver extends BroadcastReceiver {
         setCal.set(Calendar.MILLISECOND, 0000);
     }
 
+//    private void showTrayNotification(Context context) {
+//        NotificationManagerCompat nm = NotificationManagerCompat.from(context);
+//        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
+//        mBuilder.setContentText(note.getText());
+//        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(note.getText()));
+//        mBuilder.setContentTitle(note.getTitle());
+//        setVibroSound(mBuilder);
+//        mBuilder.setPriority(note.getPriority());
+//        mBuilder.setContentInfo(String.valueOf(note.getCheckId()));
+//        mBuilder.setAutoCancel(false);
+//        mBuilder.setContentIntent(PendingIntent.getActivities(context, note.getCheckId(), makeIntent(context), PendingIntent.FLAG_UPDATE_CURRENT));
+//        mBuilder.setOngoing(true);
+//        mBuilder.setSmallIcon(R.drawable.notify);
+//
+//        if (note.getBirthday() != 0) {
+//            setLargeIcon(context, mBuilder);
+//        }
+//
+//        PendingIntent removePI = PendingIntent.getBroadcast(context, note.getCheckId(), actionRemoveIntent(context, note.getCheckId()), PendingIntent.FLAG_UPDATE_CURRENT);
+//        mBuilder.addAction(R.drawable.ic_delete_sweep_white_24dp, context.getString(R.string.remove), removePI);
+//
+//        nm.notify(note.getCheckId(), mBuilder.build());
+//    }
+
     private void showTrayNotification(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+
         NotificationManagerCompat nm = NotificationManagerCompat.from(context);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
-        mBuilder.setContentText(note.getText());
-        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(note.getText()));
-        mBuilder.setContentTitle(note.getTitle());
+        mBuilder.setSmallIcon(R.drawable.ic_alarm_on_white_24dp); // TODO: 19.09.2016
         setVibroSound(mBuilder);
         mBuilder.setPriority(note.getPriority());
-        mBuilder.setContentInfo(String.valueOf(note.getCheckId()));
-        mBuilder.setAutoCancel(false);
-        mBuilder.setContentIntent(PendingIntent.getActivities(context, note.getCheckId(), makeIntent(context), PendingIntent.FLAG_UPDATE_CURRENT));
+        mBuilder.setContentIntent(getMainPI(context));
         mBuilder.setOngoing(true);
-        mBuilder.setSmallIcon(R.drawable.notify);
 
-        if (note.getBirthday() != 0) {
-            setLargeIcon(context, mBuilder);
-        }
 
-        PendingIntent removePI = PendingIntent.getBroadcast(context, note.getCheckId(), actionRemoveIntent(context, note.getCheckId()), PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.addAction(R.drawable.ic_delete_sweep_white_24dp, context.getString(R.string.remove), removePI);
+
+        RemoteViews smallView = getSmallViews(context, sp);
+        mBuilder.setContent(smallView);
+
+
+        RemoteViews bigView = getBigViews(context, sp);
+        mBuilder.setCustomBigContentView(bigView);
+
+
+        RemoteViews pushView = getPushViews(context, sp);
+        mBuilder.setCustomHeadsUpContentView(pushView);
+//        pushView.setViewVisibility(R.id.n_big_main_icon, View.VISIBLE);
+//        pushView.setInt(R.id.n_big_layout, "setBackgroundColor", Color.BLACK);
+//        pushView.setInt(R.id.n_big_text, "setTextColor", Color.WHITE);
+//        pushView.setInt(R.id.n_big_title, "setTextColor", Color.WHITE);
+
 
         nm.notify(note.getCheckId(), mBuilder.build());
+    }
+
+    @NonNull
+    private RemoteViews getPushViews(Context context, SharedPreferences sp) {
+        RemoteViews pushView = new RemoteViews(context.getPackageName(), R.layout.notification_big);
+        pushView.setTextViewText(R.id.n_big_title, note.getTitle());
+        pushView.setTextViewText(R.id.n_big_text, note.getText());
+        pushView.setViewVisibility(R.id.n_big_actions, View.GONE);
+
+        int pushBackground = sp.getInt(Settings.REM_PUSH_BACKGROUND, Color.WHITE);
+        pushView.setInt(R.id.n_big_layout, "setBackgroundColor", pushBackground);
+
+        int pushTextColor = sp.getInt(Settings.REM_PUSH_TEXT_COLOR, Color.BLACK);
+        pushView.setInt(R.id.n_big_title, "setTextColor", pushTextColor);
+        pushView.setInt(R.id.n_big_text, "setTextColor", pushTextColor);
+
+        pushView.setOnClickPendingIntent(R.id.n_big_layout, null);
+
+
+        trySetPhotoIfBirthday(context, pushView, R.id.n_big_main_icon, Color.RED);
+        return pushView;
+    }
+
+    @NonNull
+    private RemoteViews getBigViews(Context context,SharedPreferences sp) {
+        RemoteViews bigView = new RemoteViews(context.getPackageName(), R.layout.notification_big);
+        bigView.setTextViewText(R.id.n_big_title, note.getTitle());
+        bigView.setTextViewText(R.id.n_big_text, note.getText());
+        bigView.setOnClickPendingIntent(R.id.n_big_actions, getMainPI(context));
+
+        int background = sp.getInt(Settings.REM_BACKGROUND, Color.WHITE);
+        Log.e("AlarmReceiver", "getSmallViews: " + background);
+        bigView.setInt(R.id.n_big_layout, "setBackgroundColor", background);
+
+        int textColor = sp.getInt(Settings.REM_TEXT, Color.BLACK);
+        Log.e("AlarmReceiver", "getSmallViews: " + textColor);
+        bigView.setInt(R.id.n_big_title, "setTextColor", textColor);
+        bigView.setInt(R.id.n_big_text, "setTextColor", textColor);
+
+
+        boolean showActions = sp.getBoolean(Settings.REM_SHOW_ACTIONS, true);
+
+        if (showActions) {
+            boolean showText = sp.getBoolean(Settings.REM_SHOW_ACTIONS_TEXT, true);
+            if (!showText) {
+                bigView.setViewVisibility(R.id.n_big_share_text, View.GONE);
+                bigView.setViewVisibility(R.id.n_big_copy_text, View.GONE);
+                bigView.setViewVisibility(R.id.n_big_close_text, View.GONE);
+
+                int iconColor = sp.getInt(Settings.REM_ACTIONS_ICON_COLOR, Color.BLACK);
+                bigView.setInt(R.id.n_big_share_icon, "setColorFilter", iconColor);
+                bigView.setInt(R.id.n_big_copy_icon, "setColorFilter", iconColor);
+                bigView.setInt(R.id.n_big_close_icon, "setColorFilter", iconColor);
+            } else {
+                int actionsTextColor = sp.getInt(Settings.REM_ACTIONS_TEXT_COLOR, Color.BLACK);
+                bigView.setInt(R.id.n_big_share_text, "setTextColor", actionsTextColor);
+                bigView.setInt(R.id.n_big_copy_text, "setTextColor", actionsTextColor);
+                bigView.setInt(R.id.n_big_close_text, "setTextColor", actionsTextColor);
+
+                int iconColor = sp.getInt(Settings.REM_ACTIONS_ICON_COLOR, Color.BLACK);
+                bigView.setInt(R.id.n_big_share_icon, "setColorFilter", iconColor);
+                bigView.setInt(R.id.n_big_copy_icon, "setColorFilter", iconColor);
+                bigView.setInt(R.id.n_big_close_icon, "setColorFilter", iconColor);
+            }
+
+
+        } else {
+            bigView.setViewVisibility(R.id.n_big_actions, View.GONE);
+        }
+
+
+        trySetPhotoIfBirthday(context, bigView, R.id.n_big_main_icon, textColor);
+
+
+        bigView.setOnClickPendingIntent(R.id.n_big_share, getActionPI(context, note, 1));
+        bigView.setOnClickPendingIntent(R.id.n_big_copy, getActionPI(context, note, 2));
+        bigView.setOnClickPendingIntent(R.id.n_big_close, getActionPI(context, note, 3));
+        return bigView;
+    }
+
+
+
+    @NonNull
+    private RemoteViews getSmallViews(Context context, SharedPreferences sp) {
+        RemoteViews smallView = new RemoteViews(context.getPackageName(), R.layout.notification);
+        smallView.setTextViewText(R.id.n_text, getNText(context, note));
+
+        int background = sp.getInt(Settings.REM_BACKGROUND, Color.WHITE);
+        Log.e("AlarmReceiver", "getSmallViews: " + background);
+        smallView.setInt(R.id.n_layout, "setBackgroundColor", background);
+
+        int textColor = sp.getInt(Settings.REM_TEXT, Color.BLACK);
+        Log.e("AlarmReceiver", "getSmallViews: " + textColor);
+        smallView.setInt(R.id.n_text, "setTextColor", textColor);
+
+        trySetPhotoIfBirthday(context, smallView, R.id.n_main_icon, textColor);
+        return smallView;
+    }
+
+
+
+    private void trySetPhotoIfBirthday(Context context, RemoteViews views, int imageView, int color) {
+        try {
+            setPhotoIfBirthday(context, views, imageView, color);
+        } catch (Exception e) {
+            views.setViewVisibility(imageView, View.GONE);
+        }
+    }
+
+
+
+    private void setPhotoIfBirthday(Context context, RemoteViews views, int imageView, int color) {
+        if (ifBirthday()) {
+            views.setViewVisibility(imageView, View.VISIBLE);
+            try {
+                Bitmap mBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse("content://com.android.contacts/contacts/" + note.getBirthday() + "/display_photo"));
+                views.setImageViewBitmap(imageView, mBitmap);
+            } catch (IOException e) {
+                views.setImageViewResource(imageView, BirthdayFragment.getZodiacSign(parseDate()));
+                views.setInt(imageView, "setColorFilter", color);
+            }
+        }
+    }
+
+    private String parseDate() {
+        Calendar birthday = Calendar.getInstance();
+        birthday.setTimeInMillis(note.getSetTime());
+        int year = birthday.get(Calendar.YEAR);
+        int month = birthday.get(Calendar.MONTH);
+        int day = birthday.get(Calendar.DAY_OF_MONTH);
+        return String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
+    }
+
+    private boolean ifBirthday() {
+        if (note.getBirthday() != 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static String getNText(Context context, DelayedNote note) {
+        if (!note.getText().equals("")) {
+            return note.getText();
+        } else if (!note.getTitle().equals("")) {
+            return note.getTitle();
+        } else return context.getString(R.string.app_name);
+    }
+
+    private PendingIntent getActionPI(Context context, DelayedNote note, int action) {
+        int pIid = Integer.parseInt(String.valueOf(note.getCheckId()).concat(String.valueOf(action)));
+        Log.e("QuickNote", "getActionPI: " + pIid);
+        return PendingIntent.getBroadcast(context, pIid, getActionIntent(context, note, action), PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private Intent getActionIntent(Context context, DelayedNote note, int action) {
+        Intent intent = new Intent(context, NActionReceiver.class);
+        intent.putExtra(NActionReceiver.TYPE, 2);
+        intent.putExtra(NActionReceiver.ID, note.getCheckId());
+        intent.putExtra(NActionReceiver.ACTION, action);
+        return intent;
+    }
+
+    private PendingIntent getMainPI(Context context) {
+        return PendingIntent.getActivities(context, note.getCheckId(), makeIntent(context), PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private Intent actionRemoveIntent(Context context, int id) {

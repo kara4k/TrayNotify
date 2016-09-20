@@ -30,7 +30,9 @@
             android:layout_height="wrap_content"
             android:maxLines="2"
             android:ellipsize="end"
-            android:text="45454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545"
+            android:minLines="2"
+            android:gravity="top"
+            android:text=""
             android:textColor="@android:color/black" />
     </LinearLayout>
 </RelativeLayout>

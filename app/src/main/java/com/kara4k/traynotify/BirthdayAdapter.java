@@ -122,7 +122,7 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.Birthd
                     int id = Integer.parseInt(BirthdayAdapter.getInstance().getBirthdays().get(getAdapterPosition()).getId());
 
 
-                    delayed.putExtra(Intent.EXTRA_TEXT, name + ",\n" + date +",\n" +  age + context.getString(R.string.years));
+                    delayed.putExtra(Intent.EXTRA_TEXT, name + ",\n" + date +", " +  age + context.getString(R.string.years));
                     delayed.putExtra("time", setTimer);
                     delayed.putExtra("birthday", id);
                     context.startActivity(delayed);

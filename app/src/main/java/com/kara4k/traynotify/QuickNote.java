@@ -7,15 +7,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RemoteViews;
 
 import java.util.Calendar;
 
@@ -24,6 +29,7 @@ public class QuickNote extends AppCompatActivity {
     private EditText title;
     private EditText text;
     private NotificationManagerCompat nm;
+    private SharedPreferences sp;
 
     private MyView tray;
 
@@ -38,6 +44,7 @@ public class QuickNote extends AppCompatActivity {
 
         trySetDefaultAsHomeEnabled();
 
+        sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         title = (EditText) findViewById(R.id.editTitle);
         text = (EditText) findViewById(R.id.textedit);
@@ -76,7 +83,7 @@ public class QuickNote extends AppCompatActivity {
             title.setText(getIntent().getStringExtra(Intent.EXTRA_SUBJECT));
             text.setText(getIntent().getStringExtra(Intent.EXTRA_TEXT));
             id = getIntent().getIntExtra("id", id);
-            tray.getCheckbox().setChecked(getIntent().getBooleanExtra("tray", false));
+            tray.getCheckbox().setChecked(getIntent().getBooleanExtra("inTray", false));
         }
     }
 
@@ -125,54 +132,180 @@ public class QuickNote extends AppCompatActivity {
     private void create() {
 
         if (tray.getCheckbox().isChecked()) {
-            createNote();
+//            createNote();
+            createTray();
             writeToDB();
         } else {
             writeToDB();
             nm.cancel(id);
         }
 
+        updateWidgetIfExist();
+
+        finish();
+
+    }
+
+    private void updateWidgetIfExist() {
         SharedPreferences sp = getSharedPreferences(WidgetConfig.WIDGET_CONF, Context.MODE_PRIVATE);
         int widgetID = sp.getInt("#" + id, -1);
         if (widgetID != -1) {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
             Widget.updateWidget(this, appWidgetManager, sp, widgetID);
         }
-
-        finish();
-
     }
 
-    private void createNote() {
+//    private void createNote() {
+//        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
+//        if (title.getText().toString().equals("")) {
+//            mBuilder.setContentTitle(getString(R.string.app_name));
+//        } else {
+//            mBuilder.setContentTitle(title.getText().toString());
+//        }
+//        mBuilder.setContentText(text.getText().toString());
+//        mBuilder.setContentInfo("#" + String.valueOf(id).substring(1));
+//        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(text.getText().toString()));
+//        mBuilder.setOngoing(true);
+//        mBuilder.setContentIntent(getMainPI());
+//        mBuilder.setSmallIcon(R.drawable.notify);
+//
+//
+//        PendingIntent removePI = PendingIntent.getBroadcast(getApplicationContext(), id, actionRemoveIntent(), PendingIntent.FLAG_UPDATE_CURRENT);
+//        mBuilder.addAction(R.drawable.ic_delete_sweep_white_24dp, getString(R.string.remove), removePI);
+//
+//
+////        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_icon));
+//        nm.notify(id, mBuilder.build());
+//
+//    }
+
+    private void createTray() {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
-        if (title.getText().toString().equals("")) {
-            mBuilder.setContentTitle(getString(R.string.app_name));
-        } else {
-            mBuilder.setContentTitle(title.getText().toString());
-        }
-        mBuilder.setContentText(text.getText().toString());
-        mBuilder.setContentInfo("#" + String.valueOf(id).substring(1));
-        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(text.getText().toString()));
+        mBuilder.setSmallIcon(R.drawable.ic_description_white_24dp); // TODO: 19.09.2016
+        mBuilder.setContentIntent(getMainPI());
         mBuilder.setOngoing(true);
-        mBuilder.setContentIntent(PendingIntent.getActivities(getApplicationContext(), id, makeIntent(), PendingIntent.FLAG_UPDATE_CURRENT));
-        mBuilder.setSmallIcon(R.drawable.notify);
+
+        RemoteViews smallView = getSmallViews();
+        mBuilder.setContent(smallView);
+
+        RemoteViews bigView = getBigViews();
+        mBuilder.setCustomBigContentView(bigView);
 
 
-        PendingIntent removePI = PendingIntent.getBroadcast(getApplicationContext(), id, actionRemoveIntent(), PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.addAction(R.drawable.ic_delete_sweep_white_24dp, getString(R.string.remove), removePI);
 
-
-//        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_icon));
         nm.notify(id, mBuilder.build());
-
     }
 
-    private Intent actionRemoveIntent() {
+    @NonNull
+    private RemoteViews getBigViews() {
+        RemoteViews bigView = new RemoteViews(getPackageName(), R.layout.notification_big);
+        bigView.setTextViewText(R.id.n_big_title, getTitleName());
+        bigView.setTextViewText(R.id.n_big_text, text.getText().toString());
+        bigView.setOnClickPendingIntent(R.id.n_big_actions,getMainPI());
+
+        int background = sp.getInt(Settings.QUICK_BACKGROUND, Color.WHITE);
+        bigView.setInt(R.id.n_big_layout, "setBackgroundColor", background);
+
+        int textColor = sp.getInt(Settings.QUICK_TEXT, Color.BLACK);
+        bigView.setInt(R.id.n_big_title, "setTextColor", textColor);
+        bigView.setInt(R.id.n_big_text, "setTextColor", textColor);
+
+
+
+
+
+        boolean showActions = sp.getBoolean(Settings.QUICK_SHOW_ACTIONS, true);
+        if (showActions) {
+
+            boolean showText = sp.getBoolean(Settings.QUICK_SHOW_ACTIONS_TEXT, true);
+            if (!showText) {
+                bigView.setViewVisibility(R.id.n_big_share_text, View.GONE);
+                bigView.setViewVisibility(R.id.n_big_copy_text, View.GONE);
+                bigView.setViewVisibility(R.id.n_big_close_text, View.GONE);
+
+                int iconColor = sp.getInt(Settings.QUICK_ACTIONS_ICON_COLOR, Color.BLACK);
+                bigView.setInt(R.id.n_big_share_icon, "setColorFilter", iconColor);
+                bigView.setInt(R.id.n_big_copy_icon, "setColorFilter", iconColor);
+                bigView.setInt(R.id.n_big_close_icon, "setColorFilter", iconColor);
+            } else {
+                int actionsTextColor = sp.getInt(Settings.QUICK_ACTIONS_TEXT_COLOR, Color.BLACK);
+                bigView.setInt(R.id.n_big_share_text, "setTextColor", actionsTextColor);
+                bigView.setInt(R.id.n_big_copy_text, "setTextColor", actionsTextColor);
+                bigView.setInt(R.id.n_big_close_text, "setTextColor", actionsTextColor);
+
+                int iconColor = sp.getInt(Settings.QUICK_ACTIONS_ICON_COLOR, Color.BLACK);
+                bigView.setInt(R.id.n_big_share_icon, "setColorFilter", iconColor);
+                bigView.setInt(R.id.n_big_copy_icon, "setColorFilter", iconColor);
+                bigView.setInt(R.id.n_big_close_icon, "setColorFilter", iconColor);
+            }
+
+        } else {
+            bigView.setViewVisibility(R.id.n_big_actions, View.GONE);
+        }
+
+
+        bigView.setOnClickPendingIntent(R.id.n_big_share,getActionPI(1));
+        bigView.setOnClickPendingIntent(R.id.n_big_copy,getActionPI(2));
+        bigView.setOnClickPendingIntent(R.id.n_big_close,getActionPI(3));
+        return bigView;
+    }
+
+    @NonNull
+    private RemoteViews getSmallViews() {
+        RemoteViews smallView = new RemoteViews(getPackageName(), R.layout.notification);
+        smallView.setTextViewText(R.id.n_text, getSmallViewText());
+
+        int background = sp.getInt(Settings.QUICK_BACKGROUND, Color.WHITE);
+        smallView.setInt(R.id.n_layout, "setBackgroundColor", background);
+
+        int textColor = sp.getInt(Settings.QUICK_TEXT, Color.BLACK);
+        smallView.setInt(R.id.n_text, "setTextColor", textColor);
+
+        return smallView;
+    }
+
+    private String getSmallViewText() {
+        if (!text.getText().toString().equals("")) {
+            return text.getText().toString();
+        } else if (!title.getText().toString().equals("")) {
+            return title.getText().toString();
+        } else {
+            return getString(R.string.app_name);
+        }
+    }
+
+    private PendingIntent getActionPI(int action) {
+        int pIid= Integer.parseInt(String.valueOf(id).concat(String.valueOf(action)));
+        Log.e("QuickNote", "getActionPI: " + pIid);
+        return PendingIntent.getBroadcast(getApplicationContext(),pIid, getActionIntent(action), PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private Intent getActionIntent(int action) {
         Intent intent = new Intent(getApplicationContext(), NActionReceiver.class);
-        intent.putExtra("type", 1);
-        intent.putExtra("id", id);
+        intent.putExtra(NActionReceiver.TYPE, 1);
+        intent.putExtra(NActionReceiver.ID, id);
+        intent.putExtra(NActionReceiver.ACTION, action);
         return intent;
     }
+
+    private PendingIntent getMainPI() {
+        return PendingIntent.getActivities(getApplicationContext(), id, makeIntent(), PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private String getTitleName() {
+        if (!title.getText().toString().equals("")) {
+            return title.getText().toString();
+        } else {
+            return getString(R.string.app_name);
+        }
+    }
+
+//    private Intent actionRemoveIntent() {
+//        Intent intent = new Intent(getApplicationContext(), NActionReceiver.class);
+//        intent.putExtra("type", 1);
+//        intent.putExtra("id", id);
+//        return intent;
+//    }
 
     private Intent[] makeIntent() {
         Intent main = new Intent(getApplicationContext(), MainActivity.class);
@@ -183,6 +316,7 @@ public class QuickNote extends AppCompatActivity {
         quick.putExtra(Intent.EXTRA_SUBJECT, title.getText().toString());
         quick.putExtra(Intent.EXTRA_TEXT, text.getText().toString());
         quick.putExtra("id", id);
+        quick.putExtra("inTray", true);
         return new Intent[]{main, quick};
     }
 

@@ -1,20 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/clipboard"/>
-    <SwitchPreference android:defaultValue="false"
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory android:title="@string/clipboard" />
+    <SwitchPreference
+        android:defaultValue="false"
         android:key="track_clipboard"
-        android:title="@string/track"
-        android:summary="@string/save_clip_hist"/>
-    <PreferenceCategory android:title="@string/notifications"/>
-    <Preference
-        android:defaultValue="0"
-        android:key="sound"
-        android:summary="@string/text_default"
-        android:title="@string/melody" />
-    <Preference
-        android:defaultValue="1"
-        android:key="vibration"
-        android:summary="@string/text_default"
-        android:title="@string/vibration" />
+        android:summary="@string/save_clip_hist"
+        android:title="@string/track" />
+    <PreferenceCategory android:title="QuickNotes" />
+    <PreferenceScreen android:title="Appearance">
+        <PreferenceCategory android:title="Tray Notifications" />
+        <yuku.ambilwarna.widget.AmbilWarnaPreference
+            android:defaultValue="0"
+            android:key="n_q_background"
+            android:summary="Notification background color"
+            android:title="Background"
+            app:supportsAlpha="true" />
+        <yuku.ambilwarna.widget.AmbilWarnaPreference
+            android:defaultValue="0"
+            android:key="n_q_text"
+            android:summary="Notification text color"
+            android:title="Text"
+            app:supportsAlpha="false" />
+
+        <PreferenceCategory
+            android:dependency="n_q_show_actions"
+            android:title="Actions" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="n_q_show_actions"
+            android:summary="Show actions panel in notification"
+            android:title="Actions" />
+        <yuku.ambilwarna.widget.AmbilWarnaPreference
+            android:defaultValue="0"
+            android:dependency="n_q_show_actions"
+            android:key="n_q_actions_icon_color"
+            android:title="Actions icon colors"
+            app:supportsAlpha="false" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:dependency="n_q_show_actions"
+            android:key="n_q_show_actions_text"
+            android:summary="Show description of actions"
+            android:title="With text" />
+        <yuku.ambilwarna.widget.AmbilWarnaPreference
+            android:defaultValue="0"
+            android:dependency="n_q_show_actions_text"
+            android:key="n_q_actions_text_color"
+            android:title="Actions text color"
+            app:supportsAlpha="false" />
+
+
+
+
+    </PreferenceScreen>
+    <PreferenceCategory android:title="Reminders" />
+    <PreferenceScreen android:title="Appearance">
+            <PreferenceCategory android:title="Tray Notifications" />
+            <yuku.ambilwarna.widget.AmbilWarnaPreference
+                android:defaultValue="0"
+                android:key="n_r_background"
+                android:summary="Notification background color"
+                android:title="Background"
+                app:supportsAlpha="true" />
+            <yuku.ambilwarna.widget.AmbilWarnaPreference
+                android:defaultValue="0"
+                android:key="n_r_text"
+                android:summary="Notification text color"
+                android:title="Text"
+                app:supportsAlpha="false" />
+
+            <PreferenceCategory
+                android:dependency="n_r_show_actions"
+                android:title="Actions" />
+            <SwitchPreference
+                android:defaultValue="true"
+                android:key="n_r_show_actions"
+                android:summary="Show actions panel in notification"
+                android:title="Actions" />
+            <yuku.ambilwarna.widget.AmbilWarnaPreference
+                android:defaultValue="0"
+                android:dependency="n_r_show_actions"
+                android:key="n_r_actions_icon_color"
+                android:title="Actions icon colors"
+                app:supportsAlpha="false" />
+            <SwitchPreference
+                android:defaultValue="true"
+                android:dependency="n_r_show_actions"
+                android:key="n_r_show_actions_text"
+                android:summary="Show description of actions"
+                android:title="With text" />
+            <yuku.ambilwarna.widget.AmbilWarnaPreference
+                android:defaultValue="0"
+                android:dependency="n_r_show_actions_text"
+                android:key="n_r_actions_text_color"
+                android:title="Actions text color"
+                app:supportsAlpha="false" />
+            <PreferenceCategory android:title="Popup notifications" />
+            <yuku.ambilwarna.widget.AmbilWarnaPreference
+                android:defaultValue="0"
+                android:key="n_r_push_background"
+                android:summary="Background color for popup notifications"
+                android:title="Background"
+                app:supportsAlpha="true" />
+            <yuku.ambilwarna.widget.AmbilWarnaPreference
+                android:defaultValue="0"
+                android:key="n_r_push_text_color"
+                android:summary="Text color for popup notifications"
+                android:title="Text"
+                app:supportsAlpha="false" />
+
+
+    </PreferenceScreen>
+    <PreferenceScreen android:title="Defaults">
+        <PreferenceCategory android:title="Defaults" />
+        <Preference
+            android:defaultValue="0"
+            android:key="sound"
+            android:summary="@string/text_default"
+            android:title="@string/melody" />
+        <Preference
+            android:defaultValue="1"
+            android:key="vibration"
+            android:summary="@string/text_default"
+            android:title="@string/vibration" />
+    </PreferenceScreen>
+
 
 </PreferenceScreen>

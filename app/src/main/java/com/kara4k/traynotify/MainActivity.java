@@ -7,9 +7,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -45,12 +47,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private ActionMode actionMode;
     private Toolbar toolbar;
     private ClipFragment clipFragment;
+    private SharedPreferences sp;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -126,6 +131,18 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         getApplicationContext().registerReceiver(removeTrayReceiver, new IntentFilter("refreshTrayIcons"));
 
 
+
+
+        restartAlarmsOnUpdate();
+    }
+
+    private void restartAlarmsOnUpdate() {
+        String versionPrev = sp.getString(Settings.VERSION_CODE, "0");
+        int versionCode = BuildConfig.VERSION_CODE;
+        if (!String.valueOf(versionCode).equals(versionPrev)) {
+            RebootReceiver.setReminders(getApplicationContext());
+            sp.edit().putString(Settings.VERSION_CODE, String.valueOf(versionCode)).apply();
+        }
     }
 
 
@@ -706,7 +723,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             actionMode.setTitle("1");
         }
     }
-
 
 
     @Override
