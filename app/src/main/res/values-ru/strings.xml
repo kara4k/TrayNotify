@@ -60,7 +60,6 @@
     <string name="week">Неделя</string>
     <string name="year">Год</string>
     <string name="sync_birthdays">Синхронизировать</string>
-    <string name="remove">Убрать</string>
     <string name="open_app">Открыть приложение</string>
     <string name="choose">Выбрать</string>
     <string name="settings">Настройки</string>
@@ -75,4 +74,23 @@
     <string name="n_share">ОТПРАВИТЬ</string>
     <string name="copy">КОПИРОВАТЬ</string>
     <string name="close">ЗАКРЫТЬ</string>
+    <string name="actions">Действия</string>
+    <string name="actions_text_color">Цвет текста</string>
+    <string name="actions_icon_color">Цвет изображения</string>
+    <string name="appearance">Внешний вид</string>
+    <string name="background_popup">Фон всплывающих уведомлений</string>
+    <string name="defaults">Настройки по умолчанию</string>
+    <string name="imp_check_by_default">Помечать как важное</string>
+    <string name="n_back_color">Фон уведомления</string>
+    <string name="n_text_color">Цвет текста уведомления</string>
+    <string name="notification_pref">Уведомление</string>
+    <string name="popup">Всплывающее</string>
+    <string name="remove_notification">Убрать из трея</string>
+    <string name="show">Показать</string>
+    <string name="show_actions">Показывать панель действий</string>
+    <string name="show_desc_actions">Показывать текстовое описание</string>
+    <string name="text">Текст</string>
+    <string name="show_text">Текст</string>
+    <string name="text_color_popup">Цвет текста всплывающих уведомлений</string>
+    <string name="show_tray_as_default">Показать в трее по умолчанию</string>
 </resources>

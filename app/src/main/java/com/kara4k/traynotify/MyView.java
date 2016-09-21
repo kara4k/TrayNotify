@@ -98,40 +98,16 @@ public class MyView extends RelativeLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    public TextView getTitle() {
-        return title;
-    }
-
-    public void setTitle(TextView title) {
-        this.title = title;
-    }
-
     public TextView getText() {
         return text;
-    }
-
-    public void setText(TextView text) {
-        this.text = text;
     }
 
     public CheckBox getCheckbox() {
         return checkbox;
     }
 
-    public void setCheckbox(CheckBox checkbox) {
-        this.checkbox = checkbox;
-    }
-
     public ImageView getImage() {
         return image;
-    }
-
-    public void setImage(ImageView image) {
-        this.image = image;
-    }
-
-    public void setTitle(String title) {
-        this.title.setText(title);
     }
 
     public void setText(String text) {

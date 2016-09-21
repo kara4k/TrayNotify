@@ -99,11 +99,8 @@ class DBQuick {
 
     private class DBManager extends SQLiteOpenHelper {
 
-        final Context context;
-
         public DBManager(Context context) {
             super(context, DBQuick.DB_NAME, null, DBQuick.DB_VERSION);
-            this.context = context;
         }
 
         @Override

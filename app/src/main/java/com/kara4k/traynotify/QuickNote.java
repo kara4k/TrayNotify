@@ -15,7 +15,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,6 +56,9 @@ public class QuickNote extends AppCompatActivity {
         nm = NotificationManagerCompat.from(this);
 
         calendar = Calendar.getInstance();
+
+        setDefaultsTrayChecked();
+
         intentChecks();
 
 
@@ -69,6 +71,15 @@ public class QuickNote extends AppCompatActivity {
         });
 
 
+    }
+
+    public void setDefaultsTrayChecked() {
+        boolean trayChecked = sp.getBoolean(Settings.QUICK_DEFAULT_IN_TRAY, false);
+        if (trayChecked) {
+            tray.getCheckbox().setChecked(true);
+        } else {
+            tray.getCheckbox().setChecked(false);
+        }
     }
 
     private void trySetDefaultAsHomeEnabled() {
@@ -94,7 +105,18 @@ public class QuickNote extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.quick_menu, menu);
+        ifShowCloseIcon(menu);
         return true;
+    }
+
+    public void ifShowCloseIcon(Menu menu) {
+        boolean showActions = sp.getBoolean(Settings.QUICK_SHOW_ACTIONS, true);
+        MenuItem removeCurrent = menu.findItem(R.id.remove_current_n);
+        if (showActions) {
+            removeCurrent.setVisible(false);
+        } else {
+            removeCurrent.setVisible(true);
+        }
     }
 
     @Override
@@ -106,11 +128,19 @@ public class QuickNote extends AppCompatActivity {
             case R.id.clear_forms:
                 clearForms();
                 break;
-//            case R.id.copy:
-//                putToClipboard();
-//                break;
+            case R.id.remove_current_n:
+                removeFromTray();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void removeFromTray() {
+        nm.cancel(id);
+        DBQuick db = new DBQuick(getApplicationContext());
+        db.open();
+        db.setQuickTrayInDB(id, 0);
+        db.close();
     }
 
 
@@ -126,14 +156,13 @@ public class QuickNote extends AppCompatActivity {
     private void clearForms() {
         title.setText("");
         text.setText("");
-        tray.getCheckbox().setChecked(false);
+        setDefaultsTrayChecked();
 
     }
 
     private void create() {
 
         if (tray.getCheckbox().isChecked()) {
-//            createNote();
             createTray();
             writeToDB();
         } else {
@@ -285,7 +314,6 @@ public class QuickNote extends AppCompatActivity {
 
     private PendingIntent getActionPI(int action) {
         int pIid= Integer.parseInt(String.valueOf(id).concat(String.valueOf(action)));
-        Log.e("QuickNote", "getActionPI: " + pIid);
         return PendingIntent.getBroadcast(getApplicationContext(),pIid, getActionIntent(action), PendingIntent.FLAG_UPDATE_CURRENT);
     }
 

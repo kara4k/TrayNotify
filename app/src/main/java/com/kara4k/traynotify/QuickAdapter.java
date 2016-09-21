@@ -117,10 +117,6 @@ public class QuickAdapter extends RecyclerView.Adapter<QuickAdapter.NotesViewHol
         }
     }
 
-    public void setSelect(boolean select) {
-        this.select = select;
-    }
-
     @Override
     public int getItemCount() {
         return notes.size();

@@ -129,18 +129,31 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         showFirstFragment();
 
         getApplicationContext().registerReceiver(removeTrayReceiver, new IntentFilter("refreshTrayIcons"));
+        getApplicationContext().registerReceiver(updateClipboardReceiver, new IntentFilter("notifyClipData"));
 
 
+        afterUpdate();
 
-
-        restartAlarmsOnUpdate();
     }
 
-    private void restartAlarmsOnUpdate() {
+    private void restartClipService() {
+        boolean isTrack = sp.getBoolean(Settings.TRACK_CLIPBOARD, false);
+        if (isTrack) {
+            try {
+                Intent trackClip = new Intent(getApplicationContext(), ClipboardService.class);
+                stopService(trackClip);
+                startService(trackClip);
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    private void afterUpdate() {
         String versionPrev = sp.getString(Settings.VERSION_CODE, "0");
         int versionCode = BuildConfig.VERSION_CODE;
         if (!String.valueOf(versionCode).equals(versionPrev)) {
             RebootReceiver.setReminders(getApplicationContext());
+            restartClipService();
             sp.edit().putString(Settings.VERSION_CODE, String.valueOf(versionCode)).apply();
         }
     }
@@ -768,10 +781,27 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     };
 
+    private BroadcastReceiver updateClipboardReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                clipFragment.updateList();
+            } catch (Exception e) {
+            }
+        }
+
+    };
+
+    static void notifyClipData(Context context) {
+        Intent intent = new Intent("notifyClipData");
+        context.sendBroadcast(intent);
+    }
+
     static void refreshQuickTrayIcon(Context context, int id) {
         Intent intent = new Intent("refreshTrayIcons");
         intent.putExtra("id", id);
         context.sendBroadcast(intent);
     }
+
 
 }

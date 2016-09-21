@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -263,7 +262,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         pushView.setOnClickPendingIntent(R.id.n_big_layout, null);
 
 
-        trySetPhotoIfBirthday(context, pushView, R.id.n_big_main_icon, Color.RED);
+        trySetPhotoIfBirthday(context, pushView, R.id.n_big_main_icon, pushTextColor);
         return pushView;
     }
 
@@ -275,11 +274,9 @@ public class AlarmReceiver extends BroadcastReceiver {
         bigView.setOnClickPendingIntent(R.id.n_big_actions, getMainPI(context));
 
         int background = sp.getInt(Settings.REM_BACKGROUND, Color.WHITE);
-        Log.e("AlarmReceiver", "getSmallViews: " + background);
         bigView.setInt(R.id.n_big_layout, "setBackgroundColor", background);
 
         int textColor = sp.getInt(Settings.REM_TEXT, Color.BLACK);
-        Log.e("AlarmReceiver", "getSmallViews: " + textColor);
         bigView.setInt(R.id.n_big_title, "setTextColor", textColor);
         bigView.setInt(R.id.n_big_text, "setTextColor", textColor);
 
@@ -289,14 +286,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         if (showActions) {
             boolean showText = sp.getBoolean(Settings.REM_SHOW_ACTIONS_TEXT, true);
             if (!showText) {
-//                bigView.setViewVisibility(R.id.n_big_share_text, View.GONE);
-//                bigView.setViewVisibility(R.id.n_big_copy_text, View.GONE);
-//                bigView.setViewVisibility(R.id.n_big_close_text, View.GONE);
-//
-//                int iconColor = sp.getInt(Settings.REM_ACTIONS_ICON_COLOR, Color.BLACK);
-//                bigView.setInt(R.id.n_big_share_icon, "setColorFilter", iconColor);
-//                bigView.setInt(R.id.n_big_copy_icon, "setColorFilter", iconColor);
-//                bigView.setInt(R.id.n_big_close_icon, "setColorFilter", iconColor);
 
                 bigView.setViewVisibility(R.id.n_big_actions, View.GONE);
                 bigView.setViewVisibility(R.id.n_big_actions2, View.VISIBLE);
@@ -305,6 +294,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 bigView.setInt(R.id.n_big_share_icon2, "setColorFilter", iconColor);
                 bigView.setInt(R.id.n_big_copy_icon2, "setColorFilter", iconColor);
                 bigView.setInt(R.id.n_big_close_icon2, "setColorFilter", iconColor);
+
                 bigView.setOnClickPendingIntent(R.id.n_big_share_icon2,getActionPI(context,note,1));
                 bigView.setOnClickPendingIntent(R.id.n_big_copy_icon2,getActionPI(context,note,2));
                 bigView.setOnClickPendingIntent(R.id.n_big_close_icon2,getActionPI(context,note,3));
@@ -408,7 +398,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private PendingIntent getActionPI(Context context, DelayedNote note, int action) {
         int pIid = Integer.parseInt(String.valueOf(note.getCheckId()).concat(String.valueOf(action)));
-        Log.e("QuickNote", "getActionPI: " + pIid);
         return PendingIntent.getBroadcast(context, pIid, getActionIntent(context, note, action), PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
@@ -422,34 +411,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private PendingIntent getMainPI(Context context) {
         return PendingIntent.getActivities(context, note.getCheckId(), makeIntent(context), PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
-    private Intent actionRemoveIntent(Context context, int id) {
-        Intent intent = new Intent(context, NActionReceiver.class);
-        intent.putExtra("type", 2);
-        intent.putExtra("id", id);
-        return intent;
-    }
-
-    private void setLargeIcon(Context context, NotificationCompat.Builder mBuilder) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.main_icon));
-        } else {
-            tryBirthdayPhoto(context, mBuilder);
-        }
-    }
-
-    private void tryBirthdayPhoto(Context context, NotificationCompat.Builder mBuilder) {
-        if (note.getBirthday() != 0) {
-            try {
-                Bitmap mBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse("content://com.android.contacts/contacts/" + note.getBirthday() + "/display_photo"));
-                mBuilder.setLargeIcon(mBitmap);
-            } catch (IOException e) {
-                mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.main_icon));
-            }
-        } else {
-            mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.main_icon));
-        }
     }
 
 

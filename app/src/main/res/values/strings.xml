@@ -59,7 +59,6 @@
     <string name="year">Year</string>
     <string name="repeat_year">Repeat every year</string>
     <string name="sync_birthdays">Sync</string>
-    <string name="remove">Remove</string>
     <string name="open_app">Open app</string>
     <string name="settings">Settings</string>
     <string name="choose">Choose</string>
@@ -74,4 +73,23 @@
     <string name="copy">COPY</string>
     <string name="close">CLOSE</string>
     <string name="n_share">SHARE</string>
+    <string name="remove_notification">Remove Notification</string>
+    <string name="appearance">Appearance</string>
+    <string name="n_back_color">Notification background color</string>
+    <string name="text">Text</string>
+    <string name="n_text_color">Notification text color</string>
+    <string name="actions">Actions</string>
+    <string name="show_actions">Show actions panel</string>
+    <string name="actions_icon_color">Actions icon colors</string>
+    <string name="show_text">Text</string>
+    <string name="show_desc_actions">Show description</string>
+    <string name="actions_text_color">Actions text color</string>
+    <string name="show">Show</string>
+    <string name="popup">Popup</string>
+    <string name="background_popup">Background color for popup notifications</string>
+    <string name="text_color_popup">Text color for popup notifications</string>
+    <string name="defaults">Defaults</string>
+    <string name="imp_check_by_default">Set important by default</string>
+    <string name="notification_pref">Notification</string>
+    <string name="show_tray_as_default">Show in tray by default</string>
 </resources>

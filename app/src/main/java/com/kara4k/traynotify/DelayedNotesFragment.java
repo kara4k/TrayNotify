@@ -48,23 +48,6 @@ public class DelayedNotesFragment extends Fragment {
         this.notes = notes;
     }
 
-    public int getRecyclerPosition() {
-        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-        return layoutManager.findFirstVisibleItemPosition();
-    }
-
-    public int getPadding() {
-        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-        View v = layoutManager.getChildAt(0);
-        int top = (v == null) ? 0 : (v.getTop() - layoutManager.getPaddingTop());
-        return top;
-    }
-
-    public void scrollTo(int index, int top) {
-        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-        layoutManager.scrollToPositionWithOffset(index, top);
-    }
-
     public List<DelayedNote> getAllNotesFromDB() {
         try {
             DBDelay db = new DBDelay(getActivity());

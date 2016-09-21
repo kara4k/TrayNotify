@@ -11,10 +11,13 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -25,9 +28,13 @@ public class Settings extends PreferenceActivity implements DialogInterface.OnCl
     public static final String SOUND = "sound";
     public static final String TRACK_NAME = "track_name";
     public static final String VIBRATION = "vibration";
+    public static final String IMPORTANT = "important";
     public static final String TRACK_CLIPBOARD = "track_clipboard";
-    public static final String VERSION_CODE = "version_code";
+    public static final String DELAYED_DEFAULTS_CATEGORY = "delayed_defaults";
+    public static final String DELAYED_APPEARANCE_SCREEN = "delayed_appearance";
+    public static final String DELAYED_PUSH_CATEGORY = "delayed_push_category";
 
+    public static final String VERSION_CODE = "version_code";
     public static final String QUICK_BACKGROUND = "n_q_background";
     public static final String QUICK_TEXT = "n_q_text";
     public static final String QUICK_SHOW_ACTIONS = "n_q_show_actions";
@@ -35,6 +42,7 @@ public class Settings extends PreferenceActivity implements DialogInterface.OnCl
     public static final String QUICK_ACTIONS_TEXT_COLOR = "n_q_actions_text_color";
     public static final String QUICK_ACTIONS_ICON_COLOR = "n_q_actions_icon_color";
 
+    public static final String QUICK_DEFAULT_IN_TRAY = "n_q_default_in_tray";
     public static final String REM_BACKGROUND = "n_r_background";
     public static final String REM_TEXT = "n_r_text";
     public static final String REM_SHOW_ACTIONS = "n_r_show_actions";
@@ -84,8 +92,33 @@ public class Settings extends PreferenceActivity implements DialogInterface.OnCl
         SwitchPreference remActions = (SwitchPreference) findPreference(REM_SHOW_ACTIONS);
         remActions.setOnPreferenceChangeListener(this);
         SwitchPreference quickActions = (SwitchPreference) findPreference(QUICK_SHOW_ACTIONS);
-        remActions.setOnPreferenceChangeListener(this);
+        quickActions.setOnPreferenceChangeListener(this);
 
+        ifRemoveImportantDefault();
+        ifRemovePushSettings();
+
+
+    }
+
+    public void ifRemoveImportantDefault() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            PreferenceCategory delayedDefaultsCategory = (PreferenceCategory) findPreference(DELAYED_DEFAULTS_CATEGORY);
+            SwitchPreference delayedPriority = (SwitchPreference) findPreference(IMPORTANT);
+
+            delayedDefaultsCategory.removePreference(delayedPriority);
+        }
+    }
+
+    public void ifRemovePushSettings() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            PreferenceScreen delayedAppearanceScreen = (PreferenceScreen) findPreference(DELAYED_APPEARANCE_SCREEN);
+            PreferenceCategory pushCategory = (PreferenceCategory) findPreference(DELAYED_PUSH_CATEGORY);
+            Preference pushBackground =  findPreference(REM_PUSH_BACKGROUND);
+            Preference pushTextColor =  findPreference(REM_PUSH_TEXT_COLOR);
+            delayedAppearanceScreen.removePreference(pushCategory);
+            delayedAppearanceScreen.removePreference(pushBackground);
+            delayedAppearanceScreen.removePreference(pushTextColor);
+        }
     }
 
     private void initVibroPattern() {

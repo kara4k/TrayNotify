@@ -21,10 +21,6 @@ class Note implements Serializable{
         this.numid = numid;
     }
 
-    public int getId() {
-        return id;
-    }
-
     public String getTitle() {
         return title;
     }

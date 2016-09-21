@@ -42,12 +42,6 @@ class DBClip {
         mDB.delete(TABLE_NAME, KEY_NUMID + "=?", new String[]{String.valueOf(numId)});
     }
 
-    public void setChecked(String text, int value) {
-        ContentValues cv = new ContentValues();
-        cv.put(KEY_CHECKED, value);
-        mDB.update(TABLE_NAME, cv, KEY_TEXT + "=?", new String[]{String.valueOf(text)});
-    }
-
     public void clearAndCheckSingle(int numId, int value) {
         open();
         uncheckAll();
@@ -109,11 +103,8 @@ class DBClip {
 
     private class DBManager extends SQLiteOpenHelper {
 
-        final Context context;
-
         public DBManager(Context context) {
             super(context, DBClip.DB_NAME, null, DBClip.DB_VERSION);
-            this.context = context;
         }
 
         @Override

@@ -57,11 +57,8 @@ class DBBirthday {
 
     private class DBManager extends SQLiteOpenHelper {
 
-        final Context context;
-
         public DBManager(Context context) {
             super(context, DBBirthday.DB_NAME, null, DBBirthday.DB_VERSION);
-            this.context = context;
         }
 
         @Override

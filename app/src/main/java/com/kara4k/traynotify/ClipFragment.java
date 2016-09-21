@@ -42,6 +42,12 @@ public class ClipFragment extends Fragment {
         clipListAll.addAll(clipList);
     }
 
+    public void updateList() {
+        fillLists();
+        adapter.setNotes(clipList);
+        adapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onStart() {
         fillLists();

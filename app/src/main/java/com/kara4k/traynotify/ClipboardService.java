@@ -7,21 +7,17 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationManagerCompat;
 
 import java.util.Calendar;
 
 public class ClipboardService extends Service implements ClipboardManager.OnPrimaryClipChangedListener {
 
     private ClipboardManager cm;
-    private NotificationManagerCompat nm;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        nm = NotificationManagerCompat.from(getApplicationContext());
-
         cm.addPrimaryClipChangedListener(this);
 
 

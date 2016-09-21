@@ -55,10 +55,6 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
         this.selectionMode = selectionMode;
     }
 
-    public void setSelect(boolean select) {
-        this.select = select;
-    }
-
     public void setList(List<DelayedNote> notes) {
         this.notes = notes;
     }

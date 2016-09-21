@@ -43,10 +43,6 @@ public class ClipAdapter extends RecyclerView.Adapter<ClipAdapter.ClipHolder> {
         return clipAdapter;
     }
 
-    public void setSelect(boolean select) {
-        this.select = select;
-    }
-
     public void setSelectionMode(SelectionMode selectionMode) {
         this.selectionMode = selectionMode;
     }
@@ -348,11 +344,6 @@ public class ClipAdapter extends RecyclerView.Adapter<ClipAdapter.ClipHolder> {
                 }
             }
             notes.get(getAdapterPosition()).setChecked(1);
-        }
-
-        private void changeDatabase() {
-            DBClip db = new DBClip(context);
-            db.clearAndCheckSingle(notes.get(getAdapterPosition()).getNumId(), 1);
         }
 
         private void putToClipboard() {

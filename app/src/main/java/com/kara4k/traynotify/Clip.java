@@ -15,36 +15,16 @@ class Clip {
         this.checked = checked;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getText() {
         return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
     }
 
     public long getDate() {
         return date;
     }
 
-    public void setDate(long date) {
-        this.date = date;
-    }
-
     public int getNumId() {
         return numId;
-    }
-
-    public void setNumId(int numId) {
-        this.numId = numId;
     }
 
     public int getChecked() {

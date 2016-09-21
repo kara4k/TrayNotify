@@ -10,13 +10,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
-import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import java.util.List;
@@ -24,8 +25,12 @@ import java.util.List;
 public class RebootReceiver extends BroadcastReceiver {
 
 
+    private SharedPreferences sp;
+
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        sp = PreferenceManager.getDefaultSharedPreferences(context);
 
         setReminders(context);
         showNotes(context);
@@ -34,7 +39,7 @@ public class RebootReceiver extends BroadcastReceiver {
     }
 
     private void startClipTracking(Context context) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+
         boolean isTrack = sp.getBoolean(Settings.TRACK_CLIPBOARD, false);
 
         if (isTrack) {
@@ -120,29 +125,95 @@ public class RebootReceiver extends BroadcastReceiver {
 //    }
 
     public static Notification makeNotification(Context context, Note note) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
-        mBuilder.setSmallIcon(R.drawable.ic_description_white_24dp); // TODO: 19.09.2016
+        mBuilder.setSmallIcon(R.drawable.ic_description_white_24dp);
         mBuilder.setContentIntent(getMainPI(context, note));
         mBuilder.setOngoing(true);
 
 
-
-        RemoteViews smallView = new RemoteViews(context.getPackageName(), R.layout.notification);
-        smallView.setTextViewText(R.id.n_text, getNText(context, note));
+        RemoteViews smallView = getSmallViews(context, note, sp);
         mBuilder.setContent(smallView);
 
+        RemoteViews bigView = getBigViews(context, note, sp);
+
+        mBuilder.setCustomBigContentView(bigView);
+
+        return mBuilder.build();
+    }
+
+    @NonNull
+    public static RemoteViews getBigViews(Context context, Note note, SharedPreferences sp) {
         RemoteViews bigView = new RemoteViews(context.getPackageName(), R.layout.notification_big);
         bigView.setTextViewText(R.id.n_big_title, note.getTitle());
         bigView.setTextViewText(R.id.n_big_text, note.getText());
         bigView.setOnClickPendingIntent(R.id.n_big_actions, getMainPI(context,note));
 
+        int background = sp.getInt(Settings.QUICK_BACKGROUND, Color.WHITE);
+        bigView.setInt(R.id.n_big_layout, "setBackgroundColor", background);
 
-        bigView.setOnClickPendingIntent(R.id.n_big_share, getActionPI(context, note, 1));
-        bigView.setOnClickPendingIntent(R.id.n_big_copy, getActionPI(context, note, 2));
-        bigView.setOnClickPendingIntent(R.id.n_big_close, getActionPI(context, note, 3));
-        mBuilder.setCustomBigContentView(bigView);
+        int textColor = sp.getInt(Settings.QUICK_TEXT, Color.BLACK);
+        bigView.setInt(R.id.n_big_title, "setTextColor", textColor);
+        bigView.setInt(R.id.n_big_text, "setTextColor", textColor);
 
-        return mBuilder.build();
+
+
+
+
+        boolean showActions = sp.getBoolean(Settings.QUICK_SHOW_ACTIONS, true);
+        if (showActions) {
+
+            boolean showText = sp.getBoolean(Settings.QUICK_SHOW_ACTIONS_TEXT, true);
+            if (!showText) {
+
+
+                bigView.setViewVisibility(R.id.n_big_actions, View.GONE);
+                bigView.setViewVisibility(R.id.n_big_actions2, View.VISIBLE);
+                int iconColor = sp.getInt(Settings.QUICK_ACTIONS_ICON_COLOR, Color.BLACK);
+                bigView.setInt(R.id.n_big_share_icon2, "setColorFilter", iconColor);
+                bigView.setInt(R.id.n_big_copy_icon2, "setColorFilter", iconColor);
+                bigView.setInt(R.id.n_big_close_icon2, "setColorFilter", iconColor);
+                bigView.setOnClickPendingIntent(R.id.n_big_share_icon2,getActionPI(context, note,1));
+                bigView.setOnClickPendingIntent(R.id.n_big_copy_icon2,getActionPI(context, note,2));
+                bigView.setOnClickPendingIntent(R.id.n_big_close_icon2,getActionPI(context, note,3));
+
+
+
+            } else {
+                int actionsTextColor = sp.getInt(Settings.QUICK_ACTIONS_TEXT_COLOR, Color.BLACK);
+                bigView.setInt(R.id.n_big_share_text, "setTextColor", actionsTextColor);
+                bigView.setInt(R.id.n_big_copy_text, "setTextColor", actionsTextColor);
+                bigView.setInt(R.id.n_big_close_text, "setTextColor", actionsTextColor);
+
+                int iconColor = sp.getInt(Settings.QUICK_ACTIONS_ICON_COLOR, Color.BLACK);
+                bigView.setInt(R.id.n_big_share_icon, "setColorFilter", iconColor);
+                bigView.setInt(R.id.n_big_copy_icon, "setColorFilter", iconColor);
+                bigView.setInt(R.id.n_big_close_icon, "setColorFilter", iconColor);
+
+                bigView.setOnClickPendingIntent(R.id.n_big_share,getActionPI(context, note,1));
+                bigView.setOnClickPendingIntent(R.id.n_big_copy,getActionPI(context, note,2));
+                bigView.setOnClickPendingIntent(R.id.n_big_close,getActionPI(context, note,3));
+            }
+
+        } else {
+            bigView.setViewVisibility(R.id.n_big_actions, View.GONE);
+        }
+
+        return bigView;
+    }
+
+    @NonNull
+    public static RemoteViews getSmallViews(Context context, Note note, SharedPreferences sp) {
+        RemoteViews smallView = new RemoteViews(context.getPackageName(), R.layout.notification);
+        smallView.setTextViewText(R.id.n_text, getNText(context, note));
+
+        int background = sp.getInt(Settings.QUICK_BACKGROUND, Color.WHITE);
+        smallView.setInt(R.id.n_layout, "setBackgroundColor", background);
+
+        int textColor = sp.getInt(Settings.QUICK_TEXT, Color.BLACK);
+        smallView.setInt(R.id.n_text, "setTextColor", textColor);
+
+        return smallView;
     }
 
     public static String getNText(Context context,Note note) {
@@ -156,7 +227,6 @@ public class RebootReceiver extends BroadcastReceiver {
 
     public static PendingIntent getActionPI(Context context, Note note, int action) {
         int pIid = Integer.parseInt(String.valueOf(note.getNumid()).concat(String.valueOf(action)));
-        Log.e("QuickNote", "getActionPI: " + pIid);
         return PendingIntent.getBroadcast(context, pIid, getActionIntent(context,note, action), PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
@@ -172,13 +242,6 @@ public class RebootReceiver extends BroadcastReceiver {
         return PendingIntent.getActivities(context, note.getNumid(), makeIntent(context, note), PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-
-    private Intent actionRemoveIntent(Context context, int id) {
-        Intent intent = new Intent(context, NActionReceiver.class);
-        intent.putExtra("type", 1);
-        intent.putExtra("id", id);
-        return intent;
-    }
 
     public static Intent[] makeIntent(Context context, Note note) {
         Intent main = new Intent(context, MainActivity.class);
