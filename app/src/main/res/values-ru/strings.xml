@@ -93,4 +93,8 @@
     <string name="show_text">Текст</string>
     <string name="text_color_popup">Цвет текста всплывающих уведомлений</string>
     <string name="show_tray_as_default">Показать в трее по умолчанию</string>
+    <string name="no_sound_summary">Без звука</string>
+    <string name="standart_dialog_button">Стандартная</string>
+    <string name="no_vibration_summary">Без вибрации</string>
+    <string name="no_vibro_dialog_button">Без вибро</string>
 </resources>

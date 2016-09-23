@@ -59,8 +59,8 @@ public class VibroDialogFragment extends DialogFragment implements DialogInterfa
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        return builder.setView(form).setNeutralButton(getString(R.string.text_default), this).setPositiveButton(android.R.string.ok, this)
-                .setNegativeButton(android.R.string.cancel, this).create();
+        return builder.setView(form).setNeutralButton(getString(R.string.standart_dialog_button), this).setPositiveButton(android.R.string.ok, this)
+                .setNegativeButton(R.string.no_vibro_dialog_button, this).create();
 
     }
 
@@ -89,6 +89,13 @@ public class VibroDialogFragment extends DialogFragment implements DialogInterfa
                             repeatText.getText().toString().split(" ")[0]);
                 }
                 break;
+            case DialogInterface.BUTTON_NEGATIVE:
+                if (mDialogInterface != null) {
+                    long noVibro[] = new long[]{0,0,0};
+                    mDialogInterface.getResult(noVibro,"0.0", "-1", "-1");
+                }
+                break;
+
             case DialogInterface.BUTTON_NEUTRAL:
                 if (mDialogInterface != null) {
                     mDialogInterface.clearVibro();

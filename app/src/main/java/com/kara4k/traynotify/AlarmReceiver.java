@@ -225,7 +225,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         mBuilder.setOngoing(true);
 
 
-
         RemoteViews smallView = getSmallViews(context, sp);
         mBuilder.setContent(smallView);
 
@@ -267,7 +266,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     @NonNull
-    private RemoteViews getBigViews(Context context,SharedPreferences sp) {
+    private RemoteViews getBigViews(Context context, SharedPreferences sp) {
         RemoteViews bigView = new RemoteViews(context.getPackageName(), R.layout.notification_big);
         bigView.setTextViewText(R.id.n_big_title, note.getTitle());
         bigView.setTextViewText(R.id.n_big_text, note.getText());
@@ -295,9 +294,9 @@ public class AlarmReceiver extends BroadcastReceiver {
                 bigView.setInt(R.id.n_big_copy_icon2, "setColorFilter", iconColor);
                 bigView.setInt(R.id.n_big_close_icon2, "setColorFilter", iconColor);
 
-                bigView.setOnClickPendingIntent(R.id.n_big_share_icon2,getActionPI(context,note,1));
-                bigView.setOnClickPendingIntent(R.id.n_big_copy_icon2,getActionPI(context,note,2));
-                bigView.setOnClickPendingIntent(R.id.n_big_close_icon2,getActionPI(context,note,3));
+                bigView.setOnClickPendingIntent(R.id.n_big_share_icon2, getActionPI(context, note, 1));
+                bigView.setOnClickPendingIntent(R.id.n_big_copy_icon2, getActionPI(context, note, 2));
+                bigView.setOnClickPendingIntent(R.id.n_big_close_icon2, getActionPI(context, note, 3));
             } else {
                 int actionsTextColor = sp.getInt(Settings.REM_ACTIONS_TEXT_COLOR, Color.BLACK);
                 bigView.setInt(R.id.n_big_share_text, "setTextColor", actionsTextColor);
@@ -323,10 +322,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         trySetPhotoIfBirthday(context, bigView, R.id.n_big_main_icon, textColor);
 
 
-
         return bigView;
     }
-
 
 
     @NonNull
@@ -347,7 +344,6 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
 
-
     private void trySetPhotoIfBirthday(Context context, RemoteViews views, int imageView, int color) {
         try {
             setPhotoIfBirthday(context, views, imageView, color);
@@ -355,7 +351,6 @@ public class AlarmReceiver extends BroadcastReceiver {
             views.setViewVisibility(imageView, View.GONE);
         }
     }
-
 
 
     private void setPhotoIfBirthday(Context context, RemoteViews views, int imageView, int color) {
@@ -432,7 +427,9 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private void setCustomSound(NotificationCompat.Builder mBuilder) {
         try {
-            mBuilder.setSound(Uri.parse(note.getSound()));
+            if (!note.getSound().equals("-1")) {
+                mBuilder.setSound(Uri.parse(note.getSound()));
+            }
         } catch (Exception e) {
 
         }

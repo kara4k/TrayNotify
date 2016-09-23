@@ -128,7 +128,7 @@ public class Settings extends PreferenceActivity implements DialogInterface.OnCl
                 vibrationPref.setSummary(getString(R.string.text_default));
             } else {
                 vibration = CreateDelayedNote.parseVibrationFromString(vPattern);
-                vibrationPref.setSummary(CreateDelayedNote.parseVibroTitle(vibration));
+                vibrationPref.setSummary(CreateDelayedNote.parseVibroTitle(getApplicationContext(),vibration));
             }
         } catch (Exception e) {
         }
@@ -170,8 +170,8 @@ public class Settings extends PreferenceActivity implements DialogInterface.OnCl
     private void showSoundDialog(Context context, String trackName) {
         new AlertDialog.Builder(Settings.this).setTitle(trackName)
                 .setPositiveButton(R.string.choose, this)
-                .setNegativeButton(getString(R.string.cancel), this)
-                .setNeutralButton(getString(R.string.text_default), this)
+                .setNegativeButton(getString(R.string.no_sound_summary), this)
+                .setNeutralButton(getString(R.string.standart_dialog_button), this)
                 .create().show();
     }
 
@@ -246,6 +246,10 @@ public class Settings extends PreferenceActivity implements DialogInterface.OnCl
                 checkSDPermission();
                 break;
             case DialogInterface.BUTTON_NEGATIVE:
+                SharedPreferences.Editor edit = sp.edit();
+                edit.putString(SOUND, "-1");
+                edit.putString(TRACK_NAME, getString(R.string.no_sound_summary)).apply();
+                soundPref.setSummary(getString(R.string.no_sound_summary));
                 break;
             case DialogInterface.BUTTON_NEUTRAL:
                 SharedPreferences.Editor editor = sp.edit();
@@ -259,7 +263,11 @@ public class Settings extends PreferenceActivity implements DialogInterface.OnCl
     @Override
     public void getResult(long[] vibroPattern, String v, String p, String r) {
         vibration = vibroPattern;
-        vibrationPref.setSummary(v + " x " + p + " x " + r);
+        if (v.equals("0.0")) {
+            vibrationPref.setSummary(getString(R.string.no_vibration_summary));
+        } else {
+            vibrationPref.setSummary(v + " x " + p + " x " + r);
+        }
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(VIBRATION, CreateDelayedNote.getNoteVibration(vibration)).apply();
     }

@@ -92,4 +92,8 @@
     <string name="imp_check_by_default">Set important by default</string>
     <string name="notification_pref">Notification</string>
     <string name="show_tray_as_default">Show in tray by default</string>
+    <string name="no_sound_summary">No sound</string>
+    <string name="standart_dialog_button" >Default</string>
+    <string name="no_vibro_dialog_button">No vibro</string>
+    <string name="no_vibration_summary">No vibration</string>
 </resources>

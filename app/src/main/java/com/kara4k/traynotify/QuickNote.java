@@ -95,7 +95,8 @@ public class QuickNote extends AppCompatActivity {
             title.setText(getIntent().getStringExtra(Intent.EXTRA_SUBJECT));
             text.setText(getIntent().getStringExtra(Intent.EXTRA_TEXT));
             id = getIntent().getIntExtra("id", id);
-            tray.getCheckbox().setChecked(getIntent().getBooleanExtra("inTray", false));
+            boolean trayChecked = sp.getBoolean(Settings.QUICK_DEFAULT_IN_TRAY, false);
+            tray.getCheckbox().setChecked(getIntent().getBooleanExtra("inTray", trayChecked));
         }
     }
 
@@ -214,6 +215,7 @@ public class QuickNote extends AppCompatActivity {
         mBuilder.setSmallIcon(R.drawable.ic_description_white_24dp); // TODO: 19.09.2016
         mBuilder.setContentIntent(getMainPI());
         mBuilder.setOngoing(true);
+
 
         RemoteViews smallView = getSmallViews();
         mBuilder.setContent(smallView);
