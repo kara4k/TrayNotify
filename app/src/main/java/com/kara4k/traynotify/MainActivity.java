@@ -1,6 +1,7 @@
 package com.kara4k.traynotify;
 
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -133,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
 
         afterUpdate();
+
 
     }
 
@@ -580,6 +583,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
 
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
+            if (currentFragment instanceof BirthdayFragment) {
+                menu.findItem(R.id.set_b_alarms).setVisible(true);
+            }
             return false;
         }
 
@@ -591,6 +598,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 case R.id.action_selectAll:
                     selectAll();
                     break;
+                case R.id.set_b_alarms:
+                    setSelectedBAlarms();
+                    break;
             }
             return false;
         }
@@ -600,6 +610,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
 
     };
+
+    private void setSelectedBAlarms() {
+        new SetReminders(this).execute();
+//        BirthdayAdapter.getInstance().setSelectedAlarms();
+//        actionMode.finish();
+//        RebootReceiver.setReminders(getApplicationContext());
+    }
 
     private void showConfirmDeleteDialog() {
         try {
@@ -638,6 +655,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         } else if (currentFragment instanceof ClipFragment) {
             ClipAdapter.getInstance().deleteSelected();
             actionMode.finish();
+        } else if (currentFragment instanceof BirthdayFragment) {
+            BirthdayAdapter.getInstance().deleteSelected();
+            actionMode.finish();
         }
     }
 
@@ -647,6 +667,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             endSelectionForCurrent();
         } else if (currentFragment instanceof ClipFragment) {
             ClipAdapter.getInstance().endSelectionMode();
+        } else if (currentFragment instanceof BirthdayFragment) {
+            BirthdayAdapter.getInstance().endSelectionMode();
         }
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED);
         actionMode = null;
@@ -673,6 +695,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
         } else if (currentFragment instanceof ClipFragment) {
             ClipAdapter.getInstance().selectAll();
+        } else if (currentFragment instanceof BirthdayFragment) {
+            BirthdayAdapter.getInstance().selectAll();
         }
     }
 
@@ -694,6 +718,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 vpSelection(i);
             } else if (currentFragment instanceof ClipFragment) {
                 clipSelection();
+            } else if (currentFragment instanceof BirthdayFragment) {
+                if (actionMode == null) {
+                    actionMode = startSupportActionMode(callback);
+                    actionMode.setTitle("1");
+                    BirthdayAdapter.getInstance().startSelection();
+                }
             }
         } else {
             actionMode.finish();
@@ -801,6 +831,43 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         Intent intent = new Intent("refreshTrayIcons");
         intent.putExtra("id", id);
         context.sendBroadcast(intent);
+    }
+
+    class SetReminders extends AsyncTask<Void, Void, Void> {
+        private final ProgressDialog dialog;
+
+        SetReminders(Context context) {
+            dialog = new ProgressDialog(context);
+            dialog.setMessage(context.getString(R.string.setting_alarms_dialog));
+        }
+
+        @Override
+        protected void onPreExecute() {
+            dialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                BirthdayAdapter.getInstance().setSelectedAlarms();
+                RebootReceiver.setReminders(getApplicationContext());
+            } catch (Exception e) {
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            try {
+                actionMode.finish();
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+            } catch (Exception e) {
+            }
+            super.onPostExecute(aVoid);
+        }
     }
 
 

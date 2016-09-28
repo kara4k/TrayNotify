@@ -96,4 +96,13 @@
     <string name="standart_dialog_button" >Default</string>
     <string name="no_vibro_dialog_button">No vibro</string>
     <string name="no_vibration_summary">No vibration</string>
+    <string name="set_alarms">Set Alarms</string>
+    <string name="delays">Delays</string>
+    <string name="delay_1">Delay 1</string>
+    <string name="delay_2">Delay 2</string>
+    <string name="delay_3">Delay 3</string>
+    <string name="setting_alarms_dialog">Please, wait...</string>
+    <string name="show_birthdays_in_reminders">Show birthdays in reminders</string>
+    <string name="day">Day</string>
+    <string name="minute_m"> m</string>
 </resources>

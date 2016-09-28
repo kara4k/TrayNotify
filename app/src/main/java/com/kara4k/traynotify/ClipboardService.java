@@ -21,14 +21,17 @@ public class ClipboardService extends Service implements ClipboardManager.OnPrim
         cm.addPrimaryClipChangedListener(this);
 
 
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
+
 
     @Override
     public void onDestroy() {
         cm.removePrimaryClipChangedListener(this);
         super.onDestroy();
     }
+
+
 
     @Nullable
     @Override

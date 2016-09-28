@@ -45,10 +45,14 @@ class DBDelay {
         return mDB.query(TABLE_NAME, null, null, null, null, null, KEY_ID + " DESC");
     }
 
+    public Cursor getAllDataWithoughtBirthdays() {
+        return mDB.query(TABLE_NAME, null, KEY_BIRTHDAY + "= ?", new String[]{"0"}, null, null, KEY_ID + " DESC");
+    }
+
     public int getNoteCheckID() {
         open();
         int checkId;
-       Cursor cursor = mDB.query(TABLE_NAME, null, null, null, null, null, KEY_CHECKID + " DESC");
+        Cursor cursor = mDB.query(TABLE_NAME, null, null, null, null, null, KEY_CHECKID + " DESC");
         if (cursor.moveToFirst()) {
             checkId = cursor.getInt(10) + 1;
         } else {
@@ -58,13 +62,26 @@ class DBDelay {
         return checkId;
     }
 
+    public boolean birthdayExist(String id) {
+        open();
+        Cursor birthday = mDB.query(TABLE_NAME, new String[]{KEY_BIRTHDAY}, KEY_BIRTHDAY + "= ?", new String[]{id}, null, null, null);
+        boolean exist;
+        if (birthday.moveToFirst()) {
+            exist = true;
+        } else {
+            exist = false;
+        }
+        close();
+        return exist;
+    }
+
     public void removeNote(int id) {
         mDB.delete(TABLE_NAME, KEY_CHECKID + "=?", new String[]{String.valueOf(id)});
     }
 
     public Cursor getAlarmNote(int check) {
         return mDB.query(TABLE_NAME,
-                new String[]{KEY_ID, KEY_TEXT, KEY_TITLE, KEY_CREATE_TIME, KEY_SET_TIME, KEY_REPEAT, KEY_DAYS, KEY_SOUND, KEY_VIBRATION,KEY_PRIORITY, KEY_CHECKID, KEY_BIRTHDAY},
+                new String[]{KEY_ID, KEY_TEXT, KEY_TITLE, KEY_CREATE_TIME, KEY_SET_TIME, KEY_REPEAT, KEY_DAYS, KEY_SOUND, KEY_VIBRATION, KEY_PRIORITY, KEY_CHECKID, KEY_BIRTHDAY},
                 KEY_CHECKID + "= ?", new String[]{String.valueOf(check)}, null, null, null);
     }
 
@@ -86,7 +103,21 @@ class DBDelay {
         close();
     }
 
-
+    public void addBirthday(DelayedNote note) {
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_TEXT, note.getText());
+        cv.put(KEY_TITLE, note.getTitle());
+        cv.put(KEY_CREATE_TIME, note.getCreateTime());
+        cv.put(KEY_SET_TIME, note.getSetTime());
+        cv.put(KEY_REPEAT, note.getRepeat());
+        cv.put(KEY_DAYS, note.getDays());
+        cv.put(KEY_SOUND, note.getSound());
+        cv.put(KEY_VIBRATION, note.getVibration());
+        cv.put(KEY_PRIORITY, note.getPriority());
+        cv.put(KEY_CHECKID, note.getCheckId());
+        cv.put(KEY_BIRTHDAY, note.getBirthday());
+        mDB.insert(TABLE_NAME, null, cv);
+    }
 
     public void editNote(DelayedNote note, int id) {
         ContentValues cv = new ContentValues();
@@ -102,7 +133,7 @@ class DBDelay {
         cv.put(KEY_CHECKID, note.getCheckId());
         cv.put(KEY_BIRTHDAY, note.getBirthday());
         open();
-        mDB.update(TABLE_NAME, cv, KEY_CHECKID + "=?", new String[]{String.valueOf(id)} );
+        mDB.update(TABLE_NAME, cv, KEY_CHECKID + "=?", new String[]{String.valueOf(id)});
         close();
     }
 

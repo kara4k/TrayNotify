@@ -1,8 +1,10 @@
 package com.kara4k.traynotify;
 
 
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,11 +20,14 @@ public class DelayedNotesFragment extends Fragment {
 
     private List<DelayedNote> notes;
     private RecyclerView recyclerView;
+    private SharedPreferences sp;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
+        sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+
         DelayedAdapter adapter = DelayedAdapter.getInstance();
 
         notes = getAllNotesFromDB();
@@ -53,7 +58,7 @@ public class DelayedNotesFragment extends Fragment {
             DBDelay db = new DBDelay(getActivity());
             db.open();
             List<DelayedNote> allnotes = new ArrayList<>();
-            Cursor allData = db.getAllData();
+            Cursor allData = getAllData(db);
             if (allData.moveToFirst()) {
                 do {
                     allnotes.add(new DelayedNote(allData.getInt(0),
@@ -66,7 +71,8 @@ public class DelayedNotesFragment extends Fragment {
                             allData.getString(7),
                             allData.getString(8),
                             allData.getInt(9),
-                            allData.getInt(10)
+                            allData.getInt(10),
+                            allData.getInt(11)
                     ));
                 } while (allData.moveToNext());
             }
@@ -75,5 +81,16 @@ public class DelayedNotesFragment extends Fragment {
         } catch (Exception e) {
             return new ArrayList<DelayedNote>();
         }
+    }
+
+    private Cursor getAllData(DBDelay db) {
+        Cursor allData;
+        boolean showBirthdays = sp.getBoolean(Settings.SHOW_BIRTHDAYS, true);
+        if (showBirthdays) {
+             allData = db.getAllData();
+        } else {
+            allData = db.getAllDataWithoughtBirthdays();
+        }
+        return allData;
     }
 }

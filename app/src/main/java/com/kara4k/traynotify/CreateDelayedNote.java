@@ -26,7 +26,6 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -211,7 +210,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
 
         onIntentReceive(tempId, vibrate);
 
-        Log.e("CreateDelayedNote", "onCreate: " + note.toString());
+
     }
 
     private void setPriorityCheckedDefaults() {
@@ -400,6 +399,7 @@ public class CreateDelayedNote extends AppCompatActivity implements DatePickerDi
         if ((!note.getSound().equals("0")) && (!note.getSound().equals("-1"))) {
             parseSound();
         } else if (note.getSound().equals("-1")) {
+            soundUri = Uri.parse("-1");
             sound.setText(getString(R.string.no_sound_summary));
         } else {
             setDefaultSound();

@@ -20,7 +20,6 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -38,8 +37,16 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         fillNote(intent, context);
-        checkIfShowTrayNotification(context);
-        repeatAlarm(context);
+
+        if (note != null) {
+            int fast = intent.getIntExtra("fast", 0);
+            if (fast == 1) {
+                showTrayNotification(context);
+            } else {
+                checkIfShowTrayNotification(context);
+                repeatAlarm(context);
+            }
+        }
 
 
     }
@@ -189,29 +196,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         setCal.set(Calendar.MILLISECOND, 0000);
     }
 
-//    private void showTrayNotification(Context context) {
-//        NotificationManagerCompat nm = NotificationManagerCompat.from(context);
-//        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
-//        mBuilder.setContentText(note.getText());
-//        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(note.getText()));
-//        mBuilder.setContentTitle(note.getTitle());
-//        setVibroSound(mBuilder);
-//        mBuilder.setPriority(note.getPriority());
-//        mBuilder.setContentInfo(String.valueOf(note.getCheckId()));
-//        mBuilder.setAutoCancel(false);
-//        mBuilder.setContentIntent(PendingIntent.getActivities(context, note.getCheckId(), makeIntent(context), PendingIntent.FLAG_UPDATE_CURRENT));
-//        mBuilder.setOngoing(true);
-//        mBuilder.setSmallIcon(R.drawable.notify);
-//
-//        if (note.getBirthday() != 0) {
-//            setLargeIcon(context, mBuilder);
-//        }
-//
-//        PendingIntent removePI = PendingIntent.getBroadcast(context, note.getCheckId(), actionRemoveIntent(context, note.getCheckId()), PendingIntent.FLAG_UPDATE_CURRENT);
-//        mBuilder.addAction(R.drawable.ic_delete_sweep_white_24dp, context.getString(R.string.remove), removePI);
-//
-//        nm.notify(note.getCheckId(), mBuilder.build());
-//    }
 
     private void showTrayNotification(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
@@ -235,10 +219,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         RemoteViews pushView = getPushViews(context, sp);
         mBuilder.setCustomHeadsUpContentView(pushView);
-//        pushView.setViewVisibility(R.id.n_big_main_icon, View.VISIBLE);
-//        pushView.setInt(R.id.n_big_layout, "setBackgroundColor", Color.BLACK);
-//        pushView.setInt(R.id.n_big_text, "setTextColor", Color.WHITE);
-//        pushView.setInt(R.id.n_big_title, "setTextColor", Color.WHITE);
 
 
         nm.notify(note.getCheckId(), mBuilder.build());
@@ -286,36 +266,54 @@ public class AlarmReceiver extends BroadcastReceiver {
             boolean showText = sp.getBoolean(Settings.REM_SHOW_ACTIONS_TEXT, true);
             if (!showText) {
 
-                bigView.setViewVisibility(R.id.n_big_actions, View.GONE);
                 bigView.setViewVisibility(R.id.n_big_actions2, View.VISIBLE);
+                bigView.setViewVisibility(R.id.n_big_add_1, View.VISIBLE);
+                bigView.setViewVisibility(R.id.n_big_add_2, View.VISIBLE);
+                bigView.setViewVisibility(R.id.n_big_add_3, View.VISIBLE);
 
                 int iconColor = sp.getInt(Settings.REM_ACTIONS_ICON_COLOR, Color.BLACK);
                 bigView.setInt(R.id.n_big_share_icon2, "setColorFilter", iconColor);
                 bigView.setInt(R.id.n_big_copy_icon2, "setColorFilter", iconColor);
                 bigView.setInt(R.id.n_big_close_icon2, "setColorFilter", iconColor);
+                bigView.setInt(R.id.n_big_add_1, "setColorFilter", iconColor);
+                bigView.setInt(R.id.n_big_add_2, "setColorFilter", iconColor);
+                bigView.setInt(R.id.n_big_add_3, "setColorFilter", iconColor);
 
                 bigView.setOnClickPendingIntent(R.id.n_big_share_icon2, getActionPI(context, note, 1));
                 bigView.setOnClickPendingIntent(R.id.n_big_copy_icon2, getActionPI(context, note, 2));
                 bigView.setOnClickPendingIntent(R.id.n_big_close_icon2, getActionPI(context, note, 3));
+                bigView.setOnClickPendingIntent(R.id.n_big_add_1, getActionPI(context, note, 4));
+                bigView.setOnClickPendingIntent(R.id.n_big_add_2, getActionPI(context, note, 5));
+                bigView.setOnClickPendingIntent(R.id.n_big_add_3, getActionPI(context, note, 6));
             } else {
+
+                bigView.setViewVisibility(R.id.n_big_actions3, View.VISIBLE);
+
                 int actionsTextColor = sp.getInt(Settings.REM_ACTIONS_TEXT_COLOR, Color.BLACK);
-                bigView.setInt(R.id.n_big_share_text, "setTextColor", actionsTextColor);
-                bigView.setInt(R.id.n_big_copy_text, "setTextColor", actionsTextColor);
-                bigView.setInt(R.id.n_big_close_text, "setTextColor", actionsTextColor);
+                bigView.setInt(R.id.n_big_delay_1_text, "setTextColor", actionsTextColor);
+                bigView.setInt(R.id.n_big_delay_2_text, "setTextColor", actionsTextColor);
+                bigView.setInt(R.id.n_big_close_text_3, "setTextColor", actionsTextColor);
+
+                String string1 = sp.getString(Settings.FAST_REM_DELAY_1, "00:05");
+                String string2 = sp.getString(Settings.FAST_REM_DELAY_2, "00:20");
+
+                String addFirst = getDelayDescribe(context, string1);
+                String addSecond = getDelayDescribe(context, string2);
+
+                bigView.setTextViewText(R.id.n_big_delay_1_text, addFirst);
+                bigView.setTextViewText(R.id.n_big_delay_2_text, addSecond);
 
                 int iconColor = sp.getInt(Settings.REM_ACTIONS_ICON_COLOR, Color.BLACK);
-                bigView.setInt(R.id.n_big_share_icon, "setColorFilter", iconColor);
-                bigView.setInt(R.id.n_big_copy_icon, "setColorFilter", iconColor);
-                bigView.setInt(R.id.n_big_close_icon, "setColorFilter", iconColor);
+                bigView.setInt(R.id.n_big_delay_icon_1, "setColorFilter", iconColor);
+                bigView.setInt(R.id.n_big_delay_icon_2, "setColorFilter", iconColor);
+                bigView.setInt(R.id.n_big_close_icon_3, "setColorFilter", iconColor);
 
-                bigView.setOnClickPendingIntent(R.id.n_big_share, getActionPI(context, note, 1));
-                bigView.setOnClickPendingIntent(R.id.n_big_copy, getActionPI(context, note, 2));
-                bigView.setOnClickPendingIntent(R.id.n_big_close, getActionPI(context, note, 3));
+                bigView.setOnClickPendingIntent(R.id.n_big_delay_1, getActionPI(context, note, 4));
+                bigView.setOnClickPendingIntent(R.id.n_big_delay_2, getActionPI(context, note, 5));
+                bigView.setOnClickPendingIntent(R.id.n_big_close_3, getActionPI(context, note, 3));
             }
 
 
-        } else {
-            bigView.setViewVisibility(R.id.n_big_actions, View.GONE);
         }
 
 
@@ -325,6 +323,13 @@ public class AlarmReceiver extends BroadcastReceiver {
         return bigView;
     }
 
+    @NonNull
+    private String getDelayDescribe(Context context, String string) {
+        String[] split = string.split(":");
+        int mins = Integer.parseInt(split[0]) * 60 + Integer.parseInt(split[1]);
+        return String.valueOf(mins) + context.getString(R.string.minute_m);
+    }
+
 
     @NonNull
     private RemoteViews getSmallViews(Context context, SharedPreferences sp) {
@@ -332,11 +337,9 @@ public class AlarmReceiver extends BroadcastReceiver {
         smallView.setTextViewText(R.id.n_text, getNText(context, note));
 
         int background = sp.getInt(Settings.REM_BACKGROUND, Color.WHITE);
-        Log.e("AlarmReceiver", "getSmallViews: " + background);
         smallView.setInt(R.id.n_layout, "setBackgroundColor", background);
 
         int textColor = sp.getInt(Settings.REM_TEXT, Color.BLACK);
-        Log.e("AlarmReceiver", "getSmallViews: " + textColor);
         smallView.setInt(R.id.n_text, "setTextColor", textColor);
 
         trySetPhotoIfBirthday(context, smallView, R.id.n_main_icon, textColor);
@@ -458,9 +461,9 @@ public class AlarmReceiver extends BroadcastReceiver {
         try {
             DBDelay db = new DBDelay(context);
             db.open();
-            note = new DelayedNote();
             Cursor current = db.getAlarmNote(intent.getIntExtra("id", 0));
             if (current.moveToFirst()) {
+                note = new DelayedNote();
                 note.setText(current.getString(1));
                 note.setTitle(current.getString(2));
                 note.setCreateTime(current.getLong(3));

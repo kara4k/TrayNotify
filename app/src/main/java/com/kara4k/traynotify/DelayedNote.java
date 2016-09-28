@@ -3,7 +3,7 @@ package com.kara4k.traynotify;
 
 import java.io.Serializable;
 
-class DelayedNote implements Serializable{
+class DelayedNote implements Serializable {
 
     private int id;
     private String text;
@@ -22,7 +22,7 @@ class DelayedNote implements Serializable{
 
     }
 
-    public DelayedNote(int id, String text, String title, long createTime, long setTime, int repeat, String days, String sound, String vibration, int priority, int checkId) {
+    public DelayedNote(int id, String text, String title, long createTime, long setTime, int repeat, String days, String sound, String vibration, int priority, int checkId, int birthday) {
         this.id = id;
         this.text = text;
         this.title = title;
@@ -34,6 +34,7 @@ class DelayedNote implements Serializable{
         this.vibration = vibration;
         this.priority = priority;
         this.checkId = checkId;
+        this.birthday = birthday;
     }
 
     private int getId() {
@@ -132,9 +133,9 @@ class DelayedNote implements Serializable{
     @Override
     public String toString() {
         String note = "";
-        note = "id " +  getId() + "\n"
-               + "text " + getText() + "\n"
-                + "title " +   getTitle() + "\n"
+        note = "id " + getId() + "\n"
+                + "text " + getText() + "\n"
+                + "title " + getTitle() + "\n"
                 + "createTime " + getCreateTime() + "\n"
                 + "setTime " + getSetTime() + "\n"
                 + "repeat " + getRepeat() + "\n"
@@ -142,7 +143,8 @@ class DelayedNote implements Serializable{
                 + "sound " + getSound() + "\n"
                 + "vibration " + getVibration() + "\n"
                 + "priority " + getPriority() + "\n"
-                + "checkId " + getCheckId();
+                + "checkId " + getCheckId() + "\n"
+                + "birthday " + birthday;
         return note;
     }
 }

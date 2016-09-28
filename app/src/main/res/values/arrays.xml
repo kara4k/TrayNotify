@@ -1,2 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources/>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string-array name="birthday_notify_days_entries"
+        tools:ignore="MissingTranslation">
+        <item>@string/current_day</item>
+        <item>@string/minus_one</item>
+        <item>@string/minus_two</item>
+        <item>@string/minus_three</item>
+    </string-array>
+    <string-array name="birthday_notify_days_values"
+        tools:ignore="MissingTranslation">
+        <item>0</item>
+        <item>-1</item>
+        <item>-2</item>
+        <item>-7</item>
+    </string-array>
+    <string name="current_day" >On birthday</string>
+    <string name="minus_one" >1 day before</string>
+    <string name="minus_two" >2 days before</string>
+    <string name="minus_three" >7 days before</string>
+</resources>

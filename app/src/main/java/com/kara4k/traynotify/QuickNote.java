@@ -252,9 +252,8 @@ public class QuickNote extends AppCompatActivity {
             boolean showText = sp.getBoolean(Settings.QUICK_SHOW_ACTIONS_TEXT, true);
             if (!showText) {
 
-
-                bigView.setViewVisibility(R.id.n_big_actions, View.GONE);
                 bigView.setViewVisibility(R.id.n_big_actions2, View.VISIBLE);
+
                 int iconColor = sp.getInt(Settings.QUICK_ACTIONS_ICON_COLOR, Color.BLACK);
                 bigView.setInt(R.id.n_big_share_icon2, "setColorFilter", iconColor);
                 bigView.setInt(R.id.n_big_copy_icon2, "setColorFilter", iconColor);
@@ -266,6 +265,8 @@ public class QuickNote extends AppCompatActivity {
 
 
             } else {
+                bigView.setViewVisibility(R.id.n_big_actions, View.VISIBLE);
+
                 int actionsTextColor = sp.getInt(Settings.QUICK_ACTIONS_TEXT_COLOR, Color.BLACK);
                 bigView.setInt(R.id.n_big_share_text, "setTextColor", actionsTextColor);
                 bigView.setInt(R.id.n_big_copy_text, "setTextColor", actionsTextColor);
@@ -281,8 +282,6 @@ public class QuickNote extends AppCompatActivity {
                 bigView.setOnClickPendingIntent(R.id.n_big_close,getActionPI(3));
             }
 
-        } else {
-            bigView.setViewVisibility(R.id.n_big_actions, View.GONE);
         }
 
 
@@ -339,12 +338,6 @@ public class QuickNote extends AppCompatActivity {
         }
     }
 
-//    private Intent actionRemoveIntent() {
-//        Intent intent = new Intent(getApplicationContext(), NActionReceiver.class);
-//        intent.putExtra("type", 1);
-//        intent.putExtra("id", id);
-//        return intent;
-//    }
 
     private Intent[] makeIntent() {
         Intent main = new Intent(getApplicationContext(), MainActivity.class);

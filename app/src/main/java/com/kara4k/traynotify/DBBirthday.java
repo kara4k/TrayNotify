@@ -36,6 +36,8 @@ class DBBirthday {
         return mDB.query(TABLE_NAME, null, null, null, null, null, KEY_ID + " DESC");
     }
 
+
+
     public void clearDB() {
         mDB.delete(TABLE_NAME, null, null);
     }
@@ -46,6 +48,10 @@ class DBBirthday {
         cv.put(KEY_NAME, name);
         cv.put(KEY_DATE, date);
         mDB.insert(TABLE_NAME, null, cv);
+    }
+
+    public void remove(String id) {
+        mDB.delete(TABLE_NAME, KEY_CONT_ID + " = ?", new String[]{id});
     }
 
 

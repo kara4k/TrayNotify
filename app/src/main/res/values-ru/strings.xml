@@ -97,4 +97,17 @@
     <string name="standart_dialog_button">Стандартная</string>
     <string name="no_vibration_summary">Без вибрации</string>
     <string name="no_vibro_dialog_button">Без вибро</string>
+    <string name="delay_1">Задержка 1</string>
+    <string name="delay_2">Задержка 2</string>
+    <string name="delay_3">Задержка 3</string>
+    <string name="delays">Задержки</string>
+    <string name="set_alarms">Создать напоминания</string>
+    <string name="setting_alarms_dialog">Пожалуйста, подождите...</string>
+    <string name="show_birthdays_in_reminders">Показывать дни рождения в напоминаниях</string>
+    <string name="current_day">В день рождения</string>
+    <string name="minus_one">За 1 день</string>
+    <string name="minus_two">За 2 дня</string>
+    <string name="minus_three">За неделю</string>
+    <string name="day">День</string>
+    <string name="minute_m">" м"</string>
 </resources>

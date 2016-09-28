@@ -105,24 +105,6 @@ public class RebootReceiver extends BroadcastReceiver {
         return alarmIntent;
     }
 
-//    private Notification createNotification(Context context, Note note) {
-//        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
-//        mBuilder.setContentTitle(note.getTitle());
-//        mBuilder.setContentText(note.getText());
-//        mBuilder.setContentInfo("#" + String.valueOf(note.getNumid()).substring(1));
-//        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(note.getText()));
-//        mBuilder.setOngoing(true);
-//        mBuilder.setContentIntent(PendingIntent.getActivities(context, note.getNumid(), makeIntent(context, note), PendingIntent.FLAG_UPDATE_CURRENT));
-//        mBuilder.setSmallIcon(R.drawable.notify);
-//
-//
-////        mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.main_icon));
-//
-//        PendingIntent removePI = PendingIntent.getBroadcast(context, note.getNumid(), actionRemoveIntent(context, note.getNumid()), PendingIntent.FLAG_UPDATE_CURRENT);
-//        mBuilder.addAction(R.drawable.ic_delete_sweep_white_24dp, context.getString(R.string.remove), removePI);
-//
-//        return mBuilder.build();
-//    }
 
     public static Notification makeNotification(Context context, Note note) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
@@ -167,7 +149,7 @@ public class RebootReceiver extends BroadcastReceiver {
             if (!showText) {
 
 
-                bigView.setViewVisibility(R.id.n_big_actions, View.GONE);
+
                 bigView.setViewVisibility(R.id.n_big_actions2, View.VISIBLE);
                 int iconColor = sp.getInt(Settings.QUICK_ACTIONS_ICON_COLOR, Color.BLACK);
                 bigView.setInt(R.id.n_big_share_icon2, "setColorFilter", iconColor);
@@ -180,6 +162,8 @@ public class RebootReceiver extends BroadcastReceiver {
 
 
             } else {
+                bigView.setViewVisibility(R.id.n_big_actions, View.VISIBLE);
+
                 int actionsTextColor = sp.getInt(Settings.QUICK_ACTIONS_TEXT_COLOR, Color.BLACK);
                 bigView.setInt(R.id.n_big_share_text, "setTextColor", actionsTextColor);
                 bigView.setInt(R.id.n_big_copy_text, "setTextColor", actionsTextColor);
@@ -195,8 +179,6 @@ public class RebootReceiver extends BroadcastReceiver {
                 bigView.setOnClickPendingIntent(R.id.n_big_close,getActionPI(context, note,3));
             }
 
-        } else {
-            bigView.setViewVisibility(R.id.n_big_actions, View.GONE);
         }
 
         return bigView;
@@ -252,6 +234,7 @@ public class RebootReceiver extends BroadcastReceiver {
         quick.putExtra(Intent.EXTRA_SUBJECT, note.getTitle());
         quick.putExtra(Intent.EXTRA_TEXT, note.getText());
         quick.putExtra("id", note.getNumid());
+        quick.putExtra("inTray", true);
         return new Intent[]{main, quick};
     }
 

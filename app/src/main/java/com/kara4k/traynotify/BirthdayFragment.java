@@ -30,7 +30,6 @@ import java.util.Comparator;
 import java.util.List;
 
 
-
 public class BirthdayFragment extends Fragment {
 
     private BirthdayAdapter adapter;
@@ -48,10 +47,9 @@ public class BirthdayFragment extends Fragment {
         adapter.setBirthdays(birthdaysList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
+        SelectionMode selectionMode = (SelectionMode) getActivity();
+        adapter.setSelectionMode(selectionMode);
         setSortedListFromMDB();
-
-
 
 
         return recyclerView;
@@ -166,7 +164,7 @@ public class BirthdayFragment extends Fragment {
 
     private void writeBirthdaysToMDB(List<Birthday> list) {
         try {
-            if (list.size()>0) {
+            if (list.size() > 0) {
                 DBBirthday db = new DBBirthday(getContext());
                 db.open();
                 db.clearDB();
@@ -209,6 +207,52 @@ public class BirthdayFragment extends Fragment {
         }
         return age;
     }
+
+    public static int getYaarSign(String date) {
+        String[] dateArray = date.split(" ");
+        int year = Integer.parseInt(dateArray[2]);
+        int sign = 0;
+       switch (year % 12) {
+           case 4:
+               sign = R.drawable.rat;
+               break;
+           case 5:
+               sign = R.drawable.bull;
+               break;
+           case 6:
+               sign = R.drawable.tiger;
+               break;
+           case 7:
+               sign = R.drawable.rabbit;
+               break;
+           case 8:
+               sign = R.drawable.dragon;
+               break;
+           case 9:
+               sign = R.drawable.snake;
+               break;
+           case 10:
+               sign = R.drawable.horse;
+               break;
+           case 11:
+               sign = R.drawable.sheep;
+               break;
+           case 0:
+               sign = R.drawable.monkey;
+               break;
+           case 1:
+               sign = R.drawable.chicken;
+               break;
+           case 2:
+               sign = R.drawable.dog;
+               break;
+           case 3:
+               sign = R.drawable.pig;
+               break;
+       }
+        return sign;
+    }
+
 
     public static int getZodiacSign(String birthday) {
         String[] yearMonthDay = birthday.split("-");
@@ -380,7 +424,7 @@ public class BirthdayFragment extends Fragment {
         return birthdayDate.getTimeInMillis();
     }
 
-    public  void sortByAge() {
+    public void sortByAge() {
         trySortByAge();
         adapter.notifyDataSetChanged();
     }
@@ -391,9 +435,9 @@ public class BirthdayFragment extends Fragment {
                 Collections.sort(birthdaysList, new Comparator<Birthday>() {
                     @Override
                     public int compare(Birthday birthday, Birthday t1) {
-                        if(birthday.getAge() > t1.getAge())
+                        if (birthday.getAge() > t1.getAge())
                             return 1;
-                        if(birthday.getAge() < t1.getAge())
+                        if (birthday.getAge() < t1.getAge())
                             return -1;
                         return 0;
                     }
@@ -404,7 +448,7 @@ public class BirthdayFragment extends Fragment {
         }
     }
 
-    public  void sortByDaysLeft() {
+    public void sortByDaysLeft() {
         trySortByDaysLeft();
         adapter.notifyDataSetChanged();
     }
@@ -415,9 +459,9 @@ public class BirthdayFragment extends Fragment {
                 Collections.sort(birthdaysList, new Comparator<Birthday>() {
                     @Override
                     public int compare(Birthday birthday, Birthday t1) {
-                        if(birthday.getDaysLeft() > t1.getDaysLeft())
+                        if (birthday.getDaysLeft() > t1.getDaysLeft())
                             return 1;
-                        if(birthday.getDaysLeft() < t1.getDaysLeft())
+                        if (birthday.getDaysLeft() < t1.getDaysLeft())
                             return -1;
                         return 0;
                     }
@@ -428,7 +472,7 @@ public class BirthdayFragment extends Fragment {
         }
     }
 
-    public  void sortByNames() {
+    public void sortByNames() {
         trySortByNames();
         adapter.notifyDataSetChanged();
     }
@@ -468,6 +512,7 @@ public class BirthdayFragment extends Fragment {
             dialog = new ProgressDialog(context);
             dialog.setMessage(context.getString(R.string.loading));
         }
+
         @Override
         protected void onPreExecute() {
             dialog.show();

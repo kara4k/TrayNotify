@@ -53,6 +53,9 @@
 
     </PreferenceScreen>
     <PreferenceScreen android:title="@string/defaults">
+        <PreferenceCategory
+            android:key="quick_defaults"
+            android:title="@string/defaults" />
         <SwitchPreference
             android:defaultValue="false"
             android:key="n_q_default_in_tray"
@@ -117,6 +120,20 @@
             android:title="@string/text"
             app:supportsAlpha="false" />
 
+        <PreferenceCategory android:title="@string/delays"/>
+        <Preference android:key="fast_rem_delay_1"
+            android:defaultValue="00:05"
+            android:title="@string/delay_1"
+            android:summary="00:05"/>
+        <Preference android:key="fast_rem_delay_2"
+            android:defaultValue="00:20"
+            android:title="@string/delay_2"
+            android:summary="00:05"/>
+        <Preference android:key="fast_rem_delay_3"
+            android:defaultValue="01:00"
+            android:title="@string/delay_3"
+            android:summary="00:05"/>
+
 
     </PreferenceScreen>
     <PreferenceScreen android:title="@string/defaults">
@@ -138,7 +155,49 @@
             android:key="important"
             android:summary="@string/imp_check_by_default"
             android:title="@string/important" />
+
+
     </PreferenceScreen>
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="show_birthdays"
+        android:summary="@string/show_birthdays_in_reminders"
+        android:title="@string/birthdays" />
+
+    <PreferenceCategory android:title="@string/birthdays" />
+    <PreferenceScreen android:title="@string/defaults">
+        <PreferenceCategory
+            android:key="birthday_defaults"
+            android:title="@string/defaults" />
+        <Preference
+            android:defaultValue="0"
+            android:key="b_sound"
+            android:summary="@string/text_default"
+            android:title="@string/melody" />
+        <Preference
+            android:defaultValue="1"
+            android:key="b_vibration"
+            android:summary="@string/text_default"
+            android:title="@string/vibration" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="b_important"
+            android:summary="@string/imp_check_by_default"
+            android:title="@string/important" />
+        <ListPreference android:title="@string/day"
+            android:key="b_day"
+            android:defaultValue="0"
+            android:summary="@string/current_day"
+            android:entryValues="@array/birthday_notify_days_values"
+            android:entries="@array/birthday_notify_days_entries"
+            />
+        <Preference android:title="@string/time"
+            android:key="b_time"
+            android:defaultValue="09:00"
+            android:summary="09:00"/>
+
+    </PreferenceScreen>
+
 
 
 </PreferenceScreen>

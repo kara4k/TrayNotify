@@ -59,7 +59,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/info"
         android:layout_marginTop="10dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <LinearLayout
             android:id="@+id/n_big_share"
@@ -148,12 +149,12 @@
 
     <LinearLayout
         android:id="@+id/n_big_actions2"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/n_big_actions"
         android:layout_marginTop="10dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -176,6 +177,30 @@
 
                 android:paddingRight="@dimen/dimen_default"
                 android:src="@drawable/ic_content_copy_black_24dp" />
+
+            <ImageView
+                android:id="@+id/n_big_add_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/dimen_default"
+                android:src="@drawable/ic_access_time_black_24dp"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/n_big_add_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/dimen_default"
+                android:src="@drawable/ic_access_time_black_24dp"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/n_big_add_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/dimen_default"
+                android:src="@drawable/ic_access_time_black_24dp"
+                android:visibility="gone" />
         </LinearLayout>
 
         <ImageView
@@ -186,6 +211,100 @@
             android:src="@drawable/ic_close_black_24dp" />
 
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/n_big_actions3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/n_big_actions2"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/n_big_delay_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:paddingLeft="@dimen/n_big_actions_padding"
+            android:paddingRight="@dimen/n_big_actions_padding">
+
+            <ImageView
+                android:id="@+id/n_big_delay_icon_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_access_time_black_24dp" />
+
+            <TextView
+                android:id="@+id/n_big_delay_1_text"
+                style="@style/NotificationBigActionsStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+
+                android:text="@string/n_share" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/n_big_delay_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:paddingLeft="@dimen/n_big_actions_padding"
+            android:paddingRight="@dimen/n_big_actions_padding">
+
+            <ImageView
+                android:id="@+id/n_big_delay_icon_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_access_time_black_24dp" />
+
+            <TextView
+                android:id="@+id/n_big_delay_2_text"
+                style="@style/NotificationBigActionsStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/copy" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/n_big_close_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:paddingLeft="@dimen/n_big_actions_padding"
+            android:paddingRight="@dimen/n_big_actions_padding">
+
+            <ImageView
+                android:id="@+id/n_big_close_icon_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_close_black_24dp" />
+
+            <TextView
+                android:id="@+id/n_big_close_text_3"
+                style="@style/NotificationBigActionsStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/close" />
+        </LinearLayout>
     </LinearLayout>
 
 

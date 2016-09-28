@@ -3,16 +3,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
+    android:background="@drawable/selection"
+    android:clickable="true"
     android:paddingLeft="@dimen/dimen_default"
     android:paddingRight="@dimen/dimen_default"
     android:paddingTop="@dimen/dimen_default">
+
+    <CheckBox
+        android:id="@+id/check_box_birthday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/dimen_default"
+         />
 
     <ImageView
         android:id="@+id/photo"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:src="@drawable/test"
+        android:layout_toRightOf="@+id/check_box_birthday"
         tools:ignore="ContentDescription" />
 
 
@@ -23,6 +33,7 @@
         android:layout_marginLeft="@dimen/dimen_default"
         android:layout_toLeftOf="@+id/age"
         android:layout_toRightOf="@+id/photo"
+        android:text="dfgdfgdfgdfgdfg"
         android:textAppearance="?attr/textAppearanceListItem" />
 
     <TextView
@@ -41,6 +52,7 @@
         android:layout_below="@+id/name"
         android:layout_marginLeft="@dimen/dimen_default"
         android:layout_toRightOf="@+id/photo"
+        android:text="sdfgfdfgdfg"
         android:textAppearance="?attr/textAppearanceListItem"
         android:textColor="@color/colorPrimary" />
 
@@ -53,9 +65,18 @@
         android:layout_toRightOf="@+id/photo"
         android:textColor="@android:color/black" />
 
+    <ImageView
+        android:id="@+id/sign_year"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/age"
+        android:layout_marginTop="7dp"
+        android:layout_toLeftOf="@+id/sign_month"
+        android:src="@drawable/dragon"
+        tools:ignore="ContentDescription" />
 
     <ImageView
-        android:id="@+id/sign"
+        android:id="@+id/sign_month"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentRight="true"
@@ -67,7 +88,7 @@
 
     <View
         style="@style/Divider"
-        android:layout_below="@+id/photo" />
+        android:layout_below="@+id/days_left" />
 
 
 </RelativeLayout>
