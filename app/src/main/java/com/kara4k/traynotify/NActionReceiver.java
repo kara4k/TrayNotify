@@ -41,10 +41,12 @@ public class NActionReceiver extends BroadcastReceiver {
 
         if (action == 1) {
             sendText(type, id);
+            closeBar(context);
         }
 
         if (action == 2) {
             putToClip(context, type, id);
+            closeBar(context);
         }
 
         if (action == 3) {
@@ -54,7 +56,16 @@ public class NActionReceiver extends BroadcastReceiver {
         if (action == 4 || action == 5 || action == 6) {
             createFastDelayedAlarm(context, action, id);
         }
+
+
+
     }
+
+    private void closeBar(Context context) {
+        Intent close = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+        context.sendBroadcast(close);
+    }
+
 
     private void createFastDelayedAlarm(Context context, int action, int id) {
         alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);

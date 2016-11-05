@@ -5,10 +5,12 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -32,15 +34,23 @@ import java.util.List;
 
 public class BirthdayFragment extends Fragment {
 
+    public static final String BIRTHDAY_SORT = "birthday_sort";
+
+    public static final int DAYS = 0;
+    public static final int NAME = 1;
+    public static final int AGE = 2;
+
     private BirthdayAdapter adapter;
     private List<Birthday> birthdaysList;
     private List<Birthday> birthdaysListAll;
+    private SharedPreferences sp;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
         hideVPTabs();
+        sp = PreferenceManager.getDefaultSharedPreferences(getContext());
         adapter = BirthdayAdapter.getInstance();
         birthdaysList = new ArrayList<>();
         birthdaysListAll = new ArrayList<>();
@@ -55,11 +65,32 @@ public class BirthdayFragment extends Fragment {
         return recyclerView;
     }
 
+    public void setSortOrder() {
+        int sort = sp.getInt(BIRTHDAY_SORT, DAYS);
+        MainActivity main = (MainActivity) getActivity();
+        if (sort == DAYS) {
+            sortByDaysLeft();
+            main.mainMenu.findItem(R.id.sortDaysLeft).setChecked(true);
+        }
+        if (sort == NAME) {
+            sortByNames();
+            main.mainMenu.findItem(R.id.sortNames).setChecked(true);
+        }
+        if (sort == AGE) {
+            sortByAge();
+            main.mainMenu.findItem(R.id.sortAge).setChecked(true);
+        }
+
+    }
+
     private void setSortedListFromMDB() {
         List<Birthday> list = getBirthdaysFromMDB();
-        Collections.sort(list);
-        birthdaysList = list;
+//        birthdaysList = list;
+        birthdaysList.clear();
+        birthdaysList.addAll(list);
+        setSortOrder();
         adapter.setBirthdays(birthdaysList);
+        adapter.notifyDataSetChanged();
         birthdaysListAll.clear();
         birthdaysListAll.addAll(birthdaysList);
     }
@@ -154,11 +185,10 @@ public class BirthdayFragment extends Fragment {
             } while (cur.moveToNext());
         }
         cur.close();
-        Collections.sort(list);
 
         writeBirthdaysToMDB(list);
-        setSortedListFromMDB();
-
+//        setSortedListFromMDB();
+//        setSortOrder();
 
     }
 
@@ -212,44 +242,44 @@ public class BirthdayFragment extends Fragment {
         String[] dateArray = date.split(" ");
         int year = Integer.parseInt(dateArray[2]);
         int sign = 0;
-       switch (year % 12) {
-           case 4:
-               sign = R.drawable.rat;
-               break;
-           case 5:
-               sign = R.drawable.bull;
-               break;
-           case 6:
-               sign = R.drawable.tiger;
-               break;
-           case 7:
-               sign = R.drawable.rabbit;
-               break;
-           case 8:
-               sign = R.drawable.dragon;
-               break;
-           case 9:
-               sign = R.drawable.snake;
-               break;
-           case 10:
-               sign = R.drawable.horse;
-               break;
-           case 11:
-               sign = R.drawable.sheep;
-               break;
-           case 0:
-               sign = R.drawable.monkey;
-               break;
-           case 1:
-               sign = R.drawable.chicken;
-               break;
-           case 2:
-               sign = R.drawable.dog;
-               break;
-           case 3:
-               sign = R.drawable.pig;
-               break;
-       }
+        switch (year % 12) {
+            case 4:
+                sign = R.drawable.rat;
+                break;
+            case 5:
+                sign = R.drawable.bull;
+                break;
+            case 6:
+                sign = R.drawable.tiger;
+                break;
+            case 7:
+                sign = R.drawable.rabbit;
+                break;
+            case 8:
+                sign = R.drawable.dragon;
+                break;
+            case 9:
+                sign = R.drawable.snake;
+                break;
+            case 10:
+                sign = R.drawable.horse;
+                break;
+            case 11:
+                sign = R.drawable.sheep;
+                break;
+            case 0:
+                sign = R.drawable.monkey;
+                break;
+            case 1:
+                sign = R.drawable.chicken;
+                break;
+            case 2:
+                sign = R.drawable.dog;
+                break;
+            case 3:
+                sign = R.drawable.pig;
+                break;
+        }
         return sign;
     }
 
@@ -427,6 +457,7 @@ public class BirthdayFragment extends Fragment {
     public void sortByAge() {
         trySortByAge();
         adapter.notifyDataSetChanged();
+        sp.edit().putInt(BIRTHDAY_SORT, AGE).apply();
     }
 
     private void trySortByAge() {
@@ -451,6 +482,7 @@ public class BirthdayFragment extends Fragment {
     public void sortByDaysLeft() {
         trySortByDaysLeft();
         adapter.notifyDataSetChanged();
+        sp.edit().putInt(BIRTHDAY_SORT, DAYS).apply();
     }
 
     private void trySortByDaysLeft() {
@@ -475,6 +507,7 @@ public class BirthdayFragment extends Fragment {
     public void sortByNames() {
         trySortByNames();
         adapter.notifyDataSetChanged();
+        sp.edit().putInt(BIRTHDAY_SORT, NAME).apply();
     }
 
     private void trySortByNames() {
@@ -531,7 +564,7 @@ public class BirthdayFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             try {
-                adapter.notifyDataSetChanged();
+                setSortedListFromMDB();
                 if (dialog.isShowing()) {
                     dialog.dismiss();
                 }

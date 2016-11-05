@@ -95,6 +95,8 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
         long setTime = notes.get(i).getSetTime();
         if ((notes.get(i).getRepeat() == 0) && (now > setTime)) {
             notesViewHolder.numid.setTextColor(Color.RED);
+        } else {
+            notesViewHolder.numid.setTextColor(Color.BLACK);
         }
     }
 
@@ -114,6 +116,8 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
         SimpleDateFormat dateFormat = new SimpleDateFormat("d MMMM");
         String date = dateFormat.format(new Date(notes.get(i).getSetTime()));
         notesViewHolder.date.setText(date);
+        notesViewHolder.date.setVisibility(View.VISIBLE);
+        notesViewHolder.repeat.setVisibility(View.VISIBLE);
         hideDaysOfWeekViews(notesViewHolder);
     }
 
@@ -121,6 +125,8 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
         SimpleDateFormat dateFormat = new SimpleDateFormat("d ");
         String date = dateFormat.format(new Date(notes.get(i).getSetTime())).concat(context.getString(R.string.day_of_month));
         notesViewHolder.date.setText(date);
+        notesViewHolder.date.setVisibility(View.VISIBLE);
+        notesViewHolder.repeat.setVisibility(View.VISIBLE);
         hideDaysOfWeekViews(notesViewHolder);
     }
 
@@ -129,6 +135,7 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
         String date = dateFormat.format(new Date(notes.get(i).getSetTime()));
         date = date.substring(0, 1).toUpperCase() + date.substring(1);
         notesViewHolder.date.setText(date);
+        notesViewHolder.date.setVisibility(View.VISIBLE);
         notesViewHolder.repeat.setVisibility(View.GONE);
         hideDaysOfWeekViews(notesViewHolder);
     }
@@ -152,6 +159,7 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
         };
 
         notesViewHolder.date.setVisibility(View.GONE);
+        notesViewHolder.repeat.setVisibility(View.VISIBLE);
 
         for (int k = 0; k < notesViewHolder.days.length; k++) {
             notesViewHolder.days[k].setText(shortDays[k]);
@@ -192,7 +200,7 @@ public class DelayedAdapter extends RecyclerView.Adapter<DelayedAdapter.DelayedN
 
     }
 
-    private void refreshAll() {
+    public void refreshAll() {
         for (int i = 0; i < notes.size(); i++) {
             notifyItemChanged(i);
         }

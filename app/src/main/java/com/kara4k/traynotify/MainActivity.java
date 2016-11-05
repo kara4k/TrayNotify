@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private NavigationView navigationView;
     private FloatingActionButton fab;
     private BirthdayFragment birthdayFragment;
-    private Menu mainMenu;
+    public Menu mainMenu;
     private SMSFragment smsFragment;
     private ActionMode actionMode;
     private Toolbar toolbar;
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 smsFragment = new SMSFragment();
                                 showSecondaryFragment(smsFragment);
                                 setBarTitle(supportActionBar, getString(R.string.messages));
-                                setVPFragmentMenu();
+                                setMsgFragmentMenu();
                                 break;
                             case R.id.clipboard:
                                 clipFragment = new ClipFragment();
@@ -184,7 +184,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     private void setBirthdaysMenu() {
-        mainMenu.findItem(R.id.sort).setVisible(true);
+        mainMenu.findItem(R.id.sort_birth).setVisible(true);
+        mainMenu.findItem(R.id.sort_quick).setVisible(false);
+        mainMenu.findItem(R.id.sort_rem).setVisible(false);
+        mainMenu.findItem(R.id.sort_msg).setVisible(false);
+        mainMenu.findItem(R.id.sort_clip).setVisible(false);
         mainMenu.findItem(R.id.sortDaysLeft).setChecked(true);
         mainMenu.findItem(R.id.action_clear_all).setVisible(false);
         mainMenu.findItem(R.id.sync_birthdays).setVisible(true);
@@ -277,13 +281,28 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchItemView = (SearchView) searchItem.getActionView();
         searchItemView.setOnQueryTextListener(this);
+        setVPSortMenuChecks(menu);
+
         return true;
+    }
+
+    private void setVPSortMenuChecks(Menu menu) {
+        int sortQuick = sp.getInt(QuickNotesFragment.QUICK_SORT, QuickNotesFragment.DATE);
+        if (sortQuick==QuickNotesFragment.DATE) menu.findItem(R.id.sort_quick_date).setChecked(true);
+        if (sortQuick==QuickNotesFragment.TITLE) menu.findItem(R.id.sort_quick_title).setChecked(true);
+        if (sortQuick==QuickNotesFragment.TEXT) menu.findItem(R.id.sort_quick_text).setChecked(true);
+
+        int delayedSort = sp.getInt(DelayedNotesFragment.DELAYED_SORT, DelayedNotesFragment.DATE);
+        if (delayedSort == DelayedNotesFragment.DATE) menu.findItem(R.id.sort_rem_create).setChecked(true);
+        if (delayedSort == DelayedNotesFragment.TITLE) menu.findItem(R.id.sort_rem_title).setChecked(true);
+        if (delayedSort == DelayedNotesFragment.TEXT) menu.findItem(R.id.sort_rem_text).setChecked(true);
+        if (delayedSort == DelayedNotesFragment.REPEAT) menu.findItem(R.id.sort_rem_repeat).setChecked(true);
+        if (delayedSort == DelayedNotesFragment.BIRTHDAY) menu.findItem(R.id.sort_rem_birth).setChecked(true);
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         mainMenu = menu;
-        menu.findItem(R.id.sort).setVisible(false);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -303,28 +322,57 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     private void setVPFragmentMenu() {
-        mainMenu.findItem(R.id.sort).setVisible(false);
+        if (pagerItem == 0) {
+            mainMenu.findItem(R.id.sort_quick).setVisible(true);
+            mainMenu.findItem(R.id.sort_rem).setVisible(false);
+        } else {
+            mainMenu.findItem(R.id.sort_rem).setVisible(true);
+            mainMenu.findItem(R.id.sort_quick).setVisible(false);
+        }
+        mainMenu.findItem(R.id.sort_msg).setVisible(false);
+        mainMenu.findItem(R.id.sort_birth).setVisible(false);
+        mainMenu.findItem(R.id.sort_clip).setVisible(false);
         mainMenu.findItem(R.id.action_clear_all).setVisible(true);
         mainMenu.findItem(R.id.sync_birthdays).setVisible(false);
         mainMenu.findItem(R.id.clear_all_clips).setVisible(false);
     }
 
     private void setClipFragmentMenu() {
-        mainMenu.findItem(R.id.sort).setVisible(false);
+        mainMenu.findItem(R.id.sort_clip).setVisible(true);
+        mainMenu.findItem(R.id.sort_birth).setVisible(false);
+        mainMenu.findItem(R.id.sort_msg).setVisible(false);
+        mainMenu.findItem(R.id.sort_quick).setVisible(false);
+        mainMenu.findItem(R.id.sort_rem).setVisible(false);
         mainMenu.findItem(R.id.action_clear_all).setVisible(false);
         mainMenu.findItem(R.id.sync_birthdays).setVisible(false);
         mainMenu.findItem(R.id.clear_all_clips).setVisible(true);
     }
 
+    private void setMsgFragmentMenu() {
+        mainMenu.findItem(R.id.sort_msg).setVisible(true);
+        mainMenu.findItem(R.id.sort_clip).setVisible(false);
+        mainMenu.findItem(R.id.sort_birth).setVisible(false);
+        mainMenu.findItem(R.id.sort_quick).setVisible(false);
+        mainMenu.findItem(R.id.sort_rem).setVisible(false);
+        mainMenu.findItem(R.id.action_clear_all).setVisible(true);
+        mainMenu.findItem(R.id.sync_birthdays).setVisible(false);
+        mainMenu.findItem(R.id.clear_all_clips).setVisible(false);
+    }
+
     private void showFirstFragment() {
         firstFragmentTransaction();
         fab.setVisibility(View.VISIBLE);
+
+
+
+
         navigationView.getMenu().getItem(0).setChecked(true);
         try {
             getSupportActionBar().setTitle(getString(R.string.app_name));
         } catch (Exception e) {
         }
     }
+
 
     private void firstFragmentTransaction() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -346,7 +394,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_search) {
-
             return true;
         } else if (id == R.id.sync_birthdays) {
             syncBirthdayInfo();
@@ -360,7 +407,53 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         } else if (id == R.id.sortAge) {
             sortByAge(item);
             return true;
-        } else if (id == R.id.action_clear_all) {
+        } else if (id == R.id.sort_quick_title) {
+            sortQuickTitle(item);
+            return true;
+        } else if (id == R.id.sort_quick_text) {
+            sortQuickText(item);
+            return true;
+        } else if (id == R.id.sort_quick_date) {
+            sortQuickDate(item);
+            return true;
+        }  else if (id == R.id.sort_rem_title) {
+            vpFragment.getDelayedNotes().sortByTitle();
+            item.setChecked(true);
+            return true;
+        } else if (id == R.id.sort_rem_text) {
+            vpFragment.getDelayedNotes().sortByText();
+            item.setChecked(true);
+            return true;
+        } else if (id == R.id.sort_rem_create) {
+            vpFragment.getDelayedNotes().sortByDate();
+            item.setChecked(true);
+            return true;
+        } else if (id == R.id.sort_rem_repeat) {
+            vpFragment.getDelayedNotes().sortByRepeat();
+            item.setChecked(true);
+            return true;
+        } else if (id == R.id.sort_rem_birth) {
+            vpFragment.getDelayedNotes().sortByBirth();
+            item.setChecked(true);
+            return true;
+        }else if (id == R.id.sort_msg_title) {
+            smsFragment.sortByName();
+            item.setChecked(true);
+            return true;
+        }else if (id == R.id.sort_msg_date) {
+            smsFragment.sortByDate();
+            item.setChecked(true);
+            return true;
+        }else if (id == R.id.sort_clip_text) {
+            clipFragment.sortByText();
+            item.setChecked(true);
+            return true;
+        }else if (id == R.id.sort_clip_date) {
+            clipFragment.sortByDate();
+            item.setChecked(true);
+            return true;
+        }
+        else if (id == R.id.action_clear_all) {
             clearTray();
             return true;
         } else if (id == R.id.clear_all_clips) {
@@ -370,6 +463,21 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             mDrawerLayout.openDrawer(GravityCompat.START);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sortQuickDate(MenuItem item) {
+        vpFragment.getQuickNotes().sortByDate();
+        item.setChecked(true);
+    }
+
+    private void sortQuickText(MenuItem item) {
+        vpFragment.getQuickNotes().sortByText();
+        item.setChecked(true);
+    }
+
+    private void sortQuickTitle(MenuItem item) {
+        vpFragment.getQuickNotes().sortByTitle();
+        item.setChecked(true);
     }
 
     private void showClearClipDialog() {
@@ -787,9 +895,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         switch (position) {
             case 0:
                 setFabNotes();
+                mainMenu.findItem(R.id.sort_rem).setVisible(false);
+                mainMenu.findItem(R.id.sort_quick).setVisible(true);
                 break;
             case 1:
                 setFabReminders();
+                mainMenu.findItem(R.id.sort_rem).setVisible(true);
+                mainMenu.findItem(R.id.sort_quick).setVisible(false);
                 break;
         }
     }

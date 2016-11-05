@@ -64,6 +64,7 @@ public class ViewPagerFragment extends Fragment {
     public void refreshQuick(List<Note> notes) {
         try {
             quickNotes.setNotes(notes);
+            quickNotes.setSortOrder();
             QuickAdapter.getInstance().notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();
@@ -73,6 +74,7 @@ public class ViewPagerFragment extends Fragment {
     public void refreshDelayed(List<DelayedNote> notes) {
         try {
             delayedNotes.setNotes(notes);
+            delayedNotes.setSortOrder();
             DelayedAdapter.getInstance().notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();

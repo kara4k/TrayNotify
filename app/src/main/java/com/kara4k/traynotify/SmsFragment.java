@@ -3,11 +3,13 @@ package com.kara4k.traynotify;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +24,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,21 +33,47 @@ import java.util.Map;
 
 public class SMSFragment extends Fragment {
 
+    public static final String SMS_SORT = "sms_sort";
+    public static final int NAME = 0;
+    public static final int DATE = 1;
+
     private SMSAdapter adapter;
     private List<SMS> smsList;
     private List<SMS> smsListAll = new ArrayList<>();
     private Map<Integer, String> names;
+    private SharedPreferences sp;
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.quick_notes_fragment, container, false);
         hideVPTabs();
+        sp = PreferenceManager.getDefaultSharedPreferences(getContext());
         adapter = SMSAdapter.getInstance();
         smsList = new ArrayList<>();
         adapter.setSmsList(smsList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         checkPermissions();
+
+
+
         return recyclerView;
+    }
+
+
+    public void setSortOrder() {
+        int sort = sp.getInt(SMS_SORT, 1);
+        MainActivity main = (MainActivity) getActivity();
+        if (sort == DATE) {
+            sortByDate();
+            main.mainMenu.findItem(R.id.sort_msg_date).setChecked(true);
+        }
+        if (sort == NAME) {
+            sortByName();
+            main.mainMenu.findItem(R.id.sort_msg_title).setChecked(true);
+        }
+        smsListAll.clear();
+        smsListAll.addAll(smsList);
+
     }
 
     private void hideVPTabs() {
@@ -100,8 +130,8 @@ public class SMSFragment extends Fragment {
         }
         cursor.close();
         smsList = allSms;
-        adapter.setSmsList(smsList);
-        smsListAll.addAll(smsList);
+//        adapter.setSmsList(smsList);
+//        smsListAll.addAll(smsList);
 
 
     }
@@ -204,6 +234,41 @@ public class SMSFragment extends Fragment {
         }
     }
 
+    public void sortByName() {
+        if ((smsList != null) && (smsList.size() != 0)) {
+           Collections.sort(smsList, new Comparator<SMS>() {
+               @Override
+               public int compare(SMS sms, SMS t1) {
+                   return sms.getAddress().compareToIgnoreCase(t1.getAddress());
+               }
+           });
+
+            SMSAdapter.getInstance().notifyDataSetChanged();
+
+            sp.edit().putInt(SMS_SORT, NAME).apply();
+
+        }
+    }
+    public void sortByDate() {
+        if ((smsList != null) && (smsList.size() != 0)) {
+            Collections.sort(smsList, new Comparator<SMS>() {
+                @Override
+                public int compare(SMS sms, SMS t1) {
+                    if (sms.getDate() < t1.getDate())
+                        return 1;
+                    if (sms.getDate() > t1.getDate())
+                        return -1;
+                    return 0;
+                }
+            });
+
+            SMSAdapter.getInstance().notifyDataSetChanged();
+
+            sp.edit().putInt(SMS_SORT, DATE).apply();
+
+        }
+    }
+
     private class GetSmsListTask extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -220,6 +285,8 @@ public class SMSFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             try {
+                setSortOrder();
+
                 adapter.setSmsList(smsList);
                 adapter.notifyDataSetChanged();
                 super.onPostExecute(aVoid);

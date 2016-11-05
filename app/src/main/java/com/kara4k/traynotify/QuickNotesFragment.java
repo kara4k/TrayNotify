@@ -2,8 +2,10 @@ package com.kara4k.traynotify;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,9 +21,15 @@ import java.util.List;
 
 public class QuickNotesFragment extends Fragment {
 
+    public static final String QUICK_SORT = "quick_sort";
+    public static final int TITLE = 0;
+    public static final int TEXT = 1;
+    public static final int DATE = 2;
+
     private List<Note> notes;
     private QuickAdapter adapter;
     private RecyclerView recyclerView;
+    private SharedPreferences sp;
 
     @Nullable
     @Override
@@ -40,10 +48,31 @@ public class QuickNotesFragment extends Fragment {
         SelectionMode selectionMode = (SelectionMode) getActivity();
         adapter.setSelectionMode(selectionMode);
 
+        sp = PreferenceManager.getDefaultSharedPreferences(getContext());
 //        ItemTouchHelper.Callback callback = new QuickTouchHelper(adapter);
 //        ItemTouchHelper helper = new ItemTouchHelper(callback);
 //        helper.attachToRecyclerView(recyclerView);
         return recyclerView;
+    }
+
+    @Override
+    public void onStart() {
+        setSortOrder();
+        super.onStart();
+    }
+
+    public void setSortOrder() {
+        int sort = sp.getInt(QUICK_SORT, DATE);
+        if (sort == DATE) {
+            sortByDate();
+        }
+        if (sort == TITLE) {
+            sortByTitle();
+        }
+        if (sort == TEXT) {
+            sortByText();
+        }
+
     }
 
 
@@ -65,6 +94,59 @@ public class QuickNotesFragment extends Fragment {
         }
     }
 
+    public void sortByTitle() {
+        if ((notes != null) && (notes.size() != 0)) {
+            Collections.sort(notes, new Comparator<Note>() {
+                @Override
+                public int compare(Note note, Note t1) {
+                    return note.getTitle().compareToIgnoreCase(t1.getTitle());
+                }
+            });
+
+            QuickAdapter.getInstance().notifyDataSetChanged();
+
+            sp.edit().putInt(QUICK_SORT, TITLE).apply();
+
+        }
+
+
+    }
+    public void sortByText() {
+        if ((notes != null) && (notes.size() != 0)) {
+            Collections.sort(notes, new Comparator<Note>() {
+                @Override
+                public int compare(Note note, Note t1) {
+                    return note.getText().compareToIgnoreCase(t1.getText());
+                }
+            });
+
+            QuickAdapter.getInstance().notifyDataSetChanged();
+
+            sp.edit().putInt(QUICK_SORT, TEXT).apply();
+
+        }
+    }
+    public void sortByDate() {
+        if ((notes != null) && (notes.size() != 0)) {
+            Collections.sort(notes, new Comparator<Note>() {
+                @Override
+                public int compare(Note note, Note t1) {
+                    if (note.getDate() < t1.getDate())
+                        return 1;
+                    if (note.getDate() > t1.getDate())
+                        return -1;
+                    return 0;
+
+                }
+            });
+
+            QuickAdapter.getInstance().notifyDataSetChanged();
+
+            sp.edit().putInt(QUICK_SORT, DATE).apply();
+
+        }
+    }
+
     public List<Note> getNotes() {
         return notes;
     }
@@ -72,6 +154,7 @@ public class QuickNotesFragment extends Fragment {
     public void setNotes(List<Note> notes) {
         this.notes = notes;
     }
+
 
 
 }
